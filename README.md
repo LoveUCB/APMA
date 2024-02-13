@@ -4,7 +4,7 @@ such as Betweenness Closeness etc. and other features like Effectiveness, Stiffn
 
 Also, a stacking model is built automatically to detect the best model to classify the categories you provide.
 
-> Produced By Spencer Wang
+> Developed By Spencer Wang, Miao Yang
 
 > 📧: jrwangspencer@stu.suda.edu.cn
 
