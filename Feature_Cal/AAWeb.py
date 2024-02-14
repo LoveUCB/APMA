@@ -3,7 +3,7 @@ from rpy2.robjects.packages import importr
 bio3d = importr("bio3d")
 NACEN = importr("NACEN")
 igraph = importr("igraph", robject_translations={'.env':'__env'})
-def AAWEB(route,t, category, Mut_PDB,WT_PDB):
+def AAWEB(route,t, category, Mut_PDB,WT_PDB,data_rote):
     '''
     Function to calculate the Amino Acids Web Features for several given mutation type pdb files
     unluckily, the NACEN package is base on R, so you should prepare it before calling this function
@@ -74,7 +74,7 @@ AA_web <- cbind(AA_web, Degree)
 AA_web <- cbind(AA_web, Eigenvector)
 AA_web <- cbind(AA_web, Clustering_coefficient)
 
-write.table(AA_web,"C:/Users/33385/Desktop/APMA/APMA/data/AAWeb/{t}.txt",sep="\\t",row.names = FALSE)
+write.table(AA_web,"{data_rote}/{t}.txt",sep="\\t",row.names = FALSE)
 '''
     robjects.r(str(r_code))
 

@@ -9,7 +9,7 @@ MSA_data = "/Users/wangjingran/Desktop/APMA/data/query_msa.fasta"
 def cal_coevolution(path,position):
     msa = parseMSA(path)
     msa_refine = refineMSA(msa, label='Input_seq', rowocc=0.8, seqid=0.98)
-    showMSAOccupancy(msa_refine, occ='res')
+    # showMSAOccupancy(msa_refine, occ='res')
     # coevolution
     print("Coevolution Calculating...", end = " ")
     MI = buildMutinfoMatrix(msa_refine)
