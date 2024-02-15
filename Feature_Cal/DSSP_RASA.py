@@ -13,7 +13,7 @@ def DSSP_RASA(position, filename):
     new_rasa = []
     for pos in position:
         selected_rows = protein_rasa[pos - 1]
-        new_rasa.append(selected_rows)
+        new_rasa.append(selected_rows * 100)
     print("Done")
     return new_rasa
 

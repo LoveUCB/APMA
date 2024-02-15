@@ -78,7 +78,6 @@ write.table(AA_web,"{data_rote}/{t}.txt",sep="\\t",row.names = FALSE)
 '''
     robjects.r(str(r_code))
 
-
 def data_AAW_gener(position, category):
     AAW_data = []
     for i in range(len(position)):
