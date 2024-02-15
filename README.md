@@ -4,7 +4,16 @@ such as Betweenness Closeness etc. and other features like Effectiveness, Stiffn
 
 Also, a stacking model is built automatically to detect the best model to classify the categories you provide.
 
-> Developed By Spencer Wang, Miao Yang
+- To get the too, run the following code
+```
+git clone https://github.com/LoveUCB/APMA
+```
+- To install the dependency, run the following code
+```
+pip install .
+```
+
+> Developed By Spencer Wang, Lily Yang
 
 > 📧: jrwangspencer@stu.suda.edu.cn
 
