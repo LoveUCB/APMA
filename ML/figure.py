@@ -78,7 +78,7 @@ def plot_spearman(input_file, output_folder):
     output_path = os.path.join(output_folder, "spearman_corr.pdf")
     plt.savefig(output_path,format="pdf",bbox_inches='tight')
     plt.close()
-    print(f"spearman correlation is saved to {output_path}")
+    print(f"Spearman correlation plot generated")
 
 def save_bar_chart_as_pdf(df,filename):
     """
@@ -238,5 +238,4 @@ def plot_box(data_file, output_folder):
         plt.savefig(output_file)
         plt.close()
     print("Boxplot generated")
-
 
