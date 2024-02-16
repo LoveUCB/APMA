@@ -6,6 +6,8 @@ The tool can only operate in Windows system.
 
 Also, a stacking model is built automatically to detect the best model to classify the categories you provide.
 
+- Dependency python = 3.10
+
 - To get the tool, run the following code
 ```
 git clone https://github.com/LoveUCB/APMA
