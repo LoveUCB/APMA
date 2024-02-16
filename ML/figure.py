@@ -239,3 +239,46 @@ def plot_box(data_file, output_folder):
         plt.close()
     print("Boxplot generated")
 
+def plot_importence_bar(df,filename):
+    """
+    保存柱状图为PDF文件
+
+    参数：
+    categories: list，类别列表
+    values: list，值列表
+    filename: str，要保存的文件名
+    """
+    df = pd.read_csv(df,sep='\t')
+    print("saving bar chart... ",end = '')
+    cores = [
+        #svm.SVC(kernel="linear",max_iter=1000000),
+        RandomForestClassifier(n_estimators=1000),
+        GradientBoostingClassifier(n_estimators=1000),
+        XGBClassifier(n_estimators=1000),
+        LGBMClassifier(verbose=-1, n_estimators=1000)
+    ]
+    exp = [
+        "Random Forest",
+        "Gradient Boosting",
+        "XGBoost",
+        "LGBM"
+    ]
+    X = df.drop(columns=['Disease',"Site"])
+    y = encoder.fit_transform(df["Disease"])
+    for i in range(len(cores)):
+        cores[i].fit(X,y)
+        values = cores[i].feature_importances_
+        categories = X.columns
+        sorted_data = sorted(zip(values, categories))
+        values, categories = zip(*sorted_data)
+        values = list(values)[::-1]
+        categories = list(categories)[::-1]
+        plt.figure(figsize=(16, 11))
+        plt.bar(categories, values)
+        plt.xticks(rotation=45, ha='right')
+        plt.xlabel('Categories')
+        plt.ylabel('Values')
+        plt.title('Feature Importances')
+        plt.savefig(filename + "_" + exp[i] + ".pdf", format='pdf')
+        plt.close()
+    print("Done")

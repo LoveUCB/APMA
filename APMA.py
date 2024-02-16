@@ -5,12 +5,12 @@ import pandas as pd
 
 def APMA():
     print("Produced By Spencer Wang")
+    Protein_name = input("Please provide your protein name")
+    file_path = input("Please provide your description file")
     FoldX = input("Please provide your route to FoldX")
     WT_PDB = input("Please provide your route to Wild Type PDB")
     Mut_PDB = FoldX
-    Protein_name = input("Please provide your protein name")
     MSA_data = input("Please provide your MSA file")
-    file_path = input("Please provide your description file")
     '''
     FoldX = "C:/Users/33385/Desktop/FoldX"
     WT_PDB = "C:/Users/33385/Desktop/data/alphafoldpten.pdb"
