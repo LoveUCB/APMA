@@ -3,10 +3,11 @@ import re
 import pandas as pd
 
 
-def APMA():
+def APMA(FoldX, WT_PDB, Protein_name, MSA_data, file_path):
     print("==================================")
     print("= Auto Protein Mutation Analyzer =")
     print("==================================")
+    '''
     Protein_name = input("Please provide your protein name")
     file_path = input("Please provide your description file")
     FoldX = input("Please provide your route to FoldX")
@@ -14,13 +15,7 @@ def APMA():
     Mut_PDB = FoldX
     MSA_data = input("Please provide your MSA file")
     '''
-    FoldX = "C:/Users/33385/Desktop/FoldX"
-    WT_PDB = "C:/Users/33385/Desktop/data/alphafoldpten.pdb"
-    Mut_PDB = FoldX
-    Protein_name = "pten"
-    MSA_data = "C:/Users/33385/Desktop/data/query_msa.fasta"
-    file_path = "C:/Users/33385/Desktop/data/position.txt"
-    '''
+
     phenotype_list = []
     site_list = []
     with open(file_path, 'r') as file:
@@ -46,7 +41,6 @@ def APMA():
     relative_path = "data/dssp-3.0.0.exe"
     absolute_path = os.path.abspath(relative_path)
     absolute_path = absolute_path.replace("\\", "/")
-    # print(absolute_path)
     print("Calculating Amino Acid Web Features", end = " ")
     for i in set_category:
         AAWEB(absolute_path,i,category,Mut_PDB,WT_PDB,"data/AAWeb")
