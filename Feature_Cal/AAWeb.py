@@ -24,8 +24,8 @@ MT_eigenvector <- c()
 MT_clustering <- c()
 for(i in 1:{element_count}){{
 	data <- paste(c("{Mut_PDB}/{t}_",i,".pdb"),collapse="")
-	Net <- NACENConstructor(PDBFile=data,WeightType = "Polarity",exefile = dsspfile,plotflag=T)
-	NetP <- NACENAnalyzer(Net$AM,Net$NodeWeights)
+	Net <- suppressMessages(NACENConstructor(PDBFile=data,WeightType = "Polarity",exefile = dsspfile,plotflag=F))
+	NetP <- suppressMessages(NACENAnalyzer(Net$AM,Net$NodeWeights))
 	net <- NetP$Edgelist
 	result <- NetP$NetP
 	degree <- result$K
@@ -37,8 +37,8 @@ for(i in 1:{element_count}){{
 	
 	network <- c(net[,1],net[,2])
     network <- graph(network)
-    ev <- evcent(network,scale=F)$vector
-    tr <- transitivity(network,type="localundirected")
+    ev <- suppressWarnings(evcent(network,scale=F)$vector)
+    tr <- suppressWarnings(transitivity(network,type="localundirected"))
     tr[is.nan(tr)] <- 0
     MT_eigenvector <- cbind(MT_eigenvector,ev)
     MT_clustering <- cbind(MT_clustering,tr)
@@ -50,8 +50,8 @@ MT_eigenvector <- rowMeans(MT_eigenvector)
 MT_clustering <- rowMeans(MT_clustering)
 
 data <- "{WT_PDB}"
-Net <- NACENConstructor(PDBFile=data,WeightType = "Polarity",exefile = dsspfile,plotflag=T)
-NetP <- NACENAnalyzer(Net$AM,Net$NodeWeights)
+Net <- suppressMessages(NACENConstructor(PDBFile=data,WeightType = "Polarity",exefile = dsspfile,plotflag=F))
+NetP <- suppressMessages(NACENAnalyzer(Net$AM,Net$NodeWeights))
 net <- NetP$Edgelist
 network <- c(net[,1],net[,2])
 network <- graph(network)
@@ -59,8 +59,8 @@ result <- NetP$NetP
 degree <- result$K
 betweeness <- result$B
 closeness <- result$C
-eigenvector <- evcent(network,scale=F)$vector
-clustering <- transitivity(network,type="localundirected")
+eigenvector <- suppressWarnings(evcent(network,scale=F)$vector)
+clustering <- suppressWarnings(transitivity(network,type="localundirected"))
 clustering[is.na(clustering)] <- 0
 
 Betweeness <- MT_betweeness - betweeness
