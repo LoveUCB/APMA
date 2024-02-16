@@ -4,7 +4,9 @@ import pandas as pd
 
 
 def APMA():
-    print("Produced By Spencer Wang")
+    print("==================================")
+    print("= Auto Protein Mutation Analyzer =")
+    print("==================================")
     Protein_name = input("Please provide your protein name")
     file_path = input("Please provide your description file")
     FoldX = input("Please provide your route to FoldX")
