@@ -15,7 +15,7 @@ def APMA(FoldX, WT_PDB, Protein_name, MSA_data, file_path):
     Mut_PDB = FoldX
     MSA_data = input("Please provide your MSA file")
     '''
-
+    Mut_PDB = FoldX
     phenotype_list = []
     site_list = []
     with open(file_path, 'r') as file:
