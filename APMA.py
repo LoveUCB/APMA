@@ -41,7 +41,7 @@ def APMA(FoldX, WT_PDB, Protein_name, MSA_data, file_path):
     relative_path = "data/dssp-3.0.0.exe"
     absolute_path = os.path.abspath(relative_path)
     absolute_path = absolute_path.replace("\\", "/")
-    print("Calculating Amino Acid Web Features", end = " ")
+    print("Calculating Amino Acid Web Features...", end = " ")
     for i in set_category:
         AAWEB(absolute_path,i,category,Mut_PDB,WT_PDB,"data/AAWeb")
     from Feature_Cal.AAWeb import data_AAW_gener
@@ -54,7 +54,7 @@ def APMA(FoldX, WT_PDB, Protein_name, MSA_data, file_path):
     MI = cal_coevolution(MSA_data,position)
     # 计算蛋白质的相对可及表面积
     from Feature_Cal.DSSP_RASA import DSSP_RASA
-    RASA = DSSP_RASA(position,"data/alphafoldpten.pdb")
+    RASA = DSSP_RASA(position,WT_PDB)
     # 计算弹性网络参数
     from Feature_Cal.prody_cal import dynamics_dat
     dynamics = dynamics_dat(Protein_name, position,WT_PDB)
@@ -81,7 +81,7 @@ def APMA(FoldX, WT_PDB, Protein_name, MSA_data, file_path):
     df_all["DFI"] = [sublist[3] for sublist in dynamics]
     df_all["Stiffness"] = [sublist[4] for sublist in dynamics]
 
-    df_all.to_csv("data/paras_old.txt", sep='\t',index=False)
+    df_all.to_csv("data/paras.txt", sep='\t',index=False)
 
     print("..Machine Learning Starting...")
     from ML.figure import plot_spearman
