@@ -24,6 +24,7 @@ def run_FoldX(path_to_foldx,WT_PDB,mutant_file):
     f.close()
     # print(type)
     # 切换目录到指定路径
+    original_directory = os.getcwd()
     folder_path = path_to_foldx
     os.chdir(folder_path)
     # 执行 FoldX 命令
@@ -47,12 +48,14 @@ def run_FoldX(path_to_foldx,WT_PDB,mutant_file):
         counter += 1
         prev_item = item
     #print(result_list)
-
+    
     for i in range(len(result_list)):
         old_name = folder_path + f'/{FoldX_WT_PDB.strip(".pdb")}_{i+1}.pdb'
         new_name = folder_path + f'/{type[i]}_{result_list[i]}.pdb'
         os.rename(old_name, new_name)
+
     print("Done")
+    os.chdir(original_directory)
     return 0
 
 def get_total_energy(path_to_foldx, WT_PDB):
