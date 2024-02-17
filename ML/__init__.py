@@ -29,22 +29,31 @@ from .model import model_rfe
 from .model import stacking_model
 
 def ML_Build(file = 'data/paras.txt'):
+    '''
+    This function is intended to search for the best model and feature combination
+    using machine learning algorithms based on given data file (default: paras.txt).
+    Inputs: 
+        - file : a string indicating the path of the input parameter file;
+     Outputs:
+         - The best feature combination and model combination found by searching are printed out in console.
+           A txt file named "best_params.csv" will be generated with these information.
+    '''
     df_all = pd.read_csv(file, sep='\t')
     category = df_all.iloc[:,0].tolist()
     category = ["ASD_Cancer","Cancer"]
     cores = [
-        #svm.SVC(kernel="linear",max_iter=1000000),
-        #RandomForestClassifier(n_estimators=1000),
-        #GradientBoostingClassifier(n_estimators=1000),
-        #XGBClassifier(n_estimators = 1000),
+        svm.SVC(kernel="linear",max_iter=1000000),
+        RandomForestClassifier(n_estimators=1000),
+        GradientBoostingClassifier(n_estimators=1000),
+        XGBClassifier(n_estimators = 1000),
         LGBMClassifier(verbose=-1, n_estimators=1000)
              ]
 
     exp = [
-        #"SVM",
-        #"RandomForest",
-        #"GradientBoost",
-        #"XGBoost",
+        "SVM",
+        "RandomForest",
+        "GradientBoost",
+        "XGBoost",
         "LightGBM"
             ]
 
