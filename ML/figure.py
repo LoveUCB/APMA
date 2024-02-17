@@ -279,6 +279,6 @@ def plot_importence_bar(df,filename):
         plt.xlabel('Categories')
         plt.ylabel('Values')
         plt.title('Feature Importances')
-        plt.savefig(filename + "_" + exp[i] + ".pdf", format='pdf')
+        plt.savefig(filename + "/Importance_" + exp[i] + ".pdf", format='pdf')
         plt.close()
     print("Done")
