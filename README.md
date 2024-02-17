@@ -8,7 +8,7 @@ It can also give you basic figures
 
 The tool can only operate in Windows system.
 
-See "./Run.ipynb" to operate the tool
+See [Run.ipynb](./Run.ipynb) to operate the tool
 
 - Dependency python = 3.10
 
