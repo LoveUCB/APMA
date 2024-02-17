@@ -2,9 +2,13 @@
 The AMPA is intended to calculate the features of protein mutation including Amino Acid Web features
 such as Betweenness Closeness etc. and other features like Effectiveness, Stiffness and Entropy, Co.evolution.
 
+Also, a stacking model is built automatically to detect the best model to classify the categories you provide.
+
+It can also give you basic figures
+
 The tool can only operate in Windows system.
 
-Also, a stacking model is built automatically to detect the best model to classify the categories you provide.
+See "./Run.ipynb" to operate the tool
 
 - Dependency python = 3.10
 
