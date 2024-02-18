@@ -37,8 +37,6 @@ The NACEN website: http://sysbio.suda.edu.cn/NACEN
 
 # Message
 
-> Developed By Spencer Wang, Lily Yang
-
 > 📧: jrwangspencer@stu.suda.edu.cn
 
 > Department of Bioinformatics, Medical School of Soochow University
