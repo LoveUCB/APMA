@@ -15,7 +15,7 @@ See [Run.ipynb](./Run.ipynb) to operate the tool
 
 - To get the tool, run the following code
 ```
-git clone https://github.com/LoveUCB/APMA
+git clone https://github.com/Spencer-JRWang/APMA
 ```
 - To install the dependency, run the following code
 ```
