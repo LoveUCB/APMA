@@ -6,7 +6,7 @@ such as Betweenness Closeness etc. and other features like Effectiveness, Stiffn
 Also, a stacking model is built automatically to detect the best model to classify the categories you provide.
 
 It can also give you basic figures
-
+![Figure_exp](Figure/Figure_exp.png)
 The tool can only operate in Windows system.
 
 See [Run.ipynb](./Run.ipynb) to operate the tool
