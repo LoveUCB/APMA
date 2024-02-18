@@ -11,6 +11,7 @@ The tool can only operate in Windows system.
 
 See [Run.ipynb](./Run.ipynb) to operate the tool
 
+# Install
 - Dependency python = 3.10
 
 - To get the tool, run the following code
