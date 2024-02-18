@@ -23,7 +23,7 @@ pip install .
 ```
 - You should install R in you laptop and add R_Home in your environmental parameter
 ```
-R_Home = your_route_to_R
+R_HOME = your_route_to_R
 ```
 - Install bio3d, igraph and NACEN package in your R
 ```
