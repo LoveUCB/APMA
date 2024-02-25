@@ -1,21 +1,26 @@
 import os
 import re
 import pandas as pd
+import subprocess
 
 
-def APMA(FoldX, WT_PDB, Protein_name, MSA_data, file_path):
+def APMA(WT_PDB, Protein_name, file_path, MSA_data = "/home/wangjingran/APMA/data/query_msa.fasta", FoldX = "/home/wangjingran/APMA/FoldX"):
+    '''
+    paramaters:
+    Protein_name = input("Please provide your protein name")
+    file_path = input("Please provide your description file")
+    FoldX = input("Please provide your route to FoldX") default "/home/wangjingran/APMA/FoldX"
+    WT_PDB = input("Please provide your route to Wild Type PDB")
+    Mut_PDB = FoldX
+    MSA_data = input("Please provide your MSA file") default home/wangjingran/APMA/data/query_msa.fasta
+    '''
     print("==================================")
     print("= Auto Protein Mutation Analyzer =")
     print("==================================")
-    '''
-    Protein_name = input("Please provide your protein name")
-    file_path = input("Please provide your description file")
-    FoldX = input("Please provide your route to FoldX")
-    WT_PDB = input("Please provide your route to Wild Type PDB")
-    Mut_PDB = FoldX
-    MSA_data = input("Please provide your MSA file")
-    '''
-    Mut_PDB = FoldX
+
+    from Feature_Cal.Blast_MSA import extract_sequence_from_pdb
+    from Feature_Cal.Blast_MSA import blast_search
+    from Feature_Cal.Blast_MSA import run_clustal
     phenotype_list = []
     site_list = []
     with open(file_path, 'r') as file:
@@ -28,6 +33,58 @@ def APMA(FoldX, WT_PDB, Protein_name, MSA_data, file_path):
     set_category = list(set(category))
     position = site_list
     position = [int(num) for num in position]
+    pdb_sequences = extract_sequence_from_pdb('data/alphafoldpten.pdb')
+    protein_sequence = ''.join(pdb_sequences)
+    sequence = protein_sequence
+    # Perform BLAST search and save results to a file
+    output_file = "data/blast_results.fasta"
+    blast_search(sequence, output_file)
+    # 输入的FASTA文件，这里假设你已经有了一些同源序列的FASTA文件
+    with open("data/blast_results.fasta", "r") as f:
+        sequence_blast = []
+        s_lines = f.readlines()
+        for i in s_lines:
+            if i.startswith(">") or i == "\n":
+                pass
+            else:
+                sequence_blast.append(i)
+        sequence_blast = list(set(sequence_blast))
+        import random
+        # 这里加上一个判断，如果少于了200个就把所有的都选上去
+        if len(sequence_blast) > 200:
+            random_numbers = random.sample(range(1, len(sequence_blast)), 200)
+            sequence_blast = [sequence_blast[i] for i in random_numbers]
+    with open("data/blast_results.fasta", "w") as f:
+        for i in range(len(sequence_blast)):
+            f.write("sequence" + str(i + 1) + "\n")
+            f.write(sequence_blast[i] + "\n")
+
+    input_fasta = "data/blast_results.fasta"
+    # 输出的FASTA文件，用于保存比对结果
+    output_fasta = "data/query_msa.fasta"
+    # 运行多序列比对
+    run_clustal(input_fasta, output_fasta)
+    with open("data/query_msa.fasta", 'r') as f:
+        lines = f.readlines()
+    lines[0] = '>Input_seq\n'
+    with open("data/query_msa.fasta", 'w') as f:
+        f.writelines(lines)
+    rate4site_command = f"rate4site -s /home/wangjingran/APMA/data/query_msa.fasta -o /home/wangjingran/APMA/data/score.txt"
+    subprocess.run(rate4site_command, shell=True)
+    Consurf_Score = []
+    f = open("/home/wangjingran/APMA/data/score.txt","r")
+    all = f.readlines()
+    for i in range(len(all)):
+        if i in [0,1,2,3,4,5,6,7,8,9,10,11,12,len(all)-2,len(all)-1,len(all)]:
+            pass
+        else:
+            consurf = all[i].split()[2]
+            Consurf_Score.append(float(consurf))
+    f.close()
+    Consurf_Scores = []
+    for i in position:
+        Consurf_Scores.append(Consurf_Score[i-1])
+    Mut_PDB = FoldX
 
     # 使用foldx构建突变体的pdb
     from mutation.FoldX import run_FoldX
@@ -38,7 +95,7 @@ def APMA(FoldX, WT_PDB, Protein_name, MSA_data, file_path):
 
     # 氨基酸网络
     from Feature_Cal.AAWeb import AAWEB
-    relative_path = "data/dssp-3.0.0.exe"
+    relative_path = "/usr/bin/mkdssp"
     absolute_path = os.path.abspath(relative_path)
     absolute_path = absolute_path.replace("\\", "/")
     print("Calculating Amino Acid Web Features...", end = " ")
@@ -66,8 +123,9 @@ def APMA(FoldX, WT_PDB, Protein_name, MSA_data, file_path):
 
     df_all["Co.evolution"] = MI
     df_all["Entropy"] = SI
+    df_all["Consurf_Score"] = Consurf_Scores
     df_all["RASA"] = RASA
-    df_all["Total Energy"] = tte
+    df_all["ddG"] = tte
 
     df_all["Betweenness"] = [sublist[0] for sublist in AAWeb_data]
     df_all["Closeness"] = [sublist[1] for sublist in AAWeb_data]
@@ -82,12 +140,7 @@ def APMA(FoldX, WT_PDB, Protein_name, MSA_data, file_path):
     df_all["Stiffness"] = [sublist[4] for sublist in dynamics]
 
     df_all.to_csv("data/paras.txt", sep='\t',index=False)
-
+    df_all.to_csv("Outcome/paras.txt",sep = '\t', index=False)
     print("..Machine Learning Starting...")
-    from ML.figure import plot_spearman
-    plot_spearman("data/paras.txt","Figure")
     from ML import ML_Build
-    ML_Build()
-
-if __name__ == "__main__":
-    APMA()
+    ML_Build(category)
