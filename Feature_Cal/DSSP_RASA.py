@@ -27,8 +27,9 @@ def all_DSSP_RASA(filename):
     for i in range(len(dssp.keys())):
         a_key = list(dssp.keys())[i]
         protein_rasa.append(dssp[a_key][3])
+    print("Done")
     return protein_rasa
 
 if __name__ == "__main__":
-    protein_rasa = all_DSSP_RASA("../data/alphafoldpten.pdb")
+    protein_rasa = all_DSSP_RASA("data/alphafoldpten.pdb")
     print(protein_rasa)

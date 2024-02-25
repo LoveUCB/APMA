@@ -1,0 +1,5 @@
+
+def Blast():
+    '''
+    Run Blast
+    '''

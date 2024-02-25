@@ -5,7 +5,7 @@ ion()
 import numpy as np
 import io
 import sys
-MSA_data = "/Users/wangjingran/Desktop/APMA/data/query_msa.fasta"
+MSA_data = "/home/wangjingran/APMA/data/query_msa.fasta"
 def cal_coevolution(path,position):
     msa = parseMSA(path)
     msa_refine = refineMSA(msa, label='Input_seq', rowocc=0.8, seqid=0.98)
@@ -36,3 +36,7 @@ def cal_entropy(path,position):
         new_SI.append(selected_rows)
     return new_SI
 
+
+if __name__ == "__main__":
+    MI = cal_coevolution(MSA_data,[1,2,3,4,5,6,7,8,9,10])
+    print(MI)
