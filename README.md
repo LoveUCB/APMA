@@ -1,4 +1,3 @@
-![APMA](Figure/LOGO.png)
 # Auto Protein Mutation Analyzer (AMPA)
 ![APMA](Figure/APMA.png)
 The AMPA is intended to calculate the features of protein mutation including Amino Acid Web features
