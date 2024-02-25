@@ -55,9 +55,11 @@ def APMA(WT_PDB, Protein_name, file_path, MSA_data = "/home/wangjingran/APMA/dat
             random_numbers = random.sample(range(1, len(sequence_blast)), 200)
             sequence_blast = [sequence_blast[i] for i in random_numbers]
     with open("data/blast_results.fasta", "w") as f:
+        f.write(">Input_Seq" + "\n")
+        f.write(sequence + "\n")
         for i in range(len(sequence_blast)):
             f.write("sequence" + str(i + 1) + "\n")
-            f.write(sequence_blast[i] + "\n")
+            f.write(sequence_blast[i])
 
     input_fasta = "data/blast_results.fasta"
     # 输出的FASTA文件，用于保存比对结果
