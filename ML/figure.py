@@ -62,8 +62,8 @@ def plot_spearman(input_file, output_folder):
     with open(input_file, 'r') as f:
         columns = f.readline().strip().split('\t')
     data = pd.read_csv(input_file,skiprows=1,sep='\t')
-    data = data.iloc[:,2:]
-    data.columns = columns[2:]
+    data = data.iloc[:,3:]
+    data.columns = columns[3:]
     spearman_corr = data.corr(method="spearman")
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
@@ -89,7 +89,7 @@ def save_bar_chart_as_pdf(df,filename):
     values: list，值列表
     filename: str，要保存的文件名
     """
-    print("saving bar chart... ",end = '')
+    #print("saving bar chart... ",end = '')
     cores = [
         #svm.SVC(kernel="linear",max_iter=1000000),
         RandomForestClassifier(n_estimators=1000),
@@ -103,7 +103,7 @@ def save_bar_chart_as_pdf(df,filename):
         "XGBoost",
         "LGBM"
     ]
-    X = df.drop(columns=['Disease',"Site"])
+    X = df.drop(columns=['Disease',"Site","Mutation"])
     y = encoder.fit_transform(df["Disease"])
     for i in range(len(cores)):
         cores[i].fit(X,y)
@@ -113,15 +113,15 @@ def save_bar_chart_as_pdf(df,filename):
         values, categories = zip(*sorted_data)
         values = list(values)[::-1]
         categories = list(categories)[::-1]
-        plt.figure(figsize=(16, 11))
+        plt.figure(figsize=(12, 12))
         plt.bar(categories, values)
         plt.xticks(rotation=45, ha='right')
-        plt.xlabel('Categories')
+       #plt.xlabel('Categories')
         plt.ylabel('Values')
         plt.title('Feature Importances')
         plt.savefig(filename + "_" + exp[i] + ".pdf", format='pdf')
         plt.close()
-    print("Done")
+    #print("Done")
 
 def plot_roc_for_disease_pairs(file_path, output_dir):
     """
@@ -137,6 +137,7 @@ def plot_roc_for_disease_pairs(file_path, output_dir):
     # Read the txt file
     data = pd.read_csv(file_path, delimiter='\t')
     data = data.drop("Site", axis = 1)
+    data = data.drop("Mutation", axis = 1)
     # Get unique disease categories
     diseases = data['Disease'].unique()
 
@@ -205,7 +206,8 @@ def plot_box(data_file, output_folder):
     '''
     # 读取数据
     data = pd.read_csv(data_file,sep='\t')
-    data = data.drop("Site",axis=1)
+    data = data.drop("Site", axis = 1)
+    data = data.drop("Mutation", axis = 1)
     # 获取第一列疾病名称
     diseases = data.iloc[:, 0].unique()
     os.makedirs(output_folder, exist_ok=True)
@@ -253,17 +255,17 @@ def plot_importence_bar(df,filename):
     cores = [
         #svm.SVC(kernel="linear",max_iter=1000000),
         RandomForestClassifier(n_estimators=1000),
-        GradientBoostingClassifier(n_estimators=1000),
+        #GradientBoostingClassifier(n_estimators=1000),
         XGBClassifier(n_estimators=1000),
         LGBMClassifier(verbose=-1, n_estimators=1000)
     ]
     exp = [
         "Random Forest",
-        "Gradient Boosting",
+        #"Gradient Boosting",
         "XGBoost",
         "LGBM"
     ]
-    X = df.drop(columns=['Disease',"Site"])
+    X = df.drop(columns=['Disease',"Site","Mutation"])
     y = encoder.fit_transform(df["Disease"])
     for i in range(len(cores)):
         cores[i].fit(X,y)
@@ -273,7 +275,7 @@ def plot_importence_bar(df,filename):
         values, categories = zip(*sorted_data)
         values = list(values)[::-1]
         categories = list(categories)[::-1]
-        plt.figure(figsize=(16, 11))
+        plt.figure(figsize=(9, 11))
         plt.bar(categories, values)
         plt.xticks(rotation=45, ha='right')
         plt.xlabel('Categories')
@@ -282,3 +284,8 @@ def plot_importence_bar(df,filename):
         plt.savefig(filename + "/Importance_" + exp[i] + ".pdf", format='pdf')
         plt.close()
     print("Done")
+
+
+
+
+

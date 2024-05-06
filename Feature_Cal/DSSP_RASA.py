@@ -1,5 +1,6 @@
 from Bio.PDB import PDBParser
 from Bio.PDB import DSSP
+
 def DSSP_RASA(position, filename):
     print("RASA Calculating...", end=" ")
     protein_rasa = []
@@ -31,5 +32,5 @@ def all_DSSP_RASA(filename):
     return protein_rasa
 
 if __name__ == "__main__":
-    protein_rasa = all_DSSP_RASA("data/alphafoldpten.pdb")
+    protein_rasa = all_DSSP_RASA("/home/wangjingran/APMA/data/alphafoldpten.pdb")
     print(protein_rasa)

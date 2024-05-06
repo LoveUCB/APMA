@@ -28,7 +28,7 @@ def run_FoldX(path_to_foldx,WT_PDB,mutant_file):
     folder_path = path_to_foldx
     os.chdir(folder_path)
     # 执行 FoldX 命令
-    foldx_command = f"foldx4 --command=BuildModel --pdb={FoldX_WT_PDB} --mutant-file=individual_list.txt"
+    foldx_command = f"./foldx5 --command=BuildModel --pdb={FoldX_WT_PDB} --mutant-file=individual_list.txt"
     subprocess.run(foldx_command, shell=True)
     for filename in os.listdir(folder_path):
         # 检查文件名是否以 "WT_" 开头
@@ -50,7 +50,7 @@ def run_FoldX(path_to_foldx,WT_PDB,mutant_file):
     #print(result_list)
     
     for i in range(len(result_list)):
-        old_name = folder_path + f'/{FoldX_WT_PDB.strip(".pdb")}_{i+1}.pdb'
+        old_name = folder_path + f'/{FoldX_WT_PDB.rstrip(".pdb")}_{i+1}.pdb'
         new_name = folder_path + f'/{type[i]}_{result_list[i]}.pdb'
         os.rename(old_name, new_name)
 
@@ -61,7 +61,7 @@ def run_FoldX(path_to_foldx,WT_PDB,mutant_file):
 def get_total_energy(path_to_foldx, WT_PDB):
     print("Fetching Total Energy...", end = " ")
     total_energy = []
-    FoldX_WT_PDB = WT_PDB.split("/")[-1].strip(".pdb")
+    FoldX_WT_PDB = WT_PDB.split("/")[-1].rstrip(".pdb")
     f = open(path_to_foldx + f"/Dif_{FoldX_WT_PDB}.fxout","r")
     all = f.readlines()
     for i in range(len(all)):

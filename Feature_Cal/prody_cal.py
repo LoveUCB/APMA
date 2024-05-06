@@ -3,6 +3,7 @@ from prody import *
 from pylab import *
 ion()
 import numpy as np
+from sklearn.preprocessing import scale
 
 def cal_dynamics(path,name):
     ampar_ca = parsePDB(path, subset='ca')
@@ -17,7 +18,11 @@ def cal_dynamics(path,name):
     msf=calcSqFlucts(gnm_ampar)
     stiff=calcMechStiff(anm_ampar,ampar_ca)
     newstiff=np.mean(stiff,1)
-    dyn_data = np.vstack((effectiveness,sensitivity,msf,dfi,newstiff))
+    dyn_data = np.vstack((effectiveness,
+                         sensitivity,
+                         msf,
+                         dfi,
+                         newstiff))
     return dyn_data
 
 def dynamics_dat(name,position,WT_PDB):

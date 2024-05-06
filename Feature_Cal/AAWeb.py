@@ -83,12 +83,11 @@ def data_AAW_gener(position, category):
     for i in range(len(position)):
         current_cate = category[i]
         current_data = []
-        with open(f"data/AAWeb/{current_cate}.txt", 'r') as file:
+        with open(f"/home/wangjingran/APMA/data/AAWeb/{current_cate}.txt", 'r') as file:
             for line in file:
                 columns = line.strip().split('\t')
                 current_data.append(columns)
         current_data_features = current_data[position[i]]
         AAW_data.append(current_data_features)
     return AAW_data
-
 
