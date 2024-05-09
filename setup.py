@@ -21,6 +21,7 @@ setup(
         "lightgbm",
         "xgboost",
         "Bio",
-        "Biopython"
+        "Biopython",
+        "bioclients"
     ]
 )
