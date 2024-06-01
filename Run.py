@@ -1,7 +1,43 @@
+<<<<<<< HEAD
+# -*- coding: utf-8 -*-
+
+"""
+
+@ author: Jingran Wang
+
+@ Email: jrwangspencer@stu.suda.edu.cn
+
+@ Address: Center for Systems Biology, Department of Bioinformatics, School of Biology and Basic Medical Sciences, Soochow University, Suzhou 215123, China.
+
+@ GitHub: https://github.com/Spencer-JRWang/APMA
+
+
+"""
+
+#############################################
+### Introduction of PCA module
+#
+# @ This module is to excute PCA on the mutations
+#
+#############################################
+
+
+=======
+>>>>>>> origin/main
 from APMA import APMA
 import os
 import glob
 import traceback
+<<<<<<< HEAD
+import datetime
+
+# 获取当前日期和时间
+current_datetime = datetime.datetime.now()
+
+# 将当前日期和时间以特定格式输出
+print("***** APMA Start at: ", current_datetime)
+=======
+>>>>>>> origin/main
 
 # pocess position file
 f = open("/home/wangjingran/APMA/data/position.txt","r")
@@ -64,7 +100,11 @@ try:
     plot_roc_for_disease_pairs("/home/wangjingran/APMA/data/paras.txt","/home/wangjingran/APMA/Outcome/Figure/ROC/Feature")
 
     from ML.figure import plot_box
+<<<<<<< HEAD
+    plot_box("/home/wangjingran/APMA/data/paras.txt","/home/wangjingran/APMA/Outcome/Figure")
+=======
     plot_box("/home/wangjingran/APMA/data/paras.txt","/home/wangjingran/APMA/Outcome/Figure/Box_Violin")
+>>>>>>> origin/main
 
     from ML.figure import plot_spearman
     plot_spearman("/home/wangjingran/APMA/data/paras.txt","/home/wangjingran/APMA/Outcome/Figure")
@@ -75,6 +115,10 @@ try:
     from Email.send import send_email
     send_email(email_list)
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/main
 except Exception as e:
     print(str(e))
     traceback_info = traceback.format_exc()
@@ -111,3 +155,10 @@ for file_name in files:
 
         os.remove(file_path)
 
+<<<<<<< HEAD
+current_datetime = datetime.datetime.now()
+
+# 将当前日期和时间以特定格式输出
+print("***** APMA ends at: ", current_datetime)
+=======
+>>>>>>> origin/main

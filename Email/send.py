@@ -10,7 +10,11 @@ from email.mime.multipart import MIMEMultipart
 def send_email(toEmailAddrs):
     # 设置服务器所需信息
     fromEmailAddr = 'spencer-jrwang@foxmail.com'  # 邮件发送方邮箱地址
+<<<<<<< HEAD
+    password = 'gzaavesgvusmcjbc'  # (注意不是邮箱密码，而是为授权码)
+=======
     password = '***********'  # (注意不是邮箱密码，而是为授权码)
+>>>>>>> origin/main
     #toEmailAddrs = ['3338561620@qq.com']  # 邮件接受方邮箱地址，注意需要[]包裹，这意味着你可以写多个邮件地址群发
     
     # 设置email信息
@@ -89,7 +93,11 @@ def send_email(toEmailAddrs):
 def send_error_email(toEmailAddrs):
     # 设置服务器所需信息
     fromEmailAddr = 'spencer-jrwang@foxmail.com'  # 邮件发送方邮箱地址
+<<<<<<< HEAD
+    password = 'gzaavesgvusmcjbc'  # (注意不是邮箱密码，而是为授权码)
+=======
     password = 'oqkrrekmykewcjcj'  # (注意不是邮箱密码，而是为授权码)
+>>>>>>> origin/main
     #toEmailAddrs = ['3338561620@qq.com']  # 邮件接受方邮箱地址，注意需要[]包裹，这意味着你可以写多个邮件地址群发
     
     # 设置email信息

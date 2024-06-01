@@ -1,57 +1,78 @@
+# -*- coding: utf-8 -*-
+
+"""
+
+@ author: Jingran Wang
+
+@ Email: jrwangspencer@stu.suda.edu.cn
+
+@ Address: Center for Systems Biology, Department of Bioinformatics, School of Biology and Basic Medical Sciences, Soochow University, Suzhou 215123, China.
+
+@ GitHub: https://github.com/Spencer-JRWang/APMA
+
+"""
+
+#############################################
+### Introduction of PCA module
+#
+# @ This module is to excute PCA on the mutations
+#
+#############################################
+
+
 import warnings
 warnings.filterwarnings('ignore')
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 import os
 from sklearn.preprocessing import LabelEncoder
 encoder = LabelEncoder()
-from sklearn import svm
-import joblib
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
-from catboost import CatBoostClassifier
-from sklearn.linear_model import Lasso
-from sklearn.linear_model import LassoCV
-from sklearn.model_selection import StratifiedKFold
-from sklearn.feature_selection import RFECV
-from sklearn.feature_selection import RFE
+from scipy.stats import ttest_ind
+from scipy.stats import mannwhitneyu
+import itertools
 from sklearn.model_selection import cross_val_predict
-from sklearn.ensemble import VotingClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.svm import SVC
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.ensemble import StackingClassifier
+from catboost import CatBoostClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import roc_curve, auc
 from sklearn.preprocessing import LabelEncoder
 from tqdm import tqdm
-from .model import model_rfe
-from .model import stacking_model
-from scipy.stats import wilcoxon
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from matplotlib.patches import Ellipse
+import matplotlib.colors as mcolors
 
-def plot_roc_curve(fpr, tpr,auc,fliename):
+def plot_roc_curve(fpr, tpr, auc, filename):
     """
-    绘制ROC曲线
-    参数：
-    - fpr: 假正例率（False Positive Rate）列表
-    - tpr: 真正例率（True Positive Rate）列表
+    Plot ROC curve.
+
+    Args:
+        fpr (list): List of false positive rates.
+        tpr (list): List of true positive rates.
+        auc (float): Area under the ROC curve.
+        filename (str): Name of the file to save the plot.
     """
-    plt.figure(figsize=(8,8))
+    plt.figure(figsize=(8, 8))
     plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve')
-    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.plot([0, 1], [0, 1], color='navy', lw=1.5, linestyle='--')
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.title('(ROC) Curve')
+    plt.title(filename.split('/')[-1])
     plt.legend(loc="lower right")
     plt.text(0.5, 0.3, 'AUC = {:.2f}'.format(auc), fontsize=12, ha='center')
-    plt.savefig(fliename)
+    plt.savefig(filename)
     plt.close()
 
+<<<<<<< HEAD
+=======
 def plot_spearman(input_file, output_folder):
     '''
     plot spearman correlation between the features
@@ -68,30 +89,240 @@ def plot_spearman(input_file, output_folder):
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
         print("Created")
+>>>>>>> origin/main
 
-    plt.figure(figsize=(12,10))
-    sns.heatmap(spearman_corr,cmap="RdBu_r",fmt=".2f",
-                annot=True,xticklabels='auto')
-    plt.xticks(rotation=45,ha='right')
-    plt.title("Spearman Correlation")
+def plot_box(data_file, output_folder):
+    '''
+    Plot boxplots for all features and add t-test results between groups.
 
-    output_path = os.path.join(output_folder, "spearman_corr.pdf")
-    plt.savefig(output_path,format="pdf",bbox_inches='tight')
+    Args:
+        data_file (str): Path to the data file.
+        output_folder (str): Path to the folder to save the boxplot PDF files.
+    '''
+    print("...Generating combined box plots...")
+    # Read data
+    data = pd.read_csv(data_file, sep='\t')
+    data = data.drop(["Site", "Mutation"], axis=1)
+
+    # Get unique disease names from the first column
+    diseases = data.iloc[:, 0].unique()
+
+    # Define the grid layout
+    grid_rows = 4
+    grid_cols = 4
+    fig, axes = plt.subplots(grid_rows, grid_cols, figsize=(11, 11))
+    # Loop through each feature
+    for col_index, ax in enumerate(axes.flatten()):
+        if col_index == 15:
+            # Perform PCA and plot PCA scatter plot with ellipses
+            plot_pca(data_file, ax)
+            break
+
+        feature_name = data.columns[col_index + 1]  # Skip the first column
+
+        all_disease_data = []
+        for disease in diseases:
+            # Get data for a specific disease
+            disease_data = data[data.iloc[:, 0] == disease].iloc[:, col_index + 1]
+            all_disease_data.append(disease_data)
+
+            # Generate jittered positions for scatter plot
+            jittered_positions = np.random.normal(diseases.tolist().index(disease), 0.08, size=len(disease_data))
+            # Plot boxplot
+            ax.boxplot(disease_data, positions=[diseases.tolist().index(disease)], showfliers=False, widths=0.15,
+                       patch_artist=True, boxprops=dict(facecolor="white"), medianprops=dict(color='black', linewidth=0.8))
+
+            # Plot scatter plot with transparency
+            ax.violinplot(disease_data, positions=[diseases.tolist().index(disease)], widths=0.35, showextrema=False,
+                          bw_method='scott')
+            ax.scatter(jittered_positions, disease_data, alpha=1, zorder=2, s=5, label=disease)
+
+        # Perform t-tests between all disease pairs
+        max_val = data.iloc[:, col_index + 1].max()
+        spacing_factor = 0.2
+        current_y = max_val + max_val * (spacing_factor-0.1)
+        line_height = max_val * (spacing_factor-0.1) * 0.3  # Shorten the vertical line
+
+        star_string = ''
+        diff_1_list = []
+        other_list = []
+        for item in itertools.combinations(enumerate(diseases), 2):
+            first_elements = [x[0] for x in item]
+            if abs(first_elements[0] - first_elements[1]) == 1:
+                diff_1_list.append(item)
+            else:
+                other_list.append(item)
+
+        
+        result = diff_1_list + other_list
+        # obvious?
+        obv_list = []
+        for (i, disease1), (j, disease2) in result:
+            if len(all_disease_data[i]) > 30 and len(all_disease_data[j]) > 30:
+                # t
+                t_stat, p_val = ttest_ind(all_disease_data[i], all_disease_data[j], equal_var=False)
+            else:
+                # Wilcoxon test
+                _, p_val = mannwhitneyu(all_disease_data[i], all_disease_data[j])
+
+            if p_val < 0.01:
+                obv_list.append(1)
+            else:
+                obv_list.append(0)
+        one_have = False
+        for i in range(len(obv_list)):
+            if i < len(diseases) - 1:
+                if obv_list[i] == 1:
+                    one_have = True
+            else:
+                pass
+        if one_have:
+            list_to_find_one = obv_list[:int(len(diseases) - 1)]
+            list_to_find_one.reverse()
+            index_of_one = list_to_find_one.index(1)
+            last_index_of_one = len(list_to_find_one) - index_of_one - 1
+            stop_index = result[last_index_of_one][1][0]
+
+        for (i, disease1), (j, disease2) in result:
+            if len(all_disease_data[i]) > 30 and len(all_disease_data[j]) > 30:
+                # t
+                t_stat, p_val = ttest_ind(all_disease_data[i], all_disease_data[j], equal_var=False)
+            else:
+                # Wilcoxon
+                _, p_val = mannwhitneyu(all_disease_data[i], all_disease_data[j])
+
+            if 0.001 <= p_val < 0.01:
+                if j == i + 1:  # Adjacent groups
+                    star_string = '**'
+                    ax.plot([i, i, j, j], [current_y, current_y + line_height, current_y + line_height, current_y], lw=0.7, color='black')
+                    ax.text((i + j) * 0.5, current_y, star_string, ha='center', va='bottom', fontsize=8, fontweight='bold')
+                    if j == stop_index:
+                        current_y += line_height * 4
+                else:  # Non-adjacent groups
+                    star_string = '**'
+                    ax.plot([i, i, j, j], [current_y, current_y + line_height, current_y + line_height, current_y], lw=0.7, color='black')
+                    ax.text((i + j) * 0.5, current_y, star_string, ha='center', va='bottom', fontsize=8, fontweight='bold')
+                    current_y += line_height * 4
+            elif p_val < 0.001:
+                if j == i + 1:  # Adjacent groups
+                    star_string = '***'
+                    ax.plot([i, i, j, j], [current_y, current_y + line_height, current_y + line_height, current_y], lw=0.7, color='black')
+                    ax.text((i + j) * 0.5, current_y, star_string, ha='center', va='bottom', fontsize=8, fontweight='bold')
+                    if j == stop_index:
+                        current_y += line_height * 4
+                else:  # Non-adjacent groups
+                    star_string = '***'
+                    ax.plot([i, i, j, j], [current_y, current_y + line_height, current_y + line_height, current_y], lw=0.7, color='black')
+                    ax.text((i + j) * 0.5, current_y, star_string, ha='center', va='bottom', fontsize=8, fontweight='bold')
+                    current_y += line_height * 4
+
+        # Customize plot appearance
+        ax.set_xticks(range(len(diseases)))
+        ax.set_xticklabels(diseases, rotation=45, ha='right')
+        ax.set_ylabel(f'{feature_name}')
+        if star_string:
+            if col_index == 8:
+                current_y += line_height * 4
+                ax.set_ylim([None, current_y + max_val * (spacing_factor-0.05)])
+            else:
+                current_y -= line_height * 4
+                ax.set_ylim([None, current_y + max_val * (spacing_factor-0.05)])
+        else:
+            pass
+
+    # Adjust layout
+    plt.tight_layout()
+
+    # Save as a PDF file
+    output_file = os.path.join(output_folder, 'combined_plots.pdf')
+    plt.savefig(output_file)
     plt.close()
-    print(f"Spearman correlation plot generated")
 
-def save_bar_chart_as_pdf(df,filename):
-    """
-    保存柱状图为PDF文件
 
-    参数：
-    categories: list，类别列表
-    values: list，值列表
-    filename: str，要保存的文件名
+def plot_pca(data_file, ax):
+    '''
+    Perform PCA on the data and plot PCA scatter plot with ellipses.
+
+    Args:
+        data_file (str): Path to the data file.
+        ax: Axis for plotting.
+    '''
+    data = pd.read_csv(data_file, sep='\t')
+    data = data.drop(["Site", "Mutation"], axis=1)
+
+    # Extract features
+    features = data.iloc[:, 1:]
+
+    # Standardize the features
+    scaler = StandardScaler()
+    scaled_features = scaler.fit_transform(features)
+
+    # Perform PCA
+    pca = PCA(n_components=2)
+    principal_components = pca.fit_transform(scaled_features)
+    principal_df = pd.DataFrame(data=principal_components, columns=['PC1', 'PC2'])
+
+    # Add labels to the principal components
+    principal_df['Label'] = data.iloc[:, 0]
+
+    # Plot PCA scatter plot
+    import itertools
+    markers = itertools.cycle(['o', 's', '^', 'D', '*', 'x', '+', 'v', '<', '>'])
+    colors = list(mcolors.TABLEAU_COLORS.values())  # Get a list of tableau colors
+    for label, color in zip(principal_df['Label'].unique(), colors):
+        subset = principal_df[principal_df['Label'] == label]
+        marker = next(markers)
+        ax.scatter(subset['PC1'], subset['PC2'], label=label, color=color, s = 5, marker = marker)
+
+        # Plot ellipse for each category
+        plot_ellipse(ax, subset[['PC1', 'PC2']].values, color)
+
+    ax.set_xlabel('PC1', rotation=45, ha='right')
+    ax.set_ylabel('PC2')
+    # ax.grid(True, which='both', linestyle='--', linewidth=0.3, color='grey', alpha=0.3)
+    ax.legend(fontsize = 5)
+
+def plot_ellipse(ax, data, color, n_std=2.0, **kwargs):
     """
+    Plot covariance ellipses for specified data.
+
+    Parameters:
+    - ax (matplotlib.axes.Axes): Axes object to plot on.
+    - data (numpy.ndarray): Data for which to plot ellipse.
+    - color (str): Color of the ellipse.
+    - n_std (float): Number of standard deviations for ellipse size.
+    """
+    if data.size == 0:
+        return
+    # Calculate covariance and mean
+    cov = np.cov(data, rowvar=False)
+    mean = np.mean(data, axis=0)
+    # Calculate eigenvalues and eigenvectors
+    eigvals, eigvecs = np.linalg.eigh(cov)
+    order = eigvals.argsort()[::-1]
+    eigvals, eigvecs = eigvals[order], eigvecs[:, order]
+    angle = np.degrees(np.arctan2(*eigvecs[:, 0][::-1]))
+    # Calculate width and height of ellipse
+    width, height = 2 * n_std * np.sqrt(eigvals)
+    # Plot ellipse
+    ell = Ellipse(xy=mean, width=width, height=height, angle=angle,
+                  edgecolor=color, facecolor=mcolors.to_rgba(color, alpha=0.15), **kwargs)
+    ax.add_patch(ell)
+    return ell
+
+def save_bar_chart_as_pdf(df, filename):
+    """
+    Save bar chart as a PDF file.
+
+    Args:
+        df (DataFrame): DataFrame containing the data.
+        filename (str): Name of the file to save the PDF chart.
+    """
+<<<<<<< HEAD
+=======
     #print("saving bar chart... ",end = '')
+>>>>>>> origin/main
     cores = [
-        #svm.SVC(kernel="linear",max_iter=1000000),
         RandomForestClassifier(n_estimators=1000),
         GradientBoostingClassifier(n_estimators=1000),
         XGBClassifier(n_estimators=1000),
@@ -103,10 +334,14 @@ def save_bar_chart_as_pdf(df,filename):
         "XGBoost",
         "LGBM"
     ]
+<<<<<<< HEAD
+    X = df.drop(columns=['Disease', "Site", "Mutation"])
+=======
     X = df.drop(columns=['Disease',"Site","Mutation"])
+>>>>>>> origin/main
     y = encoder.fit_transform(df["Disease"])
     for i in range(len(cores)):
-        cores[i].fit(X,y)
+        cores[i].fit(X, y)
         values = cores[i].feature_importances_
         categories = X.columns
         sorted_data = sorted(zip(values, categories))
@@ -116,12 +351,19 @@ def save_bar_chart_as_pdf(df,filename):
         plt.figure(figsize=(12, 12))
         plt.bar(categories, values)
         plt.xticks(rotation=45, ha='right')
+<<<<<<< HEAD
+=======
        #plt.xlabel('Categories')
+>>>>>>> origin/main
         plt.ylabel('Values')
         plt.title('Feature Importances')
         plt.savefig(filename + "_" + exp[i] + ".pdf", format='pdf')
         plt.close()
+<<<<<<< HEAD
+
+=======
     #print("Done")
+>>>>>>> origin/main
 
 def plot_roc_for_disease_pairs(file_path, output_dir):
     """
@@ -134,6 +376,7 @@ def plot_roc_for_disease_pairs(file_path, output_dir):
     Returns:
     None
     """
+    print("...Generating feature roc plots...")
     # Read the txt file
     data = pd.read_csv(file_path, delimiter='\t')
     data = data.drop("Site", axis = 1)
@@ -157,9 +400,9 @@ def plot_roc_for_disease_pairs(file_path, output_dir):
             # Extract feature data and labels
             feature_data = data_current[[feature, 'Disease']].copy()
             disease_counts = feature_data['Disease'].value_counts()
-            # 找到出现频次较多的疾病名称
+            # find most frequent disease
             most_common_disease = disease_counts.idxmax()
-            # 将出现频次较多的疾病名称设为0，其他疾病名称设为1
+            # 0-1 encoding
             feature_data['Disease'] = feature_data['Disease'].apply(lambda x: 1 if x == most_common_disease else 0)
             X = feature_data[[feature]]
             y = feature_data['Disease']
@@ -196,10 +439,11 @@ def plot_roc_for_disease_pairs(file_path, output_dir):
         plt.savefig(output_path, format='pdf')
         # Close the figure
         plt.close(fig)
-    print("ROC plots generated")
 
 
 
+<<<<<<< HEAD
+=======
 def plot_box(data_file, output_folder):
     '''
     plot all features boxplot
@@ -240,15 +484,15 @@ def plot_box(data_file, output_folder):
         plt.savefig(output_file)
         plt.close()
     print("Boxplot generated")
+>>>>>>> origin/main
 
 def plot_importence_bar(df,filename):
     """
-    保存柱状图为PDF文件
+    Save bar chart of feature importances as PDF files.
 
-    参数：
-    categories: list，类别列表
-    values: list，值列表
-    filename: str，要保存的文件名
+    Args:
+        df (str): Path to the DataFrame file.
+        filename (str): Name of the folder to save the PDF files.
     """
     df = pd.read_csv(df,sep='\t')
     print("saving bar chart... ",end = '')
@@ -256,13 +500,23 @@ def plot_importence_bar(df,filename):
         #svm.SVC(kernel="linear",max_iter=1000000),
         RandomForestClassifier(n_estimators=1000),
         #GradientBoostingClassifier(n_estimators=1000),
+<<<<<<< HEAD
+        #XGBClassifier(n_estimators=1000),
+        LGBMClassifier(verbose=-1, n_estimators=1000),
+        CatBoostClassifier(verbose=False, iterations=1000)
+=======
         XGBClassifier(n_estimators=1000),
         LGBMClassifier(verbose=-1, n_estimators=1000)
+>>>>>>> origin/main
     ]
     exp = [
         "Random Forest",
         #"Gradient Boosting",
+<<<<<<< HEAD
+        #"XGBoost",
+=======
         "XGBoost",
+>>>>>>> origin/main
         "LGBM"
     ]
     X = df.drop(columns=['Disease',"Site","Mutation"])
@@ -286,6 +540,90 @@ def plot_importence_bar(df,filename):
     print("Done")
 
 
+<<<<<<< HEAD
+def plot_spearman(input_file, output_folder):
+    '''
+    Plot Spearman correlation between the features.
+
+    :param input_file: Path to the input file containing feature data.
+    :param output_folder: Path to the folder where the output plot will be saved.
+    :return: None
+    '''
+    # Read column names from the first line of the file
+    with open(input_file, 'r') as f:
+        columns = f.readline().strip().split('\t')
+    
+    # Read the data, skipping the first row (header)
+    data = pd.read_csv(input_file, skiprows=1, sep='\t')
+    data = data.iloc[:, 3:]  # Keep columns from the fourth one onwards
+    data.columns = columns[3:]  # Assign the correct column names
+
+    # Calculate Spearman correlation
+    spearman_corr = data.corr(method="spearman")
+
+    # Create the output folder if it does not exist
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+        print("Created output folder:", output_folder)
+
+    # Plotting the heatmap using Seaborn
+    plt.figure(figsize=(12, 10))
+    sns.heatmap(spearman_corr, cmap="RdBu_r", annot=True, fmt=".2f", annot_kws={"size": 10}, xticklabels='auto')
+    plt.xticks(rotation=45, ha='right')
+    plt.title("Feature Correlation")
+
+    # Save the plot as a PDF file
+    output_path = os.path.join(output_folder, "spearman_corr.pdf")
+    plt.savefig(output_path, format="pdf", bbox_inches='tight')
+    plt.close()
+    print(f"Spearman correlation plot saved to: {output_path}")
+
+
+def plot_rfe(dict_data, output_folder):
+    """
+    Plots the RFE (Recursive Feature Elimination) results and saves the plot as a PDF file.
+
+    Parameters:
+    dict_data (dict): A dictionary where keys are labels (str) and values are lists of scores (list of float).
+    output_folder (str): The directory where the output PDF file will be saved.
+
+    """
+    # Generate a list of counts from 1 to 15
+    count = list(range(1, 16))
+    
+    # Set the figure size for the plot
+    plt.figure(figsize=(6, 6))
+
+    # Define a list of markers to be used for different lines
+    markers = ['o', 's', '^', 'D', '*', 'x', '+', 'v', '<', '>', 'o', 's', '^', 'D', '*', 'x', '+', 'v', '<', '>']
+    i = 0  # Initialize the marker index
+    
+    # Loop through each item in the dictionary
+    for label, data in dict_data.items():
+        # Plot the data with specified marker, line style, and width
+        plt.plot(count, data, marker=markers[i], linestyle='-', linewidth=1, label=label)
+        
+        # Find the index of the maximum value in the data
+        max_index = data.index(max(data))
+        
+        # Highlight the maximum value with a red marker
+        plt.plot(count[max_index], data[max_index], 'purple', marker = markers[i])  # 'ro' means red color with circle marker
+        
+        i += 1  # Increment the marker index
+
+    plt.title('RFE Feature Selection')
+    # Set the x-axis label
+    plt.xlabel('Count')
+    # Set the y-axis label
+    plt.ylabel('Score')
+    # Add a legend to the plot with specified font sizes
+    plt.legend(fontsize=8, title_fontsize='8')
+    # Save the plot as a PDF file in the specified output folder
+    plt.savefig(f"{output_folder}/rfe.pdf", format='pdf')
+    # Close the plot to free up memory
+    plt.close()
+=======
 
 
 
+>>>>>>> origin/main

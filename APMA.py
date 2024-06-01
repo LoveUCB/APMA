@@ -9,7 +9,10 @@ import time
 import threading
 
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> origin/main
 def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data/query_msa.fasta", FoldX = "/home/wangjingran/APMA/FoldX"):
     '''
     APMA 机器学习辅助的整合蛋白质突变模型
