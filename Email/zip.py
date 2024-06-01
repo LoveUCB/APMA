@@ -1,3 +1,26 @@
+# -*- coding: utf-8 -*-
+
+"""
+
+@ author: Jingran Wang
+
+@ Email: jrwangspencer@stu.suda.edu.cn
+
+@ Address: Center for Systems Biology, Department of Bioinformatics, School of Biology and Basic Medical Sciences, Soochow University, Suzhou 215123, China.
+
+@ GitHub: https://github.com/Spencer-JRWang/APMA
+
+"""
+
+#############################################
+### Introduction of zip module
+#
+# @ This module is to zip Outcome folder
+#
+#############################################
+
+
+
 import zipfile
 import os
 

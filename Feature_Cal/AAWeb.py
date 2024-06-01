@@ -1,3 +1,25 @@
+# -*- coding: utf-8 -*-
+
+"""
+
+@ author: Jingran Wang
+
+@ Email: jrwangspencer@stu.suda.edu.cn
+
+@ Address: Center for Systems Biology, Department of Bioinformatics, School of Biology and Basic Medical Sciences, Soochow University, Suzhou 215123, China.
+
+@ GitHub: https://github.com/Spencer-JRWang/APMA
+
+"""
+
+#############################################
+### Introduction of AAWeb module
+#
+# @ This module is to construct network of proteins
+#
+#############################################
+
+
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 bio3d = importr("bio3d")

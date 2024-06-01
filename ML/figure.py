@@ -13,9 +13,9 @@
 """
 
 #############################################
-### Introduction of PCA module
+### Introduction of figure module
 #
-# @ This module is to excute PCA on the mutations
+# @ This module is to draw basic figures
 #
 #############################################
 

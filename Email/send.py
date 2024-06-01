@@ -1,3 +1,26 @@
+# -*- coding: utf-8 -*-
+
+"""
+
+@ author: Jingran Wang
+
+@ Email: jrwangspencer@stu.suda.edu.cn
+
+@ Address: Center for Systems Biology, Department of Bioinformatics, School of Biology and Basic Medical Sciences, Soochow University, Suzhou 215123, China.
+
+@ GitHub: https://github.com/Spencer-JRWang/APMA
+
+"""
+
+#############################################
+### Introduction of send module
+#
+# @ This module is to use python to send email
+#
+#############################################
+
+
+
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -10,11 +33,7 @@ from email.mime.multipart import MIMEMultipart
 def send_email(toEmailAddrs):
     # 设置服务器所需信息
     fromEmailAddr = 'spencer-jrwang@foxmail.com'  # 邮件发送方邮箱地址
-<<<<<<< HEAD
-    password = 'gzaavesgvusmcjbc'  # (注意不是邮箱密码，而是为授权码)
-=======
-    password = '***********'  # (注意不是邮箱密码，而是为授权码)
->>>>>>> origin/main
+    password = '**********'  # (注意不是邮箱密码，而是为授权码)
     #toEmailAddrs = ['3338561620@qq.com']  # 邮件接受方邮箱地址，注意需要[]包裹，这意味着你可以写多个邮件地址群发
     
     # 设置email信息
@@ -93,11 +112,7 @@ def send_email(toEmailAddrs):
 def send_error_email(toEmailAddrs):
     # 设置服务器所需信息
     fromEmailAddr = 'spencer-jrwang@foxmail.com'  # 邮件发送方邮箱地址
-<<<<<<< HEAD
     password = 'gzaavesgvusmcjbc'  # (注意不是邮箱密码，而是为授权码)
-=======
-    password = 'oqkrrekmykewcjcj'  # (注意不是邮箱密码，而是为授权码)
->>>>>>> origin/main
     #toEmailAddrs = ['3338561620@qq.com']  # 邮件接受方邮箱地址，注意需要[]包裹，这意味着你可以写多个邮件地址群发
     
     # 设置email信息
