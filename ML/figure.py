@@ -71,25 +71,6 @@ def plot_roc_curve(fpr, tpr, auc, filename):
     plt.savefig(filename)
     plt.close()
 
-<<<<<<< HEAD
-=======
-def plot_spearman(input_file, output_folder):
-    '''
-    plot spearman correlation between the features
-    :param input_file:
-    :param output_folder:
-    :return:
-    '''
-    with open(input_file, 'r') as f:
-        columns = f.readline().strip().split('\t')
-    data = pd.read_csv(input_file,skiprows=1,sep='\t')
-    data = data.iloc[:,3:]
-    data.columns = columns[3:]
-    spearman_corr = data.corr(method="spearman")
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-        print("Created")
->>>>>>> origin/main
 
 def plot_box(data_file, output_folder):
     '''
@@ -318,10 +299,6 @@ def save_bar_chart_as_pdf(df, filename):
         df (DataFrame): DataFrame containing the data.
         filename (str): Name of the file to save the PDF chart.
     """
-<<<<<<< HEAD
-=======
-    #print("saving bar chart... ",end = '')
->>>>>>> origin/main
     cores = [
         RandomForestClassifier(n_estimators=1000),
         GradientBoostingClassifier(n_estimators=1000),
@@ -334,11 +311,7 @@ def save_bar_chart_as_pdf(df, filename):
         "XGBoost",
         "LGBM"
     ]
-<<<<<<< HEAD
     X = df.drop(columns=['Disease', "Site", "Mutation"])
-=======
-    X = df.drop(columns=['Disease',"Site","Mutation"])
->>>>>>> origin/main
     y = encoder.fit_transform(df["Disease"])
     for i in range(len(cores)):
         cores[i].fit(X, y)
@@ -351,19 +324,11 @@ def save_bar_chart_as_pdf(df, filename):
         plt.figure(figsize=(12, 12))
         plt.bar(categories, values)
         plt.xticks(rotation=45, ha='right')
-<<<<<<< HEAD
-=======
-       #plt.xlabel('Categories')
->>>>>>> origin/main
         plt.ylabel('Values')
         plt.title('Feature Importances')
         plt.savefig(filename + "_" + exp[i] + ".pdf", format='pdf')
         plt.close()
-<<<<<<< HEAD
 
-=======
-    #print("Done")
->>>>>>> origin/main
 
 def plot_roc_for_disease_pairs(file_path, output_dir):
     """
@@ -442,49 +407,6 @@ def plot_roc_for_disease_pairs(file_path, output_dir):
 
 
 
-<<<<<<< HEAD
-=======
-def plot_box(data_file, output_folder):
-    '''
-    plot all features boxplot
-    '''
-    # 读取数据
-    data = pd.read_csv(data_file,sep='\t')
-    data = data.drop("Site", axis = 1)
-    data = data.drop("Mutation", axis = 1)
-    # 获取第一列疾病名称
-    diseases = data.iloc[:, 0].unique()
-    os.makedirs(output_folder, exist_ok=True)
-    
-    # 循环处理每个特征
-    for col_index in range(1, len(data.columns)):
-        feature_name = data.columns[col_index]
-        plt.figure(figsize=(6, 6))
-        
-        for disease in diseases:
-            # 获取特定疾病的数据
-            disease_data = data[data.iloc[:, 0] == disease].iloc[:, col_index]
-            # 生成水平坐标，抖散散点
-            jittered_positions = np.random.normal(diseases.tolist().index(disease), 0.08, size=len(disease_data))
-            # 绘制箱线图
-            plt.boxplot(disease_data, positions=[diseases.tolist().index(disease)],showfliers=False,widths=0.4)
-            # 绘制带透明度的散点图
-            plt.scatter(jittered_positions, disease_data, alpha=0.5)
-            plt.violinplot(disease_data,positions=[diseases.tolist().index(disease)],widths=0.6)
-        
-        
-        plt.xticks(range(len(diseases)), diseases)
-        plt.xlabel('Disease')
-        # plt.ylabel(feature_name)
-        plt.title(f'{feature_name}')
-        plt.tight_layout()
-        
-        # 保存为PDF文件
-        output_file = os.path.join(output_folder, f'{feature_name}.pdf')
-        plt.savefig(output_file)
-        plt.close()
-    print("Boxplot generated")
->>>>>>> origin/main
 
 def plot_importence_bar(df,filename):
     """
@@ -500,23 +422,14 @@ def plot_importence_bar(df,filename):
         #svm.SVC(kernel="linear",max_iter=1000000),
         RandomForestClassifier(n_estimators=1000),
         #GradientBoostingClassifier(n_estimators=1000),
-<<<<<<< HEAD
         #XGBClassifier(n_estimators=1000),
         LGBMClassifier(verbose=-1, n_estimators=1000),
         CatBoostClassifier(verbose=False, iterations=1000)
-=======
-        XGBClassifier(n_estimators=1000),
-        LGBMClassifier(verbose=-1, n_estimators=1000)
->>>>>>> origin/main
     ]
     exp = [
         "Random Forest",
         #"Gradient Boosting",
-<<<<<<< HEAD
         #"XGBoost",
-=======
-        "XGBoost",
->>>>>>> origin/main
         "LGBM"
     ]
     X = df.drop(columns=['Disease',"Site","Mutation"])
@@ -540,7 +453,6 @@ def plot_importence_bar(df,filename):
     print("Done")
 
 
-<<<<<<< HEAD
 def plot_spearman(input_file, output_folder):
     '''
     Plot Spearman correlation between the features.
@@ -622,8 +534,3 @@ def plot_rfe(dict_data, output_folder):
     plt.savefig(f"{output_folder}/rfe.pdf", format='pdf')
     # Close the plot to free up memory
     plt.close()
-=======
-
-
-
->>>>>>> origin/main

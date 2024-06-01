@@ -22,6 +22,7 @@ setup(
         "xgboost",
         "Bio",
         "Biopython",
-        "bioclients"
+        "bioclients",
+        "shap"
     ]
 )

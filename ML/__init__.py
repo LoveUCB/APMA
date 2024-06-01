@@ -51,11 +51,7 @@ from tqdm import tqdm
 from .model import ModelUtilities
 from .explain import model_explain
 
-<<<<<<< HEAD
 def ML_Build(category, file='/home/wangjingran/APMA/data/paras.txt'):
-=======
-def ML_Build(category,file = '/home/wangjingran/APMA/data/paras.txt'):
->>>>>>> origin/main
     '''
     This function searches for the best model and feature combination
     using machine learning algorithms based on the given data file (default: paras.txt).
@@ -71,23 +67,15 @@ def ML_Build(category,file = '/home/wangjingran/APMA/data/paras.txt'):
     # Read data from the given file
     print("...Machine learning starting...")
     df_all = pd.read_csv(file, sep='\t')
-<<<<<<< HEAD
     
     # Define a list of ML models to be evaluated
-=======
->>>>>>> origin/main
     cores = [
         #svm.SVC(kernel="linear",max_iter=1000000),
         #RandomForestClassifier(n_estimators=3000),
         #GradientBoostingClassifier(n_estimators=1000),
         #XGBClassifier(n_estimators = 1000)#,
-<<<<<<< HEAD
         LGBMClassifier(verbose=-1, n_estimators=1000, max_depth=5)
     ]
-=======
-        LGBMClassifier(verbose=-1, n_estimators=1000)
-             ]
->>>>>>> origin/main
 
     # Define explanations for models
     exp = [
@@ -100,15 +88,10 @@ def ML_Build(category,file = '/home/wangjingran/APMA/data/paras.txt'):
 
     # Import necessary modules
     from itertools import combinations
-<<<<<<< HEAD
-=======
-    from .model import grid_search
->>>>>>> origin/main
     from .explain import model_explain
     category = list(set(category))
     category = list(combinations(category, 2))
     from .figure import plot_roc_curve
-<<<<<<< HEAD
     # from .figure import save_bar_chart_as_pdf
     
     
@@ -117,12 +100,6 @@ def ML_Build(category,file = '/home/wangjingran/APMA/data/paras.txt'):
     
     # Iterate through each combination of categories
     RFE_outcome = {}
-=======
-    from .figure import save_bar_chart_as_pdf
-    RFE_outcome = []
-    f = open("/home/wangjingran/APMA/Outcome/Feature_selection.txt","w")
-    # 如果category在搜索的字段中就进行标签归类
->>>>>>> origin/main
     for i in category:
         if i[0] == "Control" or i[0] == "control" or i[0] == "Control":
             Cat_A = i[0]
@@ -143,7 +120,6 @@ def ML_Build(category,file = '/home/wangjingran/APMA/data/paras.txt'):
         else:
             Cat_A, Cat_B = i[0], i[1]
 
-<<<<<<< HEAD
         # Write category information to the feature selection file
         f.write("--------------------" + str(Cat_A) + " and " + str(Cat_B) + "--------------------\n")
         print("--------------------" + str(Cat_A) + " and " + str(Cat_B) + "--------------------")
@@ -168,63 +144,34 @@ def ML_Build(category,file = '/home/wangjingran/APMA/data/paras.txt'):
             print("...Model explaining...")
             shap_v = model_explain(exp[j], df[ot[0]], df['Disease'].map({Cat_A: 0, Cat_B: 1}), f"{Cat_A} vs {Cat_B}")
             all_com = model_util.model_combinations()
-=======
-        f.write("--------------------" + str(Cat_A) + " and " + str(Cat_B) + "--------------------\n")
-        df = df_all[df_all['Disease'].isin([Cat_A, Cat_B])]
-        Site = df.reset_index(drop=True)[['Site']]
-        Mutation = df.reset_index(drop=True)[['Mutation']]
-        save_bar_chart_as_pdf(df,'/home/wangjingran/APMA/Outcome/Figure/Importance/Importance_'+ str(Cat_A) + " vs " + str(Cat_B))
-        df = df.drop(columns = ["Site","Mutation"])
-        #df = df.drop("Mutation", axis = 1)
-        RFE_Cat = []
-        for j in range(len(cores)):
-            f.write("#######" + exp[j] + "#######\n")
-            ot = model_rfe(f, cores[j], df, Cat_A, Cat_B)
-            RFE_Cat.append(ot)
-            shap_v = model_explain(exp[j], df[ot[0]], df['Disease'].map({Cat_A: 0, Cat_B: 1}), f"{Cat_A} vs {Cat_B}")
-            all_com = grid_search(df[ot[0]], df['Disease'].map({Cat_A: 0, Cat_B: 1}))
->>>>>>> origin/main
             AUCs = []
             Scores = []
             print("...Stacking model is building...")
             
             # Build stacking model
             for m in all_com:
-<<<<<<< HEAD
                 IntegratedScore = model_util.stacking_model(Site, Mutation, df[ot[0]], df['Disease'].map({Cat_A: 0, Cat_B: 1}), list(m))
-=======
-                IntegratedScore = stacking_model(Site, Mutation, df[ot[0]], df['Disease'].map({Cat_A: 0, Cat_B: 1}),list(m))
-                #IntegratedScore = stacking_model(Site,df[ot[0]], df['Disease'].map({Cat_A: 0, Cat_B: 1}),list(m))
->>>>>>> origin/main
                 Scores.append(IntegratedScore)
                 fpr, tpr, thresholds = roc_curve(IntegratedScore.iloc[:, 0], IntegratedScore.iloc[:, 2])
                 roc_auc = auc(fpr, tpr)
                 AUCs.append(roc_auc)
                 f.write("Model: " + str([o[0] for o in m]) + "\n")
                 f.write("AUC = " + str(roc_auc) + "\n")
-<<<<<<< HEAD
                 print("Model: " + str([o[0] for o in m]))
                 print("AUC = " + str(roc_auc))
             print("====== Done ======")
-=======
-            print("Done")
->>>>>>> origin/main
             best_stacking = []
             for t in all_com[AUCs.index(max(AUCs))]:
                 best_stacking.append(t[0])
             f.write("Best Stacking Model detected " + str(best_stacking) + "\n")
             f.write("Best IntegratedScore AUC = " + str(max(AUCs)) + "\n")
-<<<<<<< HEAD
             print("Best Stacking Model detected " + str(best_stacking))
             print("Best IntegratedScore AUC = " + str(max(AUCs)))
-=======
->>>>>>> origin/main
 
             print("...Generating roc plots...")
             Best_IndegratedScore = Scores[AUCs.index(max(AUCs))]
             fpr, tpr, thresholds = roc_curve(Best_IndegratedScore.iloc[:, 0], Best_IndegratedScore.iloc[:, 2])
             roc_auc = auc(fpr, tpr)
-<<<<<<< HEAD
             # Save files and images
             plot_roc_curve(fpr, tpr, roc_auc, '/home/wangjingran/APMA/Outcome/Figure/ROC/ML/' + exp[j] + "_" + str(Cat_A) + " vs " + str(Cat_B) + ".pdf")
             print("...Saving files...")
@@ -238,17 +185,4 @@ def ML_Build(category,file = '/home/wangjingran/APMA/data/paras.txt'):
     plot_rfe(RFE_outcome, "/home/wangjingran/APMA/Outcome/Figure")
 
 
-=======
-            # 保存文件和图像
-            plot_roc_curve(fpr,tpr,roc_auc,'/home/wangjingran/APMA/Outcome/Figure/ROC/ML/' + exp[j] +"_"+ str(Cat_A) + " vs " + str(Cat_B)+".pdf")
-            Best_IndegratedScore.to_csv('/home/wangjingran/APMA/Outcome/Score/' + str(exp[j]) + "_" + str(Cat_A) + " vs " + str(Cat_B) +'.txt',
-                sep='\t', index=False, header=True)
-
-            Best_IndegratedScore.iloc[:, 0] = Best_IndegratedScore.iloc[:, 0].map({0: Cat_A, 1: Cat_B})
-            #Best_IndegratedScore.to_csv('/home/wangjingran/APMA/Outcome/Score/' + str(Cat_A) + " vs " + str(Cat_B) +'.txt',
-            #    sep='\t', index=False, header=True)
-        RFE_outcome.append(RFE_Cat)
-    f.close()
-
->>>>>>> origin/main
 
