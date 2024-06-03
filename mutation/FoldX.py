@@ -30,7 +30,7 @@ def run_FoldX(path_to_foldx,WT_PDB,mutant_file):
     Function to operate foldx in python
     '''
     # 将pdb文件放在foldx的目录下面
-    print("FoldX mutation PDB generating...", end = " ")
+    print("...FoldX mutation PDB generating...")
     shutil.copy(WT_PDB, path_to_foldx)
     FoldX_WT_PDB = WT_PDB.split("/")[-1]
     # 处理mutant文件

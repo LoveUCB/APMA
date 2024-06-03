@@ -48,58 +48,63 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
     protein_sequence = ''.join(pdb_sequences)
     sequence = protein_sequence
 
-    # 先进行blast
-    # 获取蛋白质的全序列
-    pdb_sequences = extract_sequence_from_pdb(f'/home/wangjingran/APMA/data/{Protein_name}.pdb')
-    protein_sequence = ''.join(pdb_sequences)
-    sequence = protein_sequence
-
-    # Perform BLAST search and save results to a file
-    # 搜索可能会失败，设置最多五次
-    max_try_for_blast = 3
-    current_try_for_blast = 0
-    while current_try_for_blast < max_try_for_blast:
-        current_try_for_blast += 1
-        try:
-            output_file = "/home/wangjingran/APMA/data/blast_results.fasta"
-            print(f"BLAST Search Started {current_try_for_blast} time")
-            blast_search(sequence, output_file)
-            print(f"BLAST Search success")
-            break
-        except Exception as e:
-            print(f"Blast search failed {current_try_for_blast} times, {5 - current_try_for_blast} remaining")
-            print(f"Error: {e}")
-            time.sleep(30)
-    else:
-        print("Error: BLAST search failed after multiple tries.")
-    
-    # 输入的FASTA文件，这里假设你已经有了一些同源序列的FASTA文件
-    with open("/home/wangjingran/APMA/data/blast_results.fasta", "r") as f:
-        sequence_blast = []
-        s_lines = f.readlines()
-        for i in s_lines:
-            if i.startswith(">") or i == "\n":
-                pass
-            else:
-                sequence_blast.append(i)
-        sequence_blast = list(set(sequence_blast))
-        import random
-        # 这里加上一个判断，如果少于了200个就把所有的都选上去
-        if len(sequence_blast) > 200:
-            random_numbers = random.sample(range(1, len(sequence_blast)), 200)
-            sequence_blast = [sequence_blast[i] for i in random_numbers]
-    
-    with open("/home/wangjingran/APMA/data/blast_results.fasta", "w") as f:
-        f.write(">Input_Seq" + "\n")
-        f.write(sequence + "\n")
-        for i in range(len(sequence_blast)):
-            f.write(">sequence" + str(i + 1) + "\n")
-            f.write(sequence_blast[i])
-    del sequence_blast
 ##############################################################################################################################
     def part_sequence():
         import time
         global Consurf_Scores
+
+        # 先进行blast
+        # 获取蛋白质的全序列
+        pdb_sequences = extract_sequence_from_pdb(f'/home/wangjingran/APMA/data/{Protein_name}.pdb')
+        protein_sequence = ''.join(pdb_sequences)
+        sequence = protein_sequence
+
+        # Perform BLAST search and save results to a file
+        # 搜索可能会失败，设置最多五次
+        max_try_for_blast = 3
+        current_try_for_blast = 0
+        while current_try_for_blast < max_try_for_blast:
+            current_try_for_blast += 1
+            try:
+                output_file = "/home/wangjingran/APMA/data/blast_results.fasta"
+                print(f"BLAST Search Started {current_try_for_blast} time")
+                blast_search(sequence,'/home/wangjingran/prdatabase/uniref50.fasta', output_file, make=True)
+                print(f"BLAST Search success")
+                break
+            except Exception as e:
+                print(f"Blast search failed {current_try_for_blast} times, {5 - current_try_for_blast} remaining")
+                print(f"Error: {e}")
+                time.sleep(30)
+        else:
+            print("Error: BLAST search failed after multiple tries.")
+        
+        # 输入的FASTA文件，这里假设你已经有了一些同源序列的FASTA文件
+        with open("/home/wangjingran/APMA/data/blast_results.fasta", "r") as f:
+            sequence_blast = []
+            s_lines = f.readlines()
+            for i in s_lines:
+                if i.startswith(">") or i == "\n":
+                    pass
+                else:
+                    sequence_blast.append(i)
+            sequence_blast = list(set(sequence_blast))
+            import random
+            # 这里加上一个判断，如果少于了200个就把所有的都选上去
+            if len(sequence_blast) > 200:
+                random_numbers = random.sample(range(1, len(sequence_blast)), 200)
+                sequence_blast = [sequence_blast[i] for i in random_numbers]
+        
+        with open("/home/wangjingran/APMA/data/blast_results.fasta", "w") as f:
+            f.write(">Input_Seq" + "\n")
+            f.write(sequence + "\n")
+            for i in range(len(sequence_blast)):
+                f.write(">sequence" + str(i + 1) + "\n")
+                f.write(sequence_blast[i])
+        del sequence_blast
+
+
+
+
         max_try_for_cl = 5
         current_try_for_cl = 0
         while current_try_for_cl < max_try_for_cl:
@@ -110,7 +115,7 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
                 output_fasta = "/home/wangjingran/APMA/data/query_msa.fasta"
                 
                 # 运行多序列比对
-                print(f"MSA started {current_try_for_cl} time")
+                print(f"...MSA started {current_try_for_cl} time...")
                 run_clustal(input_fasta, output_fasta)
                 with open("/home/wangjingran/APMA/data/query_msa.fasta", 'r') as f:
                     lines = f.readlines()
@@ -169,6 +174,9 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
         
         if not Consurf_Scores:
             raise ValueError("rate4site failed")
+
+
+
 ##############################################################################################################################
     # 使用foldx构建突变体的pdb
     def part_FoldX():

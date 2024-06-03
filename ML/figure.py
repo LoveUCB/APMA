@@ -504,22 +504,28 @@ def plot_rfe(dict_data, output_folder):
     count = list(range(1, 16))
     
     # Set the figure size for the plot
-    plt.figure(figsize=(6, 6))
+    fig, ax = plt.subplots(figsize=(6, 6))
 
     # Define a list of markers to be used for different lines
     markers = ['o', 's', '^', 'D', '*', 'x', '+', 'v', '<', '>', 'o', 's', '^', 'D', '*', 'x', '+', 'v', '<', '>']
     i = 0  # Initialize the marker index
     
+    # Define the fixed error value
+    y_err = 0.03
+
     # Loop through each item in the dictionary
     for label, data in dict_data.items():
         # Plot the data with specified marker, line style, and width
-        plt.plot(count, data, marker=markers[i], linestyle='-', linewidth=1, label=label)
+        line, = ax.plot(count, data, marker=markers[i], linestyle='--', linewidth=1, label=label)
+        
+        # Plot the error bars at each point with the same color as the line
+        ax.errorbar(count, data, yerr=y_err, fmt='none', ecolor=line.get_color(), capsize=2)
         
         # Find the index of the maximum value in the data
         max_index = data.index(max(data))
         
-        # Highlight the maximum value with a red marker
-        plt.plot(count[max_index], data[max_index], 'purple', marker = markers[i])  # 'ro' means red color with circle marker
+        # Highlight the maximum value with a purple marker
+        ax.plot(count[max_index], data[max_index], 'purple', marker=markers[i])  # 'purple' with specified marker
         
         i += 1  # Increment the marker index
 
@@ -534,3 +540,4 @@ def plot_rfe(dict_data, output_folder):
     plt.savefig(f"{output_folder}/rfe.pdf", format='pdf')
     # Close the plot to free up memory
     plt.close()
+
