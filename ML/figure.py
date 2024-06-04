@@ -151,12 +151,17 @@ def plot_box(data_file, output_folder):
             else:
                 obv_list.append(0)
         one_have = False
+        
         for i in range(len(obv_list)):
+            
             if i < len(diseases) - 1:
+                
                 if obv_list[i] == 1:
                     one_have = True
+            
             else:
                 pass
+
         if one_have:
             list_to_find_one = obv_list[:int(len(diseases) - 1)]
             list_to_find_one.reverse()
@@ -168,29 +173,37 @@ def plot_box(data_file, output_folder):
             if len(all_disease_data[i]) > 30 and len(all_disease_data[j]) > 30:
                 # t
                 t_stat, p_val = ttest_ind(all_disease_data[i], all_disease_data[j], equal_var=False)
+            
             else:
                 # Wilcoxon
                 _, p_val = mannwhitneyu(all_disease_data[i], all_disease_data[j])
 
             if 0.001 <= p_val < 0.01:
+                
                 if j == i + 1:  # Adjacent groups
                     star_string = '**'
                     ax.plot([i, i, j, j], [current_y, current_y + line_height, current_y + line_height, current_y], lw=0.7, color='black')
                     ax.text((i + j) * 0.5, current_y, star_string, ha='center', va='bottom', fontsize=8, fontweight='bold')
+                    
                     if j == stop_index:
                         current_y += line_height * 4
+                
                 else:  # Non-adjacent groups
                     star_string = '**'
                     ax.plot([i, i, j, j], [current_y, current_y + line_height, current_y + line_height, current_y], lw=0.7, color='black')
                     ax.text((i + j) * 0.5, current_y, star_string, ha='center', va='bottom', fontsize=8, fontweight='bold')
                     current_y += line_height * 4
+            
             elif p_val < 0.001:
+                
                 if j == i + 1:  # Adjacent groups
                     star_string = '***'
                     ax.plot([i, i, j, j], [current_y, current_y + line_height, current_y + line_height, current_y], lw=0.7, color='black')
                     ax.text((i + j) * 0.5, current_y, star_string, ha='center', va='bottom', fontsize=8, fontweight='bold')
+                    
                     if j == stop_index:
                         current_y += line_height * 4
+                
                 else:  # Non-adjacent groups
                     star_string = '***'
                     ax.plot([i, i, j, j], [current_y, current_y + line_height, current_y + line_height, current_y], lw=0.7, color='black')
@@ -201,13 +214,17 @@ def plot_box(data_file, output_folder):
         ax.set_xticks(range(len(diseases)))
         ax.set_xticklabels(diseases, rotation=45, ha='right')
         ax.set_ylabel(f'{feature_name}')
+        
         if star_string:
+            
             if col_index == 8:
                 current_y += line_height * 4
                 ax.set_ylim([None, current_y + max_val * (spacing_factor-0.05)])
+            
             else:
                 current_y -= line_height * 4
                 ax.set_ylim([None, current_y + max_val * (spacing_factor-0.05)])
+        
         else:
             pass
 
@@ -278,13 +295,16 @@ def plot_ellipse(ax, data, color, n_std=2.0, **kwargs):
     # Calculate covariance and mean
     cov = np.cov(data, rowvar=False)
     mean = np.mean(data, axis=0)
+
     # Calculate eigenvalues and eigenvectors
     eigvals, eigvecs = np.linalg.eigh(cov)
     order = eigvals.argsort()[::-1]
     eigvals, eigvecs = eigvals[order], eigvecs[:, order]
     angle = np.degrees(np.arctan2(*eigvecs[:, 0][::-1]))
+
     # Calculate width and height of ellipse
     width, height = 2 * n_std * np.sqrt(eigvals)
+
     # Plot ellipse
     ell = Ellipse(xy=mean, width=width, height=height, angle=angle,
                   edgecolor=color, facecolor=mcolors.to_rgba(color, alpha=0.15), **kwargs)
@@ -360,34 +380,43 @@ def plot_roc_for_disease_pairs(file_path, output_dir):
         ax.plot([0, 1], [0, 1], color='grey', lw=1.5, linestyle='--')
         # Dictionary to store AUC values for each feature
         auc_dict = {}
+
         # Plot ROC curves for each feature
         for feature in data.columns[1:]:
+
             # Extract feature data and labels
             feature_data = data_current[[feature, 'Disease']].copy()
             disease_counts = feature_data['Disease'].value_counts()
+
             # find most frequent disease
             most_common_disease = disease_counts.idxmax()
+
             # 0-1 encoding
             feature_data['Disease'] = feature_data['Disease'].apply(lambda x: 1 if x == most_common_disease else 0)
             X = feature_data[[feature]]
             y = feature_data['Disease']
+
             # print(y)
             # Compute ROC curve
             fpr, tpr, _ = roc_curve(y, X)
             roc_auc = auc(fpr, tpr)
+
             # if auc <= 0.5 then reverse the y
             if roc_auc <= 0.5:
                 y = [0 if m == 1 else 1 for m in y]
             fpr, tpr, _ = roc_curve(y, X)
             roc_auc = auc(fpr, tpr)
+
             # Plot ROC curve
             ax.plot(fpr, tpr, label=f'{feature} (AUC = {roc_auc:.4f})')
+
             # Store AUC value
             auc_dict[feature] = roc_auc
 
         # Sort legend labels by AUC values
         handles, labels = ax.get_legend_handles_labels()
         labels_and_aucs = [(label, auc_dict[label.split()[0]]) for label in labels]
+
         # print(labels_and_aucs)
         labels_and_aucs_sorted = sorted(labels_and_aucs, key=lambda x: x[1], reverse=True)
         labels_sorted = [x[0] for x in labels_and_aucs_sorted]
@@ -511,12 +540,15 @@ def plot_rfe(dict_data, output_folder):
     i = 0  # Initialize the marker index
     
     # Define the fixed error value
-    y_err = 0.03
+    y_err = 0.008
 
     # Loop through each item in the dictionary
     for label, data in dict_data.items():
         # Plot the data with specified marker, line style, and width
         line, = ax.plot(count, data, marker=markers[i], linestyle='--', linewidth=1, label=label)
+
+        # Define the fixed error value
+        # y_err = [0.1 * value for value in data]
         
         # Plot the error bars at each point with the same color as the line
         ax.errorbar(count, data, yerr=y_err, fmt='none', ecolor=line.get_color(), capsize=2)
@@ -532,12 +564,16 @@ def plot_rfe(dict_data, output_folder):
     plt.title('RFE Feature Selection')
     # Set the x-axis label
     plt.xlabel('Count')
+
     # Set the y-axis label
     plt.ylabel('Score')
+
     # Add a legend to the plot with specified font sizes
     plt.legend(fontsize=8, title_fontsize='8')
+
     # Save the plot as a PDF file in the specified output folder
     plt.savefig(f"{output_folder}/rfe.pdf", format='pdf')
+
     # Close the plot to free up memory
     plt.close()
 

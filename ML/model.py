@@ -46,7 +46,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import StackingClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score
-from tqdm import tqdm
 from itertools import combinations
 
 class ModelUtilities:
@@ -79,7 +78,7 @@ class ModelUtilities:
         y_encode = y.map({cat_A: 0, cat_B: 1})
         outcome_feature = []
         outcome_score = []
-        for i in tqdm(range(X.shape[1])):
+        for i in range(X.shape[1]):
             rfe = RFE(core, n_features_to_select=i + 1)
             rfe.fit(X, y_encode)
             selected_features = X.columns[rfe.support_]
