@@ -25,7 +25,7 @@ from Bio.PDB import PDBParser
 from Bio.PDB import DSSP
 
 def DSSP_RASA(position, filename):
-    print("RASA Calculating...", end=" ")
+    print("...Calculating RASA...")
     protein_rasa = []
     p = PDBParser()
     structure = p.get_structure("protein", filename)
@@ -42,7 +42,7 @@ def DSSP_RASA(position, filename):
     return new_rasa
 
 def all_DSSP_RASA(filename):
-    print("RASA Calculating...", end=" ")
+    print("...Calculating RASA...")
     protein_rasa = []
     p = PDBParser()
     structure = p.get_structure("protein", filename)

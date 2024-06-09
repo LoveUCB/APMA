@@ -253,9 +253,10 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
 
     df_all["Betweenness"] = [sublist[0] for sublist in AAWeb_data]
     df_all["Closeness"] = [sublist[1] for sublist in AAWeb_data]
-    df_all["Degree"] = [sublist[2] for sublist in AAWeb_data]
-    df_all["Eigenvector"] = [sublist[3] for sublist in AAWeb_data]
-    df_all["Clustering.coefficient"] = [sublist[4] for sublist in AAWeb_data]
+    # df_all["Degree"] = [sublist[2] for sublist in AAWeb_data]
+    df_all["Eigenvector"] = [sublist[2] for sublist in AAWeb_data]
+    df_all["Clustering.coefficient"] = [sublist[3] for sublist in AAWeb_data]
+    df_all["PageRank"] = [sublist[4] for sublist in AAWeb_data]
     
     '''
     df_all["Betweenness"] = AAWeb_data[0]

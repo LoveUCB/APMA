@@ -217,7 +217,7 @@ def plot_box(data_file, output_folder):
         
         if star_string:
             
-            if col_index == 8:
+            if col_index == 7:
                 current_y += line_height * 4
                 ax.set_ylim([None, current_y + max_val * (spacing_factor-0.05)])
             

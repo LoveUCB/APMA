@@ -39,21 +39,22 @@ def AAWEB(route,t, category, Mut_PDB,WT_PDB,data_rote):
     element_count = category.count(t)
     r_code = f'''
 dsspfile <- "{route}"
-MT_degree <- c()
+# MT_degree <- c()
 MT_betweeness <- c()
 MT_closeness <- c()
 MT_eigenvector <- c()
 MT_clustering <- c()
+MT_pagerank <- c()
 for(i in 1:{element_count}){{
 	data <- paste(c("{Mut_PDB}/{t}_",i,".pdb"),collapse="")
 	Net <- suppressMessages(NACENConstructor(PDBFile=data,WeightType = "Polarity",exefile = dsspfile,plotflag=F))
 	NetP <- suppressMessages(NACENAnalyzer(Net$AM,Net$NodeWeights))
 	net <- NetP$Edgelist
 	result <- NetP$NetP
-	degree <- result$K
+	# degree <- result$K
 	betweeness <- result$B
 	closeness <- result$C
-	MT_degree <- cbind(MT_degree,degree)
+	# MT_degree <- cbind(MT_degree,degree)
 	MT_betweeness <- cbind(MT_betweeness,betweeness)
 	MT_closeness <- cbind(MT_closeness,closeness)
 	
@@ -62,14 +63,17 @@ for(i in 1:{element_count}){{
     ev <- suppressWarnings(evcent(network,scale=F)$vector)
     tr <- suppressWarnings(transitivity(network,type="localundirected"))
     tr[is.nan(tr)] <- 0
+    pg <- suppressWarnings(page_rank(g, damping = 0.999)$vector)
     MT_eigenvector <- cbind(MT_eigenvector,ev)
     MT_clustering <- cbind(MT_clustering,tr)
+    MT_pagerank <- cbind(MT_pagerank, pg)
 }}
-MT_degree <- rowMeans(MT_degree)
+# MT_degree <- rowMeans(MT_degree)
 MT_betweeness <- rowMeans(MT_betweeness)
 MT_closeness <- rowMeans(MT_closeness)
 MT_eigenvector <- rowMeans(MT_eigenvector)
 MT_clustering <- rowMeans(MT_clustering)
+MT_pagerank <- rowMeans(MT_pagerank)
 
 data <- "{WT_PDB}"
 Net <- suppressMessages(NACENConstructor(PDBFile=data,WeightType = "Polarity",exefile = dsspfile,plotflag=F))
@@ -78,23 +82,26 @@ net <- NetP$Edgelist
 network <- c(net[,1],net[,2])
 network <- graph(network)
 result <- NetP$NetP
-degree <- result$K
+# degree <- result$K
 betweeness <- result$B
 closeness <- result$C
 eigenvector <- suppressWarnings(evcent(network,scale=F)$vector)
 clustering <- suppressWarnings(transitivity(network,type="localundirected"))
 clustering[is.na(clustering)] <- 0
+pagerank <- suppressWarnings(page_rank(g, damping = 0.999)$vector)
 
 Betweeness <- MT_betweeness - betweeness
 Closeness <- MT_closeness - closeness
-Degree <- MT_degree - degree
+# Degree <- MT_degree - degree
 Eigenvector <- MT_eigenvector - eigenvector
 Clustering_coefficient <- MT_clustering - clustering
+PageRank <- MT_pagerank - pagerank
 
 AA_web <- cbind(Betweeness, Closeness)
-AA_web <- cbind(AA_web, Degree)
+# AA_web <- cbind(AA_web, Degree)
 AA_web <- cbind(AA_web, Eigenvector)
 AA_web <- cbind(AA_web, Clustering_coefficient)
+AA_web <- cbind(AA_web, PageRank)
 
 write.table(AA_web,"{data_rote}/{t}.txt",sep="\\t",row.names = FALSE)
 '''

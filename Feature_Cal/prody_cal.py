@@ -56,9 +56,9 @@ def dynamics_dat(name,position,WT_PDB):
     :return: a list with all dynamics calculated for the given position based on your wild type PDB
     '''
     dyn_data = cal_dynamics(WT_PDB,name)
-    print("Kinetic features calculating...", end=' ')
+    print("...Calculating kinetic features...")
     dyn_data = np.transpose(dyn_data)
     new_dyn = dyn_data[[x - 1 for x in position]]
-    print("Done")
+    print("Success")
     return new_dyn
 

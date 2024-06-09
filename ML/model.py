@@ -106,20 +106,36 @@ class ModelUtilities:
             best_features.append("ddG")
 
         # 当Degree在并且Eigenvector不在的时候,把Degree换成Eigenvector
-        if "Degree" in best_features \
-        and "Eigenvector" not in best_features:
-            best_features.append("Eigenvector")
-            best_features.remove("Degree")
-        elif "Degree" in best_features \
-        and "Eigenvector" in best_features:
-            best_features.remove("Degree")
+        # if "Degree" in best_features \
+        # and "Eigenvector" not in best_features:
+        #     best_features.append("Eigenvector")
+        #     best_features.remove("Degree")
+        # elif "Degree" in best_features \
+        # and "Eigenvector" in best_features:
+        #     best_features.remove("Degree")
+
+        # if "Betweenness" not in best_features \
+        # and "Closeness" not in best_features \
+        # and "Degree" not in best_features \
+        # and "Eigenvector" not in best_features \
+        # and "Clustering_coefficient" not in best_features:
+        #     best_features.append("Betweenness")
 
         if "Betweenness" not in best_features \
         and "Closeness" not in best_features \
-        and "Degree" not in best_features \
+        and "PageRank" not in best_features \
         and "Eigenvector" not in best_features \
         and "Clustering_coefficient" not in best_features:
             best_features.append("Betweenness")
+        
+        if "DFI" in best_features \
+        and "Effectiveness" not in best_features:
+            best_features.remove("DFI")
+            best_features.append("Effectiveness")
+        
+        if "DFI" in best_features \
+        and "Effectiveness" in best_features:
+            best_features.remove("DFI")
 
         scores_adj = cross_val_score(core, X[best_features], y_encode, cv=cv)
         scores_adj = scores_adj.mean()
