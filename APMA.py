@@ -68,7 +68,7 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
             try:
                 output_file = "/home/wangjingran/APMA/data/blast_results.fasta"
                 print(f"BLAST Search Started {current_try_for_blast} time")
-                blast_search(sequence,'/home/wangjingran/prdatabase/uniref50.fasta', output_file)
+                blast_search(sequence,'/home/wangjingran/prdatabase/uniref50', output_file)
                 print(f"BLAST Search success")
                 break
             except Exception as e:
