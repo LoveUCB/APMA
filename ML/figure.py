@@ -577,3 +577,79 @@ def plot_rfe(dict_data, output_folder):
     # Close the plot to free up memory
     plt.close()
 
+
+
+
+
+def plot_dynamic_network(all_data_file, paras_file, output_file):
+    """
+    Plot parameter analysis based on input data files and save the plot as a PDF.
+
+    Parameters:
+    - all_data_file (str): File path to the main data file (e.g., '/path/to/alphafold_dyn.txt').
+    - paras_file (str): File path to the parameters file (e.g., '/path/to/paras.txt').
+    - output_file (str): File path to save the output PDF plot (e.g., '/path/to/parameters_analysis.pdf').
+    """
+
+    # Read data files
+    all_data = pd.read_csv(all_data_file, sep="\t")
+    paras = pd.read_csv(paras_file, sep="\t")
+
+    # Rename columns for clarity
+    all_data.rename(columns={all_data.columns[0]: "residue"}, inplace=True)
+
+    # Extract unique residue and disease association
+    site = paras[['residue', 'Disease']].drop_duplicates()
+
+    # Define function to plot data for a specific parameter
+    def plot_data(parameter, ax):
+        """
+        Plot data for a specific parameter.
+
+        Parameters:
+        - parameter (str): Parameter name to plot from 'all_data'.
+        - ax (matplotlib.axes.Axes): Axes object to plot on.
+        """
+        # Extract data for the parameter
+        df_parameter = all_data[['residue', parameter]]
+        df_parameter.rename(columns={parameter: 'Value'}, inplace=True)
+        
+        # Merge with site data (residue and disease association)
+        data = site.merge(df_parameter, on='residue')
+        
+        # Create base bar plot
+        sns.barplot(x='residue', y='Value', data=df_parameter, color='#c5c5c5', edgecolor='none', width=1.2, ax=ax)
+        
+        # Add scatter plot with disease annotation
+        sns.scatterplot(data=data, x='residue', y='Value', hue='Disease',
+                        s=60, ax=ax)  # Use diamond marker
+        
+        # Set labels and titles
+        ax.set_xlabel('Residues')
+        ax.set_ylabel(parameter)
+        residue_ticks = range(0, len(all_data) + 1, 100)
+        ax.set_xticks(ticks=residue_ticks, labels=[str(i) for i in residue_ticks])
+        ax.legend().remove()  # Remove legend
+
+    # Parameters to plot
+    parameters = ['Effectiveness', 'Sensitivity', 'Stiffness', 'DFI', 'MSF']
+
+    # Create subplots for each parameter
+    fig, axs = plt.subplots(nrows=len(parameters), figsize=(13, 13), sharex=True)
+
+    # Plot each parameter
+    for i, param in enumerate(parameters):
+        plot_data(param, axs[i])
+
+    # Adjust layout to avoid overlap
+    plt.tight_layout()
+    plt.legend()
+
+    # Save plot as PDF
+    plt.savefig(output_file, format='pdf')
+    plt.close()
+
+
+
+
+

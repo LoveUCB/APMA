@@ -88,7 +88,7 @@ closeness <- result$C
 eigenvector <- suppressWarnings(evcent(network,scale=F)$vector)
 clustering <- suppressWarnings(transitivity(network,type="localundirected"))
 clustering[is.na(clustering)] <- 0
-pagerank <- suppressWarnings(page_rank(g, damping = 0.999)$vector)
+pagerank <- suppressWarnings(page_rank(network, damping = 0.999)$vector)
 
 Betweeness <- MT_betweeness - betweeness
 Closeness <- MT_closeness - closeness
