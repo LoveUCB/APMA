@@ -1,26 +1,4 @@
-# -*- coding: utf-8 -*-
-
-"""
-
-@ author: Jingran Wang
-
-@ Email: jrwangspencer@stu.suda.edu.cn
-
-@ Address: Center for Systems Biology, Department of Bioinformatics, School of Biology and Basic Medical Sciences, Soochow University, Suzhou 215123, China.
-
-@ GitHub: https://github.com/Spencer-JRWang/APMA
-
-"""
-
-#############################################
-### Introduction of send module
-#
-# @ This module is to use python to send email
-#
-#############################################
-
-
-
+import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -29,11 +7,12 @@ from email.header import Header
 from email.utils import formataddr
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
+from email.message import EmailMessage
 
 def send_email(toEmailAddrs):
     # 设置服务器所需信息
     fromEmailAddr = 'spencer-jrwang@foxmail.com'  # 邮件发送方邮箱地址
-    password = '**********'  # (注意不是邮箱密码，而是为授权码)
+    password = 'gzaavesgvusmcjbc'  # (注意不是邮箱密码，而是为授权码)
     #toEmailAddrs = ['3338561620@qq.com']  # 邮件接受方邮箱地址，注意需要[]包裹，这意味着你可以写多个邮件地址群发
     
     # 设置email信息
@@ -104,10 +83,10 @@ def send_email(toEmailAddrs):
         server = smtplib.SMTP('smtp.qq.com')  # qq邮箱服务器地址，端口默认为25
         server.login(fromEmailAddr, password)
         server.sendmail(fromEmailAddr, toEmailAddrs, message.as_string())
-        print('success')
+        print('[INFO]success')
         server.quit()
     except smtplib.SMTPException as e:
-        print("error:", e)
+        print("[INFO]error:", e)
 
 def send_error_email(toEmailAddrs):
     # 设置服务器所需信息
@@ -118,33 +97,28 @@ def send_error_email(toEmailAddrs):
     # 设置email信息
     # ---------------------------发送带附件邮件-----------------------------
     # 邮件内容设置
-    message =  MIMEMultipart()
+    message = EmailMessage()
     # 邮件主题
     message['Subject'] = 'Auto Protein Mutation Analyzer'
     # 发送方信息
     message['From'] = fromEmailAddr
     # 接受方信息
     message['To'] = toEmailAddrs[0]
-    # 邮件正文内容
-    html_content = """
-<!DOCTYPE html>
-<html>
-<body>
+    message.set_content("Oops! Something went wrong, please check your files")
+    # 读取附件
+    with open('/home/wangjingran/APMA/run.txt', 'rb') as f:
+        file_data = f.read()
+        file_name = os.path.basename('/home/wangjingran/APMA/run.txt')
+    
+    # 添加附件
+    message.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
 
-<img src="cid:image1" style="width:50%; height:auto;">
-<h2>Oops! Something went wrong, please check your files</h2>
-<p>--------------------------------------</p>
-</body>
-</html>
-"""
-    # 将HTML内容作为MIMEText的一部分添加到邮件中
-    message.attach(MIMEText(html_content, 'html'))
 
     # 读取图片并添加到邮件中
-    with open('/home/wangjingran/APMA/Figure/LOGO.png', 'rb') as img_file:
-        img = MIMEImage(img_file.read())
-        img.add_header('Content-ID', '<image1>')
-        message.attach(img)
+    # with open('/home/wangjingran/APMA/Figure/LOGO.png', 'rb') as img_file:
+    #    img = MIMEImage(img_file.read())
+    #    img.add_header('Content-ID', '<image1>')
+    #    message.attach(img)
 
     #message.attach(MIMEText('APMA analyzation is done.\n Please check the file attached bellow.\n--------------------------------------\nDeveloped by Spencer Wang', 'plain', 'utf-8'))
     # ---------------------------------------------------------------------
@@ -154,11 +128,11 @@ def send_error_email(toEmailAddrs):
         server = smtplib.SMTP('smtp.qq.com')  # qq邮箱服务器地址，端口默认为25
         server.login(fromEmailAddr, password)
         server.sendmail(fromEmailAddr, toEmailAddrs, message.as_string())
-        print('success')
+        print('[INFO]success')
         server.quit()
     except smtplib.SMTPException as e:
-        print("error:", e)
+        print("[INFO]error:", e)
 
 if __name__ == "__main__":
     send_email(["3338561620@qq.com"])
-
+    send_error_email(["3338561620@qq.com"])

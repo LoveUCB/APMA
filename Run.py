@@ -26,6 +26,7 @@ import os
 import glob
 import traceback
 import datetime
+import re
 
 # 获取当前日期和时间
 current_datetime = datetime.datetime.now()
@@ -33,56 +34,80 @@ current_datetime = datetime.datetime.now()
 # 将当前日期和时间以特定格式输出
 print("***** APMA Start at: ", current_datetime)
 
-# pocess position file
-f = open("/home/wangjingran/APMA/data/position.txt","r")
-all = f.readlines()
-all_new = []
-# print(all)
-for i in all:
-    if i == '\n':
-        pass
-    else:
-        string_split = i.split("\t")
-        string_a = string_split[0]
-        string_b = string_split[1]
-        string_b = string_b[:1] + "A" + string_b[1:]
 
-        FoldX_type_string = string_a + "\t" + string_b
-        all_new.append(FoldX_type_string)
-f.close()
-
-f = open("/home/wangjingran/APMA/data/position.txt","w")
-for i in all_new:
-    f.write(i)
-f.close()
-
-del all
-del all_new
-
-# fetch email
-email_list = []
-f = open("/home/wangjingran/APMA/data/email.txt")
-lines = f.readlines()
-for i in lines:
-    line = i.strip("\n")
-    email_list.append(line)
-f.close()
-
-# fetch pdb file
-def print_pdb_files(folder_path):
-    # 使用 glob 模块列出文件夹中所有的 .pdb 文件
-    pdb_files = glob.glob(os.path.join(folder_path, '*.pdb'))
-    for i in pdb_files:
-        user_pdb_file = i
-    return user_pdb_file
-
-folder_path = '/home/wangjingran/APMA/data'
-user_pdb = print_pdb_files(folder_path)
-user_protein_name = user_pdb.split("/")[-1].rstrip(".pdb")
-
-
+def find_consecutive_numbers(input_string):
+    # 使用正则表达式 \d+ 匹配连续的数字部分
+    pattern = r'\d+'
+    matches = re.findall(pattern, input_string)
+    return matches
 
 try:
+    # pocess position file
+    dict_res_type = {}
+    f = open("/home/wangjingran/APMA/data/position.txt","r")
+    all = f.readlines()
+    all_new = []
+    # print(all)
+    for i in all:
+        if i == '\n':
+            pass
+        else:
+            string_split = i.split("\t")
+            string_a = string_split[0]
+            string_b = string_split[1]
+            string_b = string_b[:1] + "A" + string_b[1:]
+            # add into dict
+            dict_res_type[int(find_consecutive_numbers(string_b)[0])] = string_b[0]
+            FoldX_type_string = string_a + "\t" + string_b
+            all_new.append(FoldX_type_string)
+    f.close()
+
+
+    f = open("/home/wangjingran/APMA/data/position.txt","w")
+    for i in all_new:
+        f.write(i)
+    f.close()
+
+    del all
+    del all_new
+
+    # fetch email
+    email_list = []
+    f = open("/home/wangjingran/APMA/data/email.txt")
+    lines = f.readlines()
+    for i in lines:
+        line = i.strip("\n")
+        email_list.append(line)
+    f.close()
+
+    # fetch pdb file
+    def print_pdb_files(folder_path):
+        # 使用 glob 模块列出文件夹中所有的 .pdb 文件
+        pdb_files = glob.glob(os.path.join(folder_path, '*.pdb'))
+        for i in pdb_files:
+            user_pdb_file = i
+        return user_pdb_file
+
+    folder_path = '/home/wangjingran/APMA/data'
+    user_pdb = print_pdb_files(folder_path)
+    user_protein_name = user_pdb.split("/")[-1].rstrip(".pdb")
+    print(dict_res_type)
+
+    # check position file
+    from Feature_Cal.Blast_MSA import extract_sequence_from_pdb
+    pdb_seq = extract_sequence_from_pdb(user_pdb)
+    pdb_seq = ''.join(pdb_seq)
+    for (position, residue) in dict_res_type.items():
+        if pdb_seq[position - 1] != residue:
+            raise ValueError(f"Position {position} in the position file does not match the PDB sequence.")
+    print("[INFO] Pass checking")
+    
+    # check email
+    for i in email_list:
+        if '@' not in i:
+            raise ValueError("Invalid email address.")
+
+    # After passing several checks, run the main function
 
     APMA(
     Protein_name = user_protein_name,
@@ -104,7 +129,6 @@ try:
     
     from Email.send import send_email
     send_email(email_list)
-
 
 except Exception as e:
     print(str(e))
