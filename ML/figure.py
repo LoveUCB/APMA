@@ -650,6 +650,3 @@ def plot_dynamic_network(all_data_file, paras_file, output_file):
     plt.close()
 
 
-
-
-

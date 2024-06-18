@@ -22,6 +22,8 @@
 
 
 from APMA import APMA
+from . import __yourdownloadpath__
+APMA_path = __yourdownloadpath__
 import os
 import glob
 import traceback
