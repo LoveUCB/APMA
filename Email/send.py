@@ -8,6 +8,8 @@ from email.utils import formataddr
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.message import EmailMessage
+from .. import __youremail__
+from .. import __emailkey__
 
 def send_email(toEmailAddrs):
     # 设置服务器所需信息

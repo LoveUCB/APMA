@@ -13,4 +13,13 @@ __department__ = "Department of Bioinformatics, Soochow University Medical Colle
 
 # Please change this to your route to APMA
 # for example '/home/wangjingran/APMA'
-__yourdownloadpath__ = '/your/route/to/APMA'
+__yourdownloadroute__ = '/your/route/to/APMA'
+
+# Please change this to your email
+# Be sure that your email accept the SMTP service
+__youremail__ = 'youremail@xxx.com'
+
+# Please change this to the key of email's SMTP service
+# Notice: this is not the password of your email but authorization code of SMTP service
+__emailkey__ = '**********'
+
