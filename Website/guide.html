@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>APMA User Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style_index.css">
+    <link rel="icon" href="figure/web_icon.ico" type="image/x-icon">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: "微软雅黑";
+        }
+        .menu {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        .menu a {
+            color: #005af0;
+            text-decoration: none;
+            padding: 10px 15px;
+            background-color: #fff;
+            border: 1px solid #005af0;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .menu a:hover {
+            background-color: #005af0;
+            color: #fff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .rainbow-text {
+            transition: color 0.5s ease;
+        }
+        .animatable {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            background-color: #ffcc00;
+            margin: 50px;
+            cursor: pointer;
+        }
+        .hidden {
+            display: block;
+        }
+        canvas {
+            border: 1px solid black;
+        }
+        svg {
+            border: 1px solid black;
+        }
+        video {
+            width: 70%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        #contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        #contact-info {
+            width: 40%;
+        }
+        #container {
+            width: 40%;
+            height: 230px; /* 固定高度，以适应布局 */
+        }
+    </style>
+</head>
+<body>
+    <img src="figure/logo-transparent-png.png" width="360" class="imageContainer"/>
+    
+    <div class="menu">
+        <a href="index.php">HOME</a>
+        <a href="APMA.php">RUN</a>
+        <a href="login.html">LOGIN</a>
+        <a href="guide.html">GUIDE</a>
+        <a href="entrez.html">ENTREZ</a>
+        <audio id="audioExample" loop class="hidden">
+            <source src="figure/truemusic.mp3" type="audio/mp3">
+            您的浏览器不支持 HTML5 音频标签。
+        </audio>
+        
+        <button onclick="toggleAudio()">背景音乐播放/暂停</button>
+        
+        <script>
+            var audio = document.getElementById('audioExample');
+        
+            function toggleAudio() {
+                if (audio.paused) {
+                    audio.play();
+                } else {
+                    audio.pause();
+                }
+            }
+        </script>
+    </div>
+    <h1 id="guide-heading">APMA User Guide</h1>
+  
+    <h2 class="rainbow-text">Welcome to our website user guide!</h2>
+    
+    <h2>Welcome</h2>
+    <p>Welcome to our website user guide! This guide is designed to help you understand how to use our website and address common issues you may encounter.</p>
+  
+    <h2>Table of Contents</h2>
+    <ul>
+        <li><a href="#What-is-APMA">What is APMA</a></li>
+        <li><a href="#What-can-APMA-do">What can APMA do</a></li>
+        <li><a href="#How-to-use-APMA">How to use APMA</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+    </ul>
+  
+    <h2 id="What-is-APMA">What is APMA</h2>
+    <h2 id="What-can-APMA-do">What can APMA do</h2>
+    <h3 id="calculating sequence-related features">Calculating Sequence-Related Features</h3>
+    <ul>
+        <li><strong>Feature 1:</strong> S(i)</li>
+        <li><strong>Feature 2:</strong> M(i)</li>
+        <li><strong>Feature 3:</strong> rASA</li>
+        <li><strong>Feature 4:</strong> Consurf Grade</li>
+        <li><strong>Feature 5:</strong> ddG</li>
+    </ul>
+  
+    <h3>Calculating Amino Acid Network Features</h3>
+    <ul>
+        <li><strong>Feature 6:</strong> Betweenness</li>
+        <li><strong>Feature 7:</strong> Closeness</li>
+        <li><strong>Feature 8:</strong> Eigenvector</li>
+        <li><strong>Feature 9:</strong> Degree</li>
+        <li><strong>Feature 10:</strong> Transivity</li>
+    </ul>
+  
+    <h3>Calculating Dynamics Network Features</h3>
+    <ul>
+        <li><strong>Feature 11:</strong> Effectiveness</li>
+        <li><strong>Feature 12:</strong> Sensitivity</li>
+        <li><strong>Feature 13:</strong> Stiffness</li>
+        <li><strong>Feature 14:</strong> MSF</li>
+        <li><strong>Feature 15:</strong> DFI</li>
+    </ul>
+  
+    <table>
+        <tr>
+            <th>序列相关</th>
+            <th>氨基酸接触能网络</th>
+            <th>氨基酸弹性网络</th>
+        </tr>
+        <tr>
+            <td>Entropy</td>
+            <td>∆Betweenness</td>
+            <td>Effectiveness</td>
+        </tr>
+        <tr>
+            <td>Co.evolution</td>
+            <td>∆Closeness</td>
+            <td>Sensivity</td>
+        </tr>
+        <tr>
+            <td>Conservation Score</td>
+            <td>∆Degree</td>
+            <td>Stiffness</td>
+        </tr>
+        <tr>
+            <td>rASA</td>
+            <td>∆Eigenvector</td>
+            <td>DFI</td>
+        </tr>
+        <tr>
+            <td>∆∆G</td>
+            <td>∆Transivity</td>
+            <td>MSF</td>
+        </tr>
+    </table>
+    <h3>Using ML model to Score each site of mutation</h3>
+    <ul>
+        <li>Search for the combination of features that best judge the disease, then search for the best model and score each position</li>
+    </ul>
+  
+    <h2 id="How-to-use-APMA">How to use APMA</h2>
+    <h3>Prepare your files</h3>
+    <h4>The Protein Structure File (PDB)</h4>
+    <p>If you can get your PDB structure with all amino acid sequence from PDB database, just use it.</br>
+    Else you can get the structure from Alphafold database.</br>
+    The link to Alphafold Database: 
+    <a href="https://alphafold.ebi.ac.uk/">https://alphafold.ebi.ac.uk
+    </a></p>
+  
+    <script>
+        function submitForm() {
+            var searchString = document.getElementById("searchString").value.trim();
+            if (searchString !== "") {
+                var url = "https://www.alphafold.ebi.ac.uk/search/text/" + encodeURIComponent(searchString);
+                window.open(url, "_blank");
+            }
+            return false; // Prevent form submission
+        }
+
+        $(document).ready(function() {
+            // Function to change text color to a random rainbow color
+            function changeTextColor() {
+                const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B00FF'];
+                setInterval(function() {
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    $('.rainbow-text').css('color', color);
+                }, 500);
+            }
+
+            // Function to move element to the right on click
+            $('#guide-heading').click(function() {
+                $(this).animate({ marginLeft: '200px' }, 'slow');
+            });
+
+            changeTextColor();
+        });
+
+        // 视频：禁止自动播放，禁止循环播放
+        document.getElementById('videoExample').loop = false;
+        document.getElementById('videoExample').autoplay = false;
+     
+    </script>
+  
+    <form onsubmit="return submitForm();">
+        <label for="searchString">Search Your protein Structure from Alphafold database: </label><br>
+        <input type="text" id="searchString" name="searchString" required>
+        <button type="submit">Search</button>
+    </form>
+    <h3>Usage Example</h3>
+    <video controls id="videoExample">
+        <source src="figure/menu.mp4" type="video/mp4">
+        Your browser does not support HTML5 video tags.
+    </video>
+    </br>
+    <h2>Contact Us</h2>
+    <div id="contact-container">
+        <div id="contact-info">
+            <h3 id="contact">If you have any questions or suggestions regarding the website usage, feel free to contact us:</h3>
+            <ul>
+                <li>Email: <a href="mailto:spencer-jrwang@foxmail.com">spencer-jrwang@foxmail.com</a></li>
+                <li>Department of Bioinformatics, Medical School of Soochow University</li>
+                <li>Address: 199 Renai Road, Suzhou Industrial Parks, Suzhou, Jiangsu Province, China</li>
+            </ul>
+        </div>
+        <div id="container"></div>
+    </div>
+
+    <script src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=z38PAQg7IBxfqpy4OsmhxYbzfawlulxG"></script>
+    <script>
+        var map = new BMapGL.Map('container');
+        map.centerAndZoom(new BMapGL.Point(120.738467,31.280497), 17);
+        map.enableScrollWheelZoom(true);
+        // 创建点标记
+        var marker1 = new BMapGL.Marker(new BMapGL.Point(120.738292,31.280817));
+        // 在地图上添加点标记
+        map.addOverlay(marker1);
+    </script>
+
+
+    <canvas id="myCanvas" width="400" height="200" style="border:1px solid #000;"></canvas>
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+    
+        canvas.addEventListener('mousemove', function(event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+    
+            // 清除之前的绘制
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+            // 重新绘制静态图形
+            ctx.fillStyle = 'green';
+            ctx.fillRect(10, 10, 150, 100);
+            ctx.beginPath();
+            ctx.arc(300, 75, 50, 0, 2 * Math.PI);
+            ctx.stroke();
+    
+            // 绘制当前鼠标位置
+            ctx.fillStyle = 'black';
+            ctx.fillText(`(${x}, ${y})`, x, y);
+        });
+    </script>
+    
+
+</body>
+</html>

@@ -67,6 +67,7 @@ def download_alphafold_structure(uniprot_id, output_path):
     Example:
     download_alphafold_structure("P12345", "P12345.pdb")
     """
+    print("[INFO] ...Downloading Structure File from AlphaFold database...")
     base_url = "https://alphafold.ebi.ac.uk/files/AF-"
     file_url = f"{base_url}{uniprot_id}-F1-model_v4.pdb"
     response = requests.get(file_url)

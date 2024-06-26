@@ -1,0 +1,217 @@
+body {
+  background-image: url('figure/5uvJN.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  transition: background-image 0.5s ease-in-out;
+}
+a {
+  text-decoration: none;
+  color: #5dabff; /* Default link color */
+  transition: color 0.3s; /* Smooth color transition on hover */
+}
+  /* Change color on hover */
+a:hover {
+  color: #0056b3; /* Hover color */
+  }
+.iframe-container {
+  text-align: center;
+  }
+.iframe-container iframe {
+  width: 85%; /* Adjust the width as needed */
+  display: inline-block;
+}
+/* CSS 代码 */
+.footer {
+background-color: rgba(138, 38, 31, 0.9); /* 红色背景 */
+color: white; /* 文本颜色为白色 */
+padding: 10px; /* 设置内边距 */
+text-align: center; /* 文本居中对齐 */
+position: fixed; /* 固定在底部 */
+width: 100%; /* 宽度占满整个屏幕 */
+bottom: 0; /* 距离底部为0 */
+}
+.imageContainer {
+  position: relative;
+  transition: transform 3s ease;
+  top: 0; /* 顶部与页面顶部对齐 */
+  left: 0; /* 左侧与页面左侧对齐 */
+  }
+.imageContainer:hover{
+  transform: rotate(360deg); /* 悬停时进行2D旋转 */
+}
+header {
+background-color:transparent;
+color: #fff;
+padding: 27px 0;
+width: 100%;
+position: fixed;
+top: 0;
+left: 0;
+z-index: 1000; /* 如果页面有其他可能覆盖在顶部的元素，可以使用 z-index 属性来调整堆叠顺序 */
+}
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.container_a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.transparent-button-1 {
+  position: absolute;
+  top: 10px; /* 距离顶部的距离 */
+  right: 300px; /* 距离右侧的距离 */
+  background-color: transparent; /* 设置背景透明 */
+  border: none; /* 移除边框 */
+  cursor: pointer; /* 设置鼠标样式为手型 */
+  color: rgb(95, 95, 95); /* 设置按钮文字颜色 */
+  font-size: 20px; /* 设置按钮文字大小 */
+}
+.transparent-button-2 {
+  position: absolute;
+  top: 10px; /* 距离顶部的距离 */
+  right: 180px; /* 距离右侧的距离 */
+  background-color: transparent; /* 设置背景透明 */
+  border: none; /* 移除边框 */
+  cursor: pointer; /* 设置鼠标样式为手型 */
+  color: rgb(95, 95, 95); /* 设置按钮文字颜色 */
+  font-size: 20px; /* 设置按钮文字大小 */
+}
+.transparent-button-3 {
+  position: absolute;
+  top: 10px; /* 距离顶部的距离 */
+  right: 50px; /* 距离右侧的距离 */
+  background-color: transparent; /* 设置背景透明 */
+  border: none; /* 移除边框 */
+  cursor: pointer; /* 设置鼠标样式为手型 */
+  color: rgb(95, 95, 95); /* 设置按钮文字颜色 */
+  font-size: 20px; /* 设置按钮文字大小 */
+}
+.center-image {
+  display:block;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.5;
+}
+.center-image:hover {
+opacity: 1;
+transition: 0.3s;
+transform: scale(1.1);
+}
+.left-box {
+      flex: 1;
+      margin-right: 20px;
+      border: 1px solid #ccc;
+      padding: 25px;
+      margin-left: 10%; 
+  }
+.right-box {
+      flex: 1;
+      margin-right: 20px;
+      border: 1px solid #ccc;
+      padding: 25px;
+      margin-right: 10%; 
+}
+.search-container {
+      margin-top: 10px;
+  }
+.search-input {
+  width: 200px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+.search-button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.search-button:hover {
+  background-color: #0056b3;
+  }
+.container_b {
+  display: flex;
+  position: relative;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  text-align: left; /* 让文本居中 */
+}
+
+.float-image {
+  width: 50%;
+  height: auto;
+  margin-right: 40px;
+  transition: opacity 0.5s;
+}
+.float-image:hover{
+  opacity: 0.5;
+}
+.overlay {
+  position: absolute;
+  text-align: left;
+  left: 33%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0; /* 默认隐藏 */
+  transition: opacity 0.5s;
+  background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.container_b:hover .overlay {
+  opacity: 1; /* 鼠标悬停时显示 */
+}
+
+.clear{
+  clear: both;
+}
+.menu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+}
+.menu a {
+  color: #005af0;
+  text-decoration: none;
+  padding: 10px 15px;
+  background-color: #fff;
+  border: 1px solid #005af0;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+.menu a:hover {
+  background-color: #005af0;
+  color: #fff;
+}
+.btn_change_theme {
+  position: absolute;
+  top: 50px;
+  right: 10px;
+  text-decoration: none;
+  background-color: #005af0;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  outline: none;
+  transition: 0.3s;
+}
+.btn_change_theme:hover {
+  text-decoration: none;
+  background-color: #ffffff;
+  color: #005af0;
+  padding: 10px 20px;
+  border: none;
+  outline: 1px solid #010101;
+}
