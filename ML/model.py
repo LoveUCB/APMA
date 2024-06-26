@@ -155,9 +155,9 @@ class ModelUtilities:
         """
         base_model = [
             #('RandomForest', RandomForestClassifier(n_estimators=2500)),
-            ('GradientBoost', GradientBoostingClassifier(n_estimators=1000, max_depth=5)),
-            ('LGBM', LGBMClassifier(verbose=-1, n_estimators=1000, max_depth=5)),
+            #('GradientBoost', GradientBoostingClassifier(n_estimators=1000, max_depth=5)),
             ('XGBoost', XGBClassifier(n_estimators=1000, max_depth = 5)),
+            ('LGBM', LGBMClassifier(verbose=-1, n_estimators=1000, max_depth=5)),
             ('CatBoost', CatBoostClassifier(verbose=False, iterations=1000, depth=5))
         ]
         all_combinations = []

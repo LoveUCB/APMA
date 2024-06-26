@@ -39,7 +39,7 @@ def blast_search(sequence, fasta_file, output_file, blast_program="blastp", eval
     )
     
     # Execute the BLAST command
-    print("...Searching...")
+    print("[INFO]...Searching...")
     stdout, stderr = blast_cline()
     print(stdout)
     print(stderr)
