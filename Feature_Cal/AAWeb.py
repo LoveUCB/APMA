@@ -19,12 +19,12 @@
 #
 #############################################
 
-
-import rpy2.robjects as robjects
-from rpy2.robjects.packages import importr
-bio3d = importr("bio3d")
-NACEN = importr("NACEN")
-igraph = importr("igraph", robject_translations={'.env':'__env'})
+import subprocess
+# import rpy2.robjects as robjects
+# from rpy2.robjects.packages import importr
+# bio3d = importr("bio3d")
+# NACEN = importr("NACEN")
+# igraph = importr("igraph", robject_translations={'.env':'__env'})
 def AAWEB(route,t, category, Mut_PDB,WT_PDB,data_rote):
     '''
     Function to calculate the Amino Acids Web Features for several given mutation type pdb files
@@ -37,7 +37,13 @@ def AAWEB(route,t, category, Mut_PDB,WT_PDB,data_rote):
     :return: several files with Amino Acids Web features
     '''
     element_count = category.count(t)
-    r_code = f'''
+    r_code = f'''#!/usr/bin/Rscript
+############################
+library('bio3d')
+library('NACEN')
+library('igraph')
+############################
+
 ############################
 dsspfile <- "{route}"
 MT_betweeness <- c()
@@ -62,7 +68,7 @@ WT_hydrophobicity <- Net_hydro$NodeWeights
 WT_polarity <- as.vector(WT_polarity)
 WT_hydrophobicity <- as.vector(WT_hydrophobicity)
 
-# net <- NetP$Edgelist
+net <- NetP$Edgelist
 network <- c(net[,1],net[,2])
 network <- graph(network)
 result <- NetP$NetP
@@ -70,21 +76,20 @@ result <- NetP$NetP
 WT_betweeness <- result$B
 WT_closeness <- result$C
 WT_eigenvector <- suppressWarnings(evcent(network,scale=F)$vector)
-# degree <- result$K
+# WT_degree <- result$K
 
-# clustering <- suppressWarnings(transitivity(network,type="localundirected"))
-# clustering[is.na(clustering)] <- 0
-# pagerank <- suppressWarnings(page_rank(network, damping = 0.999)$vector)
+# WT_clustering <- suppressWarnings(transitivity(network,type="localundirected"))
+# WT_clustering[is.na(clustering)] <- 0
+# WT_pagerank <- suppressWarnings(page_rank(network, damping = 0.999)$vector)
 ############################
 
-
-
+############################
 for(i in 1:{element_count}){{
 	data <- paste(c("{Mut_PDB}/{t}_",i,".pdb"),collapse="")
 
     # Use NACEN to calculate nodewights based on Polarity and Hydrophobicity
 	Net <- suppressMessages(NACENConstructor(PDBFile=data,WeightType = "Polarity",exefile = dsspfile,plotflag=F))
-    Net_hydro <- suppressMessage(NACENConstructor(PDBFile=data,WeightType = "Hydrophobicity",exefile = dsspfile,plotflag=F))
+    Net_hydro <- suppressMessages(NACENConstructor(PDBFile=data,WeightType = "Hydrophobicity",exefile = dsspfile,plotflag=F))
 
     # Fetch NodeWeights
     polarity <- Net$NodeWeights
@@ -104,11 +109,11 @@ for(i in 1:{element_count}){{
 
     # Record
     Polarity <- c(Polarity, polarity)
-    Hydrophobicity <- c(Hydrophobicity, hydrophobic)
+    Hydrophobicity <- c(Hydrophobicity, hydrophobicity)
 
     # Calculate graph centrality
 	NetP <- suppressMessages(NACENAnalyzer(Net$AM,Net$NodeWeights))
-	# net <- NetP$Edgelist
+	net <- NetP$Edgelist
 	result <- NetP$NetP
     
     # Degree
@@ -135,7 +140,9 @@ for(i in 1:{element_count}){{
     # MT_clustering <- cbind(MT_clustering,tr)
     # MT_pagerank <- cbind(MT_pagerank, pg)
 }}
+############################
 
+############################
 # Mean graph centrality
 MT_betweeness <- rowMeans(MT_betweeness)
 MT_closeness <- rowMeans(MT_closeness)
@@ -146,26 +153,33 @@ MT_eigenvector <- rowMeans(MT_eigenvector)
 
 
 
-Betweeness <- MT_betweeness - betweeness
-Closeness <- MT_closeness - closeness
+Betweeness <- MT_betweeness - WT_betweeness
+Closeness <- MT_closeness - WT_closeness
+Eigenvector <- MT_eigenvector - WT_eigenvector
+# Degree <- MT_degree - WT_degree
+# Clustering_coefficient <- MT_clustering - WT_clustering
+# PageRank <- MT_pagerank - WT_pagerank
 
-Eigenvector <- MT_eigenvector - eigenvector
-# Degree <- MT_degree - degree
-# Clustering_coefficient <- MT_clustering - clustering
-# PageRank <- MT_pagerank - pagerank
-
-AA_web <- cbind(Betweeness, Closeness)
-AA_web <- cbind(AA_web, Eigenvector)
-AA_web <- cbind(AA_web, Polarity)
-AA_web <- cbind(AA_web, Hydrophobicity)
+AA_web_1 <- cbind(Betweeness, Closeness)
+AA_web_1 <- cbind(AA_web, Eigenvector)
+AA_web_2 <- cbind(Polarity, Hydrophobicity)
 
 # AA_web <- cbind(AA_web, Degree)
 # AA_web <- cbind(AA_web, Clustering_coefficient)
 # AA_web <- cbind(AA_web, PageRank)
 
-write.table(AA_web,"{data_rote}/{t}.txt",sep="\\t",row.names = FALSE)
+write.table(AA_web_1,"{data_rote}/{t}.txt",sep="\\t",row.names = FALSE)
+write.table(AA_web_2,"{data_rote}/dNodeWeight.txt", sep = "\\t", row.names = FALSE)
+############################
 '''
-    robjects.r(str(r_code))
+    # write to .R file
+    with open('/home/wangjingran/APMA/Feature_Cal/AANetwork.R', 'w') as file:
+        file.write(r_code)
+    # robjects.r(str(r_code))
+    # excute the .R file
+    AANetworkCommand = 'Rscript /home/wangjingran/Feature_Cal/AANetwork.R'
+    subprocess.run(AANetworkCommand, shell=True)
+
 
 def data_AAW_gener(position, category):
     AAW_data = []
@@ -180,3 +194,11 @@ def data_AAW_gener(position, category):
         AAW_data.append(current_data_features)
     return AAW_data
 
+def dNW_gener():
+    dNW_data = []
+    with open("/home/wangjingran/APMA/data/AAWeb/dNodeWeight.txt", "r") as file:
+        for line in file:
+            columns = line.strip().split('\t')
+            dNW_data.append(columns)
+    return dNW_data
+            

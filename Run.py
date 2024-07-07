@@ -220,7 +220,7 @@ try:
     folder_path = '/home/wangjingran/APMA/data'
     user_pdb = print_pdb_files(folder_path)
     user_protein_name = user_pdb.split("/")[-1].rstrip(".pdb")
-    print(dict_res_type)
+    # print(dict_res_type)
 
     # check position file
     from Feature_Cal.Blast_MSA import extract_sequence_from_pdb
@@ -267,6 +267,7 @@ except Exception as e:
     print(str(e))
     traceback_info = traceback.format_exc()
     print(traceback_info)
+    current_datetime = datetime.datetime.now()
     print("[INFO] APMA ends at: ", current_datetime)
     from Email.send import send_error_email
     send_error_email(email_list)
@@ -285,7 +286,6 @@ for file_name in files:
 
         os.remove(file_path)
 
-current_datetime = datetime.datetime.now()
 
 # print end time
 print("[INFO] APMA ends at: ", current_datetime)

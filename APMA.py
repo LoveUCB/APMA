@@ -182,6 +182,7 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
     def part_FoldX():
         global tte
         global AAWeb_data
+        global dNW_data
         Mut_PDB = FoldX
         from mutation.FoldX import run_FoldX
         from mutation.FoldX import get_total_energy
@@ -208,8 +209,10 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
             AAWEB(absolute_path,i,category,Mut_PDB,WT_PDB,"/home/wangjingran/APMA/data/AAWeb")
         # AAWEB(absolute_path,category,Protein_name,Mut_PDB,WT_PDB,"/home/wangjingran/APMA/data",position)
         from Feature_Cal.AAWeb import data_AAW_gener
+        from Feature_Cal.AAWeb import dNW_gener
         # 获取计算出来的中心性数据
         AAWeb_data = data_AAW_gener(position,category)
+        dNW_data = dNW_gener()
         print("Done")
     
     # 创建线程
@@ -255,8 +258,10 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
     df_all["Closeness"] = [sublist[1] for sublist in AAWeb_data]
     # df_all["Degree"] = [sublist[2] for sublist in AAWeb_data]
     df_all["Eigenvector"] = [sublist[2] for sublist in AAWeb_data]
-    df_all["Polarity"] = [sublist[3] for sublist in AAWeb_data]
-    df_all["Hydrophobicity"] = [sublist[4] for sublist in AAWeb_data]
+
+    # Polarity and Hydrophobicity
+    df_all["Polarity"] = [sublist[0] for sublist in dNW_data]
+    df_all["Hydrophobicity"] = [sublist[1] for sublist in dNW_data]
     
     '''
     df_all["Betweenness"] = AAWeb_data[0]
