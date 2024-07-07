@@ -255,7 +255,7 @@ try:
     plot_spearman("/home/wangjingran/APMA/data/paras.txt","/home/wangjingran/APMA/Outcome/Figure")
 
     from ML.figure import plot_dynamic_network
-    plot_dynamic_network('/home/wangjingran/APMA/data/all_dyn_data.txt', '/home/wangjingran/data/paras.txt', '/home/wangjingran/APMA/Outcome/Figure/dynamic.pdf')
+    plot_dynamic_network('/home/wangjingran/APMA/data/all_dyn_data.txt', '/home/wangjingran/APMA/data/paras.txt', '/home/wangjingran/APMA/Outcome/Figure/dynamic.pdf')
 
     from Email.zip import zip_folder
     zip_folder('/home/wangjingran/APMA/Outcome','/home/wangjingran/APMA/Email/APMA_outcome.zip')

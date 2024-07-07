@@ -188,6 +188,19 @@ if (!file.exists(dNW_file_path)) {{
 
 
 def data_AAW_gener(position, category):
+    """
+    Generate AAWeb data based on positions and categories.
+
+    This function reads data from files in the AAWeb directory based on the given
+    positions and categories, and compiles the data into a list.
+
+    Args:
+        position (list of int): A list of positions to select data from each file.
+        category (list of str): A list of category names corresponding to the files to read.
+
+    Returns:
+        list: A list of data entries corresponding to the specified positions and categories.
+    """
     AAW_data = []
     for i in range(len(position)):
         current_cate = category[i]
@@ -200,11 +213,25 @@ def data_AAW_gener(position, category):
         AAW_data.append(current_data_features)
     return AAW_data
 
+
 def dNW_gener():
+    """
+    Generate dNodeWeight data excluding headers.
+
+    This function reads data from the dNodeWeight.txt file in the AAWeb directory,
+    filters out lines containing 'Polarity' or 'Hydrophobicity', and compiles the 
+    remaining data into a list.
+
+    Returns:
+        list: A list of data entries excluding those containing 'Polarity' or 'Hydrophobicity'.
+    """
     dNW_data = []
     with open("/home/wangjingran/APMA/data/AAWeb/dNodeWeight.txt", "r") as file:
         for line in file:
             columns = line.strip().split('\t')
-            dNW_data.append(columns)
+            if ('"Polarity"' in columns) or ('"Hydrophobicity"' in columns):
+                pass
+            else:
+                dNW_data.append(columns)
     return dNW_data
-            
+      

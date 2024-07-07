@@ -277,7 +277,7 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
     df_all["DFI"] = [sublist[3] for sublist in dynamics]
     df_all["Stiffness"] = [sublist[4] for sublist in dynamics]
 
-# 将结果保存到paras.txt文件中
+    # 将结果保存到paras.txt文件中
     df_all.to_csv("/home/wangjingran/APMA/data/paras.txt", sep='\t',index=False)
     df_all.to_csv("/home/wangjingran/APMA/Outcome/paras.txt",sep = '\t', index=False)
 ############################################################################################################################## 
