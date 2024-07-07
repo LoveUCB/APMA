@@ -67,16 +67,16 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
             current_try_for_blast += 1
             try:
                 output_file = "/home/wangjingran/APMA/data/blast_results.fasta"
-                print(f"BLAST Search Started {current_try_for_blast} time")
+                print(f"[INFO] BLAST Search Started {current_try_for_blast} time")
                 blast_search(sequence,'/home/wangjingran/prdatabase/uniref50', output_file)
-                print(f"BLAST Search success")
+                print(f"[INFO] BLAST Search success")
                 break
             except Exception as e:
-                print(f"Blast search failed {current_try_for_blast} times, {5 - current_try_for_blast} remaining")
-                print(f"Error: {e}")
+                print(f"[ERROR] Blast search failed {current_try_for_blast} times, {5 - current_try_for_blast} remaining")
+                print(f"[ERROR] {e}")
                 time.sleep(30)
         else:
-            print("Error: BLAST search failed after multiple tries.")
+            print("[ERROR] BLAST search failed after multiple tries.")
         
         # 输入的FASTA文件，这里假设你已经有了一些同源序列的FASTA文件
         with open("/home/wangjingran/APMA/data/blast_results.fasta", "r") as f:
@@ -115,7 +115,7 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
                 output_fasta = "/home/wangjingran/APMA/data/query_msa.fasta"
                 
                 # 运行多序列比对
-                print(f"...MSA started {current_try_for_cl} time...")
+                print(f"[INFO] ...MSA started {current_try_for_cl} time...")
                 run_clustal(input_fasta, output_fasta)
                 with open("/home/wangjingran/APMA/data/query_msa.fasta", 'r') as f:
                     lines = f.readlines()
@@ -124,11 +124,11 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
                 with open("/home/wangjingran/APMA/data/query_msa.fasta", 'w') as f:
                     f.writelines(lines)
                 # 成功就跳出
-                print("MSA success")
+                print("[INFO] MSA success")
                 break
             except Exception as e:
-                print(f"Clustal run failed {current_try_for_cl} times, {5 - current_try_for_cl} remaining")
-                print(f"Error: {e}")
+                print(f"[ERROR] Clustal run failed {current_try_for_cl} times, {5 - current_try_for_cl} remaining")
+                print(f"[ERROR] {e}")
                 time.sleep(5)
         else:
             print("Error: MSA failed after multiple tries.")
@@ -140,15 +140,15 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
             current_try_for_ra += 1
             try:
                 import time
-                print(f"rate4site started {current_try_for_ra} time")
+                print(f"[INFO] rate4site started {current_try_for_ra} time")
                 # from useless.rate4site import run_rate4site
                 # time.sleep(30)
                 # run_rate4site("/home/wangjingran/APMA/data/query_msa.fasta", "/home/wangjingran/APMA/data/score.txt")
                 
                 process = subprocess.Popen("rate4site -s /home/wangjingran/APMA/data/query_msa.fasta -o /home/wangjingran/APMA/data/score.txt", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 output, error = process.communicate()
-                print("Output:", output.decode().strip())
-                print("Error:", error.decode().strip())
+                print("[INFO] Output:", output.decode().strip())
+                print("[ERROR] ERROR:", error.decode().strip())
 
                 Consurf_Score = []
                 f = open("/home/wangjingran/APMA/data/score.txt","r")
@@ -163,17 +163,17 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
                 Consurf_Scores = []
                 for i in position:
                     Consurf_Scores.append(Consurf_Score[i-1])
-                print("rate4site success")
+                print("[INFO] rate4site success")
                 break
             except Exception as e:
-                print(f"rate4site run failed {current_try_for_ra} times, {5 - current_try_for_ra} remaining")
-                print(f"Error: {e}")
+                print(f"[ERROR] rate4site run failed {current_try_for_ra} times, {5 - current_try_for_ra} remaining")
+                print(f"[ERROR] {e}")
                 time.sleep(5)
         else:
-            print("Error: rate4site failed after multiple tries.")
+            print("[ERROR] rate4site failed after multiple tries.")
         
         if not Consurf_Scores:
-            raise ValueError("rate4site failed")
+            raise ValueError("[ERROR] rate4site failed")
 
 
 
@@ -195,7 +195,7 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
         relative_path = "/usr/bin/mkdssp"
         absolute_path = os.path.abspath(relative_path)
         absolute_path = absolute_path.replace("\\", "/")
-        print("Calculating Amino Acid Web Features...", end = " ")
+        print("[INFO] ...Calculating Amino Acid Network Features...", end = " ")
         
         # 对每一组的氨基酸接触网络分组聚类
         # 图论与统计
@@ -213,7 +213,7 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
         # 获取计算出来的中心性数据
         AAWeb_data = data_AAW_gener(position,category)
         dNW_data = dNW_gener()
-        print("Done")
+        print("[INFO] Animo Acid Network Features done")
     
     # 创建线程
     # 将两个最耗时间的分开计算
@@ -281,6 +281,6 @@ def APMA(WT_PDB, Protein_name, file_path,MSA_data = "/home/wangjingran/APMA/data
     df_all.to_csv("/home/wangjingran/APMA/data/paras.txt", sep='\t',index=False)
     df_all.to_csv("/home/wangjingran/APMA/Outcome/paras.txt",sep = '\t', index=False)
 ############################################################################################################################## 
-    print("..Machine Learning Starting...")
+    print("[INFO] ...Machine Learning Starting...")
     from ML import ML_Build
     ML_Build(category)

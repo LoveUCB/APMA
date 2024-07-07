@@ -61,7 +61,7 @@ Hydrophobicity <- c()
 # Wild Type
 data <- "{WT_PDB}"
 Net <- suppressMessages(NACENConstructor(PDBFile=data,WeightType = "Polarity",exefile = dsspfile,plotflag=F))
-Net_hydro <- suppressMessage(NACENConstructor(PDBFile=data,WeightType = "Hydrophobicity",exefile = dsspfile,plotflag=F))
+Net_hydro <- suppressMessages(NACENConstructor(PDBFile=data,WeightType = "Hydrophobicity",exefile = dsspfile,plotflag=F))
 NetP <- suppressMessages(NACENAnalyzer(Net$AM,Net$NodeWeights))
 WT_polarity <- Net$NodeWeights
 WT_hydrophobicity <- Net_hydro$NodeWeights
@@ -161,7 +161,7 @@ Eigenvector <- MT_eigenvector - WT_eigenvector
 # PageRank <- MT_pagerank - WT_pagerank
 
 AA_web_1 <- cbind(Betweeness, Closeness)
-AA_web_1 <- cbind(AA_web, Eigenvector)
+AA_web_1 <- cbind(AA_web_1, Eigenvector)
 AA_web_2 <- cbind(Polarity, Hydrophobicity)
 
 # AA_web <- cbind(AA_web, Degree)
@@ -169,7 +169,12 @@ AA_web_2 <- cbind(Polarity, Hydrophobicity)
 # AA_web <- cbind(AA_web, PageRank)
 
 write.table(AA_web_1,"{data_rote}/{t}.txt",sep="\\t",row.names = FALSE)
-write.table(AA_web_2,"{data_rote}/dNodeWeight.txt", sep = "\\t", row.names = FALSE)
+dNW_file_path <- "{data_rote}/dNodeWeight.txt"
+if (!file.exists(dNW_file_path)) {{
+    write.table(AA_web_2, file=dNW_file_path, sep="\\t", row.names=FALSE, col.names=TRUE, append=FALSE)
+}} else {{
+    write.table(AA_web_2, file=dNW_file_path, sep="\\t", row.names=FALSE, col.names=FALSE, append=TRUE)
+}}
 ############################
 '''
     # write to .R file
@@ -177,8 +182,9 @@ write.table(AA_web_2,"{data_rote}/dNodeWeight.txt", sep = "\\t", row.names = FAL
         file.write(r_code)
     # robjects.r(str(r_code))
     # excute the .R file
-    AANetworkCommand = 'Rscript /home/wangjingran/Feature_Cal/AANetwork.R'
+    AANetworkCommand = 'Rscript /home/wangjingran/APMA/Feature_Cal/AANetwork.R'
     subprocess.run(AANetworkCommand, shell=True)
+    print(f"[INFO] NACEN category {t} is done")
 
 
 def data_AAW_gener(position, category):
