@@ -28,13 +28,21 @@ import subprocess
 def AAWEB(route,t, category, Mut_PDB,WT_PDB,data_rote):
     '''
     Function to calculate the Amino Acids Web Features for several given mutation type pdb files
-    unluckily, the NACEN package is base on R, so you should prepare it before calling this function
-    :param route:
-    :param t:
-    :param category:
-    :param Mut_PDB:
-    :param WT_PDB:
-    :return: several files with Amino Acids Web features
+    The Features are:
+    - delta Betweenness -> Mutation Type integrated global - Wild Type
+    - delta Closeness -> Mutation Type integrated global - Wild Type
+    - delta Eigenvector -> Mutation Type integrated global - Wild Type
+    - delta Hydrophobilicity -> Mutation Type single global - Wild Type
+    - delta Polarity -> Mutation Type single global - Wild Type
+    the NACEN package is base on R, so you should prepare it before calling this function.
+    The NACEN Website is: http://sysbio.suda.edu.cn/NACEN
+    
+    Parameters:
+    - route: route to mkdssp or dssp
+    - t: the number of mutations of the current category
+    - category: the category of mutation type
+    - Mut_PDB: the prefix of the name of the phenotypte
+    - WT_PDB: the route to wildtype PDB file
     '''
     element_count = category.count(t)
     r_code = f'''#!/usr/bin/Rscript
@@ -216,7 +224,7 @@ def data_AAW_gener(position, category):
 
 def dNW_gener():
     """
-    Generate dNodeWeight data excluding headers.
+    Generate delta NodeWeights data excluding headers.
 
     This function reads data from the dNodeWeight.txt file in the AAWeb directory,
     filters out lines containing 'Polarity' or 'Hydrophobicity', and compiles the 
