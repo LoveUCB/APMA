@@ -38,70 +38,130 @@ def AAWEB(route,t, category, Mut_PDB,WT_PDB,data_rote):
     '''
     element_count = category.count(t)
     r_code = f'''
+############################
 dsspfile <- "{route}"
-# MT_degree <- c()
 MT_betweeness <- c()
 MT_closeness <- c()
 MT_eigenvector <- c()
-MT_clustering <- c()
-MT_pagerank <- c()
-for(i in 1:{element_count}){{
-	data <- paste(c("{Mut_PDB}/{t}_",i,".pdb"),collapse="")
-	Net <- suppressMessages(NACENConstructor(PDBFile=data,WeightType = "Polarity",exefile = dsspfile,plotflag=F))
-	NetP <- suppressMessages(NACENAnalyzer(Net$AM,Net$NodeWeights))
-	net <- NetP$Edgelist
-	result <- NetP$NetP
-	# degree <- result$K
-	betweeness <- result$B
-	closeness <- result$C
-	# MT_degree <- cbind(MT_degree,degree)
-	MT_betweeness <- cbind(MT_betweeness,betweeness)
-	MT_closeness <- cbind(MT_closeness,closeness)
-	
-	network <- c(net[,1],net[,2])
-    network <- graph(network)
-    ev <- suppressWarnings(evcent(network,scale=F)$vector)
-    tr <- suppressWarnings(transitivity(network,type="localundirected"))
-    tr[is.nan(tr)] <- 0
-    pg <- suppressWarnings(page_rank(g, damping = 0.999)$vector)
-    MT_eigenvector <- cbind(MT_eigenvector,ev)
-    MT_clustering <- cbind(MT_clustering,tr)
-    MT_pagerank <- cbind(MT_pagerank, pg)
-}}
-# MT_degree <- rowMeans(MT_degree)
-MT_betweeness <- rowMeans(MT_betweeness)
-MT_closeness <- rowMeans(MT_closeness)
-MT_eigenvector <- rowMeans(MT_eigenvector)
-MT_clustering <- rowMeans(MT_clustering)
-MT_pagerank <- rowMeans(MT_pagerank)
+Polarity <- c()
+Hydrophobicity <- c()
 
+# MT_degree <- c()
+# MT_clustering <- c()
+# MT_pagerank <- c()
+############################
+
+############################
+# Wild Type
 data <- "{WT_PDB}"
 Net <- suppressMessages(NACENConstructor(PDBFile=data,WeightType = "Polarity",exefile = dsspfile,plotflag=F))
+Net_hydro <- suppressMessage(NACENConstructor(PDBFile=data,WeightType = "Hydrophobicity",exefile = dsspfile,plotflag=F))
 NetP <- suppressMessages(NACENAnalyzer(Net$AM,Net$NodeWeights))
-net <- NetP$Edgelist
+WT_polarity <- Net$NodeWeights
+WT_hydrophobicity <- Net_hydro$NodeWeights
+WT_polarity <- as.vector(WT_polarity)
+WT_hydrophobicity <- as.vector(WT_hydrophobicity)
+
+# net <- NetP$Edgelist
 network <- c(net[,1],net[,2])
 network <- graph(network)
 result <- NetP$NetP
+
+WT_betweeness <- result$B
+WT_closeness <- result$C
+WT_eigenvector <- suppressWarnings(evcent(network,scale=F)$vector)
 # degree <- result$K
-betweeness <- result$B
-closeness <- result$C
-eigenvector <- suppressWarnings(evcent(network,scale=F)$vector)
-clustering <- suppressWarnings(transitivity(network,type="localundirected"))
-clustering[is.na(clustering)] <- 0
-pagerank <- suppressWarnings(page_rank(network, damping = 0.999)$vector)
+
+# clustering <- suppressWarnings(transitivity(network,type="localundirected"))
+# clustering[is.na(clustering)] <- 0
+# pagerank <- suppressWarnings(page_rank(network, damping = 0.999)$vector)
+############################
+
+
+
+for(i in 1:{element_count}){{
+	data <- paste(c("{Mut_PDB}/{t}_",i,".pdb"),collapse="")
+
+    # Use NACEN to calculate nodewights based on Polarity and Hydrophobicity
+	Net <- suppressMessages(NACENConstructor(PDBFile=data,WeightType = "Polarity",exefile = dsspfile,plotflag=F))
+    Net_hydro <- suppressMessage(NACENConstructor(PDBFile=data,WeightType = "Hydrophobicity",exefile = dsspfile,plotflag=F))
+
+    # Fetch NodeWeights
+    polarity <- Net$NodeWeights
+    hydrophobicity <- Net_hydro$NodeWeights
+
+    # Change into vectors
+    polarity <- as.vector(polarity)
+    hydrophobicity <- as.vector(hydrophobicity)
+
+    # Calculate the difference value of MT and WT
+    polarity <- polarity - WT_polarity
+    hydrophobicity <- hydrophobicity - WT_hydrophobicity
+
+    # Use global polarity and hydrophobicity change
+    polarity <- sum(polarity)
+    hydrophobicity <- sum(hydrophobicity)
+
+    # Record
+    Polarity <- c(Polarity, polarity)
+    Hydrophobicity <- c(Hydrophobicity, hydrophobic)
+
+    # Calculate graph centrality
+	NetP <- suppressMessages(NACENAnalyzer(Net$AM,Net$NodeWeights))
+	# net <- NetP$Edgelist
+	result <- NetP$NetP
+    
+    # Degree
+	# degree <- result$K
+    # MT_degree <- cbind(MT_degree,degree)
+
+    # Calculate betweenness
+	betweeness <- result$B
+    MT_betweeness <- cbind(MT_betweeness,betweeness)
+
+    # Calculate closeness
+	closeness <- result$C
+	MT_closeness <- cbind(MT_closeness,closeness)
+	
+    # Calculate eigenvetor
+	network <- c(net[,1],net[,2])
+    network <- graph(network)
+    ev <- suppressWarnings(evcent(network,scale=F)$vector)
+    MT_eigenvector <- cbind(MT_eigenvector,ev)
+
+    # tr <- suppressWarnings(transitivity(network,type="localundirected"))
+    # tr[is.nan(tr)] <- 0
+    # pg <- suppressWarnings(page_rank(g, damping = 0.999)$vector)
+    # MT_clustering <- cbind(MT_clustering,tr)
+    # MT_pagerank <- cbind(MT_pagerank, pg)
+}}
+
+# Mean graph centrality
+MT_betweeness <- rowMeans(MT_betweeness)
+MT_closeness <- rowMeans(MT_closeness)
+MT_eigenvector <- rowMeans(MT_eigenvector)
+# MT_degree <- rowMeans(MT_degree)
+# MT_clustering <- rowMeans(MT_clustering)
+# MT_pagerank <- rowMeans(MT_pagerank)
+
+
 
 Betweeness <- MT_betweeness - betweeness
 Closeness <- MT_closeness - closeness
-# Degree <- MT_degree - degree
+
 Eigenvector <- MT_eigenvector - eigenvector
-Clustering_coefficient <- MT_clustering - clustering
-PageRank <- MT_pagerank - pagerank
+# Degree <- MT_degree - degree
+# Clustering_coefficient <- MT_clustering - clustering
+# PageRank <- MT_pagerank - pagerank
 
 AA_web <- cbind(Betweeness, Closeness)
-# AA_web <- cbind(AA_web, Degree)
 AA_web <- cbind(AA_web, Eigenvector)
-AA_web <- cbind(AA_web, Clustering_coefficient)
-AA_web <- cbind(AA_web, PageRank)
+AA_web <- cbind(AA_web, Polarity)
+AA_web <- cbind(AA_web, Hydrophobicity)
+
+# AA_web <- cbind(AA_web, Degree)
+# AA_web <- cbind(AA_web, Clustering_coefficient)
+# AA_web <- cbind(AA_web, PageRank)
 
 write.table(AA_web,"{data_rote}/{t}.txt",sep="\\t",row.names = FALSE)
 '''

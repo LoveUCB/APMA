@@ -123,9 +123,7 @@ class ModelUtilities:
 
         if "Betweenness" not in best_features \
         and "Closeness" not in best_features \
-        and "PageRank" not in best_features \
-        and "Eigenvector" not in best_features \
-        and "Clustering_coefficient" not in best_features:
+        and "Eigenvector" not in best_features not in best_features:
             best_features.append("Betweenness")
         
         if "DFI" in best_features \

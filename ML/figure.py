@@ -514,7 +514,7 @@ def plot_spearman(input_file, output_folder):
     plt.title("Feature Correlation")
 
     # Save the plot as a PDF file
-    output_path = os.path.join(output_folder, "spearman_corr.pdf")
+    output_path = os.path.join(output_folder, "spearman.pdf")
     plt.savefig(output_path, format="pdf", bbox_inches='tight')
     plt.close()
     print(f"Spearman correlation plot saved to: {output_path}")
@@ -596,10 +596,10 @@ def plot_dynamic_network(all_data_file, paras_file, output_file):
     paras = pd.read_csv(paras_file, sep="\t")
 
     # Rename columns for clarity
-    all_data.rename(columns={all_data.columns[0]: "residue"}, inplace=True)
+    all_data.rename(columns={all_data.columns[0]: "Site"}, inplace=True)
 
     # Extract unique residue and disease association
-    site = paras[['residue', 'Disease']].drop_duplicates()
+    site = paras[['Site', 'Disease']].drop_duplicates()
 
     # Define function to plot data for a specific parameter
     def plot_data(parameter, ax):
@@ -611,17 +611,17 @@ def plot_dynamic_network(all_data_file, paras_file, output_file):
         - ax (matplotlib.axes.Axes): Axes object to plot on.
         """
         # Extract data for the parameter
-        df_parameter = all_data[['residue', parameter]]
+        df_parameter = all_data[['Site', parameter]]
         df_parameter.rename(columns={parameter: 'Value'}, inplace=True)
         
         # Merge with site data (residue and disease association)
-        data = site.merge(df_parameter, on='residue')
+        data = site.merge(df_parameter, on='Site')
         
         # Create base bar plot
-        sns.barplot(x='residue', y='Value', data=df_parameter, color='#c5c5c5', edgecolor='none', width=1.2, ax=ax)
+        sns.barplot(x='Site', y='Value', data=df_parameter, color='#c5c5c5', edgecolor='none', width=1.2, ax=ax)
         
         # Add scatter plot with disease annotation
-        sns.scatterplot(data=data, x='residue', y='Value', hue='Disease',
+        sns.scatterplot(data=data, x='Site', y='Value', hue='Disease',
                         s=60, ax=ax)  # Use diamond marker
         
         # Set labels and titles

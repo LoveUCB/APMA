@@ -46,6 +46,17 @@ def cal_dynamics(path,name):
                          msf,
                          dfi,
                          newstiff))
+    
+    all_dyn_data = np.transpose(dyn_data)
+    num_rows = all_dyn_data.shape[0]
+    sequence_dyn = np.arange(1, num_rows + 1).reshape(-1, 1)
+    header = 'Site\tEffectiveness\tSensitivity\tMSF\tDFI\tStiffness'
+    all_dyn_data = np.hstack((sequence_dyn, all_dyn_data))
+
+    np.savetxt('/home/wangjingran/APMA/data/all_dyn_data.txt', all_dyn_data, delimiter='\t', 
+            header=header, 
+            comments='', 
+            fmt='%d' + '\t%.10f' * (all_dyn_data.shape[1] - 1))
     return dyn_data
 
 def dynamics_dat(name,position,WT_PDB):
@@ -61,4 +72,4 @@ def dynamics_dat(name,position,WT_PDB):
     new_dyn = dyn_data[[x - 1 for x in position]]
     print("Success")
     return new_dyn
-
+    

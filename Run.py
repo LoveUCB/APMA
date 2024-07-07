@@ -22,8 +22,8 @@
 
 
 from APMA import APMA
-from . import __yourdownloadroute__
-APMA_path = __yourdownloadroute__
+# from . import __yourdownloadroute__
+# APMA_path = __yourdownloadroute__
 import os
 import glob
 import traceback
@@ -178,7 +178,7 @@ try:
 
             # check amino acid
             ori_amino_acid = string_b[0]
-            mut_amino_acid = string_b[-1]
+            mut_amino_acid = string_b[-2]
             if (ori_amino_acid not in Amino_acids_list) or (mut_amino_acid not in Amino_acids_list):
                 raise ValueError("[ERROR] Unsupported amino acid abbreviation")
             
@@ -253,6 +253,9 @@ try:
 
     from ML.figure import plot_spearman
     plot_spearman("/home/wangjingran/APMA/data/paras.txt","/home/wangjingran/APMA/Outcome/Figure")
+
+    from ML.figure import plot_dynamic_network
+    plot_dynamic_network('/home/wangjingran/APMA/data/all_dyn_data.txt', '/home/wangjingran/data/paras.txt', '/home/wangjingran/APMA/Outcome/Figure/dynamic.pdf')
 
     from Email.zip import zip_folder
     zip_folder('/home/wangjingran/APMA/Outcome','/home/wangjingran/APMA/Email/APMA_outcome.zip')
