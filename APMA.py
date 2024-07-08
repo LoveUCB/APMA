@@ -41,11 +41,11 @@ def APMA(WT_PDB, Protein_name, file_path, MSA_data = "/home/wangjingran/APMA/dat
     - ProDy: http://prody.csb.pitt.edu
     - FoldX: https://foldxsuite.crg.eu
     - NACEN: http://sysbio.suda.edu.cn/NACEN
-    - Clustal Omega: http://www.clustal.org/omega/
+    - Clustal Omega: http://www.clustal.org/omega
     - Rate4site: https://www.tau.ac.il/~itaymay/cp/rate4site.html
     - Blast: https://blast.ncbi.nlm.nih.gov
     - SHAP: https://shap.readthedocs.io/en/latest
-    - Uniref50: 
+    - Uniref50: https://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref50
 
     Parameters:
     - WT_PDB: wild type PDB file
