@@ -196,6 +196,7 @@ if (!file.exists(dNW_file_path)) {{
     AANetworkCommand = 'Rscript /home/wangjingran/APMA/Feature_Cal/AANetwork.R'
     subprocess.run(AANetworkCommand, shell=True)
     print(f"[INFO] NACEN category {t} is done")
+    return None
 
 
 def data_AAW_gener(position, category):

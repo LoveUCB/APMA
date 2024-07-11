@@ -25,6 +25,8 @@ from APMA import APMA
 # from . import __yourdownloadroute__
 # APMA_path = __yourdownloadroute__
 import os
+import uuid
+import shutil
 import glob
 import traceback
 import datetime
@@ -107,6 +109,202 @@ def delete_files_in_directory(directory):
         # If the item is a directory, recursively call this function
         elif os.path.isdir(item_path):
             delete_files_in_directory(item_path)
+
+
+def create_task_id_directory(base_directory):
+    """
+    Creates a unique task directory within the specified base directory.
+
+    This function generates a unique UUID for each task, checks if a directory
+    with the same name already exists in the base directory, and creates a new
+    directory with the UUID as its name if it does not already exist.
+
+    Parameters:
+    base_directory (str): The path to the base directory where the task directories will be created.
+
+    Returns:
+    str: The path to the newly created task directory.
+    None: If an error occurs during the directory creation.
+    """
+    while True:
+        # Generate a unique task ID
+        task_id = str(uuid.uuid4())
+        print(f"[INFO] Task Successfully created: {task_id}")
+        # Create the path for the task directory
+        task_directory = os.path.join(base_directory, task_id)
+        
+        # Check if a directory with the same name already exists
+        if not os.path.exists(task_directory):
+            try:
+                # Create the directory
+                os.makedirs(task_directory)
+                print(f"[INFO] Task directory created: {task_directory}")
+                return task_id, task_directory
+            except OSError as e:
+                print(f"[ERROR] Error creating task directory: {e}")
+                return None
+        else:
+            # If a directory with the same name exists, generate a new UUID
+            continue
+
+def create_inprocess_view_html(task_id, protein_name, email):
+    """
+    Create inprocess view html file
+    This file can tell the status, id, protein name, email etc information
+    Use chart.js to preview the user's data
+
+    Parameters:
+    - task_id: user's task id
+    - protein_name: user's uniprot ID or user's pdb file prefix
+    - email: user's email
+    """
+
+    html_code = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>deePheMut progress</title>
+    <link rel="icon" href="figure/web_icon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="inprocess.css">
+</head>
+<body>
+<img src="figure/logo-transparent-png.png" width="360" class="imageContainerr"/>
+<div id="container_a" style="height: 80%">
+    <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/echarts.min.js"></script>
+    <script type="text/javascript" src="../../echarts_cartoon.js"></script>
+</div>
+<h4 style="text-align: center;">deep and precise prediction of mutations to different phenotypes</h4>
+<br/>
+
+
+<div class="container_box">
+    <div class="card">
+        <div class = "image">
+            <canvas id="myChart"></canvas>
+            <script src="../../barchart.js"></script>
+        </div>
+        <div class="content">
+            <h1> Status: Running</h1>
+            <hr style="height: 3px; background-color: black; border: none;">
+            <br>
+            <h2> Your Query ID: {task_id}</h2>
+            <br>
+            <h2> Your Protein is: {protein_name}</h2>
+            <br>
+            <h2> Your Email is: {email}</h2>
+            <br>
+        </div>
+    </div>
+</div>
+<div class="menu">
+    <a href="index.php">HOME</a>
+    <a href="run.php">RUN</a>
+    <a href="guide.html">GUIDE</a>
+    <a href="feedback.php">FEEDBACK</a>
+    <button class="btn_change_theme" id="toggleBackgroundBtn">Change Theme</button>
+</div>
+<script>
+    document.getElementById('toggleBackgroundBtn').addEventListener('click', function() {{
+        document.body.classList.toggle('dark-theme');
+    }});
+</script>
+<div class="footer">
+    Department of Bioinformatics,
+    Medical School of Soochow University <br>
+    Contact us: <a href="mailto:spencer-jrwang@foxmail.com">spencer-jrwang@foxmail.com</a><br>
+    Source Code: <a href="https://github.com/Spencer-JRWang/APMA">Github</a>
+</div>
+</body>
+</html>
+"""
+    # write to index.php file
+    with open(f'/var/www/html/deePheMut/{task_id}/index.html', 'w') as file:
+        file.write(html_code)
+    print(f"[INFO] inprocess html file is written")
+    return None
+
+
+
+def final_view_index_php(task_id, protein_name):
+    # Copy Outcome Folder to task folder
+    outcome_folder = '/home/wangjingran/APMA/Outcome'
+    destination_folder = f'/var/www/html/deePheMut/{task_id}'
+    folder_name = 'Outcome'
+    destination_path = os.path.join(destination_folder, folder_name)
+    shutil.copytree(outcome_folder, destination_path)
+    # Copy Outcome.zip to the task folder
+    shutil.copy('/home/wangjingran/APMA/Email/APMA_outcome.zip', destination_folder)
+    html_code = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>deePheMut progress</title>
+    <link rel="icon" href="figure/web_icon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="inprocess.css">
+</head>
+<body>
+<img src="figure/logo-transparent-png.png" width="360" class="imageContainerr"/>
+<div id="container_a" style="height: 80%">
+    <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/echarts.min.js"></script>
+    <script type="text/javascript" src="../../echarts_cartoon.js"></script>
+</div>
+<h4 style="text-align: center;">deep and precise prediction of mutations to different phenotypes</h4>
+<br/>
+
+
+<div class="container_box">
+    <div class="card">
+        <div class = "image">
+            <canvas id="myChart"></canvas>
+            <script src="script.js"></script>
+        </div>
+        <div class="content">
+            <h1> Status: Running</h1>
+            <hr style="height: 3px; background-color: black; border: none;">
+            <br>
+            <h2> Your Query ID: {task_id}</h2>
+            <br>
+            <h2> Your Protein is: {protein_name}</h2>
+            <br>
+            <h2> Your Email is: email</h2>
+            <br>
+        </div>
+    </div>
+</div>
+<div class="menu">
+    <a href="index.php">HOME</a>
+    <a href="run.php">RUN</a>
+    <a href="guide.html">GUIDE</a>
+    <a href="feedback.php">FEEDBACK</a>
+    <button class="btn_change_theme" id="toggleBackgroundBtn">Change Theme</button>
+</div>
+<script>
+    document.getElementById('toggleBackgroundBtn').addEventListener('click', function() {{
+        document.body.classList.toggle('dark-theme');
+    }});
+</script>
+<div class="footer">
+    Department of Bioinformatics,
+    Medical School of Soochow University <br>
+    Contact us: <a href="mailto:spencer-jrwang@foxmail.com">spencer-jrwang@foxmail.com</a><br>
+    Source Code: <a href="https://github.com/Spencer-JRWang/APMA">Github</a>
+</div>
+</body>
+</html>
+"""
+    # write to index.php file
+    with open(f'/var/www/html/deePheMut/{task_id}/index.html', 'w') as file:
+        file.write(html_code)
+    print(f"[INFO] outcome php file is written")
+    return None
+
+
 
 
 # Define Amino Acid list
@@ -236,8 +434,18 @@ try:
         if '@' not in i:
             raise ValueError("[ERROR] Invalid email address.")
 
-    # After passing several checks, run the main function
+    # After passing several checks
+    # Create the task ID and task directory
+    # Record User's task and send item ID
+    task_id, task_folder = create_task_id_directory('/var/www/html/user_data')
+    # create inprocess index.html
+    create_inprocess_view_html(task_id, user_protein_name, user_pdb, email_list)
+    # Send start email
+    from Email.send import send_start_email
+    send_start_email(task_id, email_list)
+
     #####################################################
+    # Start the main process
     APMA(
     Protein_name = user_protein_name,
     file_path = "/home/wangjingran/APMA/data/position.txt",
@@ -245,6 +453,8 @@ try:
     )
     #####################################################
 
+    #####################################################
+    # Plot basic figures
     from ML.figure import plot_roc_for_disease_pairs
     plot_roc_for_disease_pairs("/home/wangjingran/APMA/data/paras.txt","/home/wangjingran/APMA/Outcome/Figure/ROC/Feature")
 
@@ -262,6 +472,7 @@ try:
     
     from Email.send import send_email
     send_email(email_list)
+    #####################################################
 
 except Exception as e:
     print(str(e))
