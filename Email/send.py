@@ -11,11 +11,11 @@ from email.message import EmailMessage
 # from .. import __youremail__
 # from .. import __emailkey__
 
-def send_email(toEmailAddrs):
+def send_email(task_id, toEmailAddrs):
     # 设置服务器所需信息
-    fromEmailAddr = 'spencer-jrwang@foxmail.com'  # 邮件发送方邮箱地址
-    password = 'gzaavesgvusmcjbc'  # (注意不是邮箱密码，而是为授权码)
-    #toEmailAddrs = ['3338561620@qq.com']  # 邮件接受方邮箱地址，注意需要[]包裹，这意味着你可以写多个邮件地址群发
+    fromEmailAddr = 'spencer-jrwang@foxmail.com'
+    password = '*****'
+    #toEmailAddrs = ['3338561620@qq.com']
     
     # 设置email信息
     # ---------------------------发送带附件邮件-----------------------------
@@ -28,7 +28,7 @@ def send_email(toEmailAddrs):
     # 接受方信息
     message['To'] = toEmailAddrs[0]
     # 邮件正文内容
-    html_content = """
+    html_content = f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,28 +36,29 @@ def send_email(toEmailAddrs):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auto Protein Mutation Analyzer</title>
     <style>
-        body {
+        body {{
             font-family: Arial, sans-serif;
             line-height: 1.6;
-        }
-        .container {
+        }}
+        .container {{
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
             border: 1px solid #ccc;
-        }
-        .signature {
+        }}
+        .signature {{
             margin-top: 20px;
             padding-top: 20px;
             border-top: 1px solid #ccc;
-        }
+        }}
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Thank you for using APMA</h2>
+        <h2>Thank you for using deePheMut</h2>
         <p>Dear user,</p>
-        <p>Please check the file attached bellow</p>
+        <p>Your task has been successfully finished. Please visit:</p>
+        <a href = "106.54.2.54/deePheMut/user_data/{task_id}" target="_blank">106.54.2.54/deePheMut/user_data/{task_id}</a>
         <p>Best,</p>
         
         <div class="signature">
@@ -69,7 +70,6 @@ def send_email(toEmailAddrs):
 </body>
 </html>
 """
-    # 将HTML内容作为MIMEText的一部分添加到邮件中
     message.attach(MIMEText(html_content, 'html'))
 
     #message.attach(MIMEText('APMA analyzation is done.\n Please check the file attached bellow.\n--------------------------------------\nDeveloped by Spencer Wang', 'plain', 'utf-8'))
@@ -93,7 +93,7 @@ def send_email(toEmailAddrs):
 def send_error_email(toEmailAddrs):
     # 设置服务器所需信息
     fromEmailAddr = 'spencer-jrwang@foxmail.com'  # 邮件发送方邮箱地址
-    password = 'gzaavesgvusmcjbc'  # (注意不是邮箱密码，而是为授权码)
+    password = '*****'  # (注意不是邮箱密码，而是为授权码)
     message = EmailMessage()
     message['Subject'] = 'Auto Protein Mutation Analyzer'
     message['From'] = fromEmailAddr
@@ -117,7 +117,7 @@ def send_error_email(toEmailAddrs):
 def send_start_email(task_id, toEmailAddrs):
     # 设置服务器所需信息
     fromEmailAddr = 'spencer-jrwang@foxmail.com'  # 邮件发送方邮箱地址
-    password = 'gzaavesgvusmcjbc'  # (注意不是邮箱密码，而是为授权码)
+    password = '*****'  # (注意不是邮箱密码，而是为授权码)
     #toEmailAddrs = ['3338561620@qq.com']  # 邮件接受方邮箱地址，注意需要[]包裹，这意味着你可以写多个邮件地址群发
     
     # 设置email信息
