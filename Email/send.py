@@ -94,38 +94,17 @@ def send_error_email(toEmailAddrs):
     # 设置服务器所需信息
     fromEmailAddr = 'spencer-jrwang@foxmail.com'  # 邮件发送方邮箱地址
     password = 'gzaavesgvusmcjbc'  # (注意不是邮箱密码，而是为授权码)
-    #toEmailAddrs = ['3338561620@qq.com']  # 邮件接受方邮箱地址，注意需要[]包裹，这意味着你可以写多个邮件地址群发
-    
-    # 设置email信息
-    # ---------------------------发送带附件邮件-----------------------------
-    # 邮件内容设置
     message = EmailMessage()
-    # 邮件主题
     message['Subject'] = 'Auto Protein Mutation Analyzer'
-    # 发送方信息
     message['From'] = fromEmailAddr
-    # 接受方信息
     message['To'] = toEmailAddrs[0]
     message.set_content("Oops! Something went wrong, please check your files")
-    # 读取附件
     with open('/home/wangjingran/APMA/run.txt', 'rb') as f:
         file_data = f.read()
         file_name = os.path.basename('/home/wangjingran/APMA/run.txt')
-    
-    # 添加附件
-    message.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
+    message.add_attachment(file_data, maintype='text', subtype='plain', filename=file_name)
 
 
-    # 读取图片并添加到邮件中
-    # with open('/home/wangjingran/APMA/Figure/LOGO.png', 'rb') as img_file:
-    #    img = MIMEImage(img_file.read())
-    #    img.add_header('Content-ID', '<image1>')
-    #    message.attach(img)
-
-    #message.attach(MIMEText('APMA analyzation is done.\n Please check the file attached bellow.\n--------------------------------------\nDeveloped by Spencer Wang', 'plain', 'utf-8'))
-    # ---------------------------------------------------------------------
-    
-    # 登录并发送邮件
     try:
         server = smtplib.SMTP('smtp.qq.com')  # qq邮箱服务器地址，端口默认为25
         server.login(fromEmailAddr, password)

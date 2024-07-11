@@ -32,6 +32,7 @@ import traceback
 import datetime
 import re
 import requests
+import time
 
 # fetch start time
 current_datetime = datetime.datetime.now()
@@ -158,7 +159,17 @@ def create_inprocess_view_html(task_id, protein_name, email):
     - protein_name: user's uniprot ID or user's pdb file prefix
     - email: user's email
     """
-
+    # move position.txt to /var/www/html/deePheMut
+    shutil.copyfile('/home/wangjingran/APMA/data/position.txt', '/var/www/html/deePheMut/position.txt')
+    ## fit the mutation file to chart.js
+    file_path = "/var/www/html/deePheMut/position.txt"
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+    if lines and lines[-1].strip() == '':
+        lines = lines[:-1]
+    with open(file_path, 'w') as file:
+        file.writelines(lines)
+    
     html_code = f"""
 <!DOCTYPE html>
 <html lang="en">
@@ -167,11 +178,11 @@ def create_inprocess_view_html(task_id, protein_name, email):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>deePheMut progress</title>
-    <link rel="icon" href="figure/web_icon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="inprocess.css">
+    <link rel="icon" href="../../figure/web_icon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../../inprocess.css">
 </head>
 <body>
-<img src="figure/logo-transparent-png.png" width="360" class="imageContainerr"/>
+<img src="../../figure/logo-transparent-png.png" width="360" class="imageContainerr"/>
 <div id="container_a" style="height: 80%">
     <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/echarts.min.js"></script>
     <script type="text/javascript" src="../../echarts_cartoon.js"></script>
@@ -194,7 +205,7 @@ def create_inprocess_view_html(task_id, protein_name, email):
             <br>
             <h2> Your Protein is: {protein_name}</h2>
             <br>
-            <h2> Your Email is: {email}</h2>
+            <h2> Your Email is: {email[0]}</h2>
             <br>
         </div>
     </div>
@@ -221,7 +232,7 @@ def create_inprocess_view_html(task_id, protein_name, email):
 </html>
 """
     # write to index.php file
-    with open(f'/var/www/html/deePheMut/{task_id}/index.html', 'w') as file:
+    with open(f'/var/www/html/deePheMut/user_data/{task_id}/index.html', 'w') as file:
         file.write(html_code)
     print(f"[INFO] inprocess html file is written")
     return None
@@ -299,7 +310,7 @@ def final_view_index_php(task_id, protein_name):
 </html>
 """
     # write to index.php file
-    with open(f'/var/www/html/deePheMut/{task_id}/index.html', 'w') as file:
+    with open(f'/var/www/html/deePheMut/user_data/{task_id}/index.html', 'w') as file:
         file.write(html_code)
     print(f"[INFO] outcome php file is written")
     return None
@@ -333,6 +344,15 @@ Amino_acids_list = [
 
 
 try:
+    # fetch email
+    email_list = []
+    f = open("/home/wangjingran/APMA/data/email.txt")
+    lines = f.readlines()
+    for i in lines:
+        line = i.strip("\n")
+        email_list.append(line)
+    f.close()
+
     # check whether need to download structure from AlphaFold database
     uni_file_path = "/home/wangjingran/APMA/data/uniprot_ID.txt"
     if os.path.exists(uni_file_path):
@@ -378,6 +398,8 @@ try:
             ori_amino_acid = string_b[0]
             mut_amino_acid = string_b[-2]
             if (ori_amino_acid not in Amino_acids_list) or (mut_amino_acid not in Amino_acids_list):
+                print("[INFO] Original Amino Acid: " + str(ori_amino_acid))
+                print("[INFO] Mutated Amino Acid: " + str(mut_amino_acid))
                 raise ValueError("[ERROR] Unsupported amino acid abbreviation")
             
             # change to FoldX forat
@@ -397,15 +419,6 @@ try:
 
     del all
     del all_new
-
-    # fetch email
-    email_list = []
-    f = open("/home/wangjingran/APMA/data/email.txt")
-    lines = f.readlines()
-    for i in lines:
-        line = i.strip("\n")
-        email_list.append(line)
-    f.close()
 
     # fetch pdb file
     def print_pdb_files(folder_path):
@@ -437,9 +450,9 @@ try:
     # After passing several checks
     # Create the task ID and task directory
     # Record User's task and send item ID
-    task_id, task_folder = create_task_id_directory('/var/www/html/user_data')
+    task_id, task_folder = create_task_id_directory('/var/www/html/deePheMut/user_data')
     # create inprocess index.html
-    create_inprocess_view_html(task_id, user_protein_name, user_pdb, email_list)
+    create_inprocess_view_html(task_id, user_protein_name, email_list)
     # Send start email
     from Email.send import send_start_email
     send_start_email(task_id, email_list)
@@ -469,6 +482,8 @@ try:
 
     from Email.zip import zip_folder
     zip_folder('/home/wangjingran/APMA/Outcome','/home/wangjingran/APMA/Email/APMA_outcome.zip')
+    # print end time
+    print("[INFO] APMA ends at: ", current_datetime)
     
     from Email.send import send_email
     send_email(email_list)
@@ -480,6 +495,7 @@ except Exception as e:
     print(traceback_info)
     current_datetime = datetime.datetime.now()
     print("[INFO] APMA ends at: ", current_datetime)
+    time.sleep(3)
     from Email.send import send_error_email
     send_error_email(email_list)
 
@@ -497,6 +513,3 @@ for file_name in files:
 
         os.remove(file_path)
 
-
-# print end time
-print("[INFO] APMA ends at: ", current_datetime)
