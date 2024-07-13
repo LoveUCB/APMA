@@ -1,7 +1,7 @@
 ![APMA](Figure/LOGO.png)
-# Auto Protein Mutation Analyzer (AMPA)
+# deePheMut ---- from mutations to phenotypes
 ![APMA](Figure/deePheMut.png)
-The AMPA is intended to calculate the features of protein mutation including Amino Acid Web features
+deePheMut is intended to calculate the features of protein mutation including Amino Acid Web features
 such as Betweenness Closeness etc. and other features like Effectiveness, Stiffness and Entropy, Co.evolution.
 
 Also, a stacking model is built automatically to detect the best model to classify the categories you provide.
