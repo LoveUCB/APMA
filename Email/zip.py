@@ -24,28 +24,40 @@
 import zipfile
 import os
 
+import os
+import zipfile
+
 def zip_folder(folder_path, zip_name):
-    # 确保文件夹路径存在
+    """
+    Compresses the contents of a folder into a ZIP file.
+
+    Parameters:
+    folder_path (str): The path to the folder to be compressed.
+    zip_name (str): The name of the output ZIP file.
+
+    Raises:
+    FileNotFoundError: If the specified folder does not exist.
+    """
+    
+    # Ensure the folder path exists
     if not os.path.exists(folder_path):
         raise FileNotFoundError("Folder does not exist")
-
-    # 创建一个ZipFile对象
+    
+    # Create a ZipFile object
     with zipfile.ZipFile(zip_name, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        # 遍历文件夹中的所有文件和子文件夹
+        # Iterate over all the files and subfolders in the folder
         for root, dirs, files in os.walk(folder_path):
             for file in files:
-                # 构建文件的完整路径
+                # Construct the full path of the file
                 file_path = os.path.join(root, file)
-                # 计算文件在压缩文件中的相对路径
+                # Compute the relative path of the file in the ZIP file
                 relative_path = os.path.relpath(file_path, folder_path)
-                # 将文件添加到压缩文件中
+                # Add the file to the ZIP file
                 zipf.write(file_path, relative_path)
 
-# 要压缩的文件夹路径和压缩文件的名称
+
 if __name__ == "__main__":
     folder_to_zip = '/home/wangjingran/APMA/data'
     zip_file_name = '/home/wangjingran/APMA/Email/Outcome.zip'
-
-    # 调用函数压缩文件夹
     zip_folder(folder_to_zip, zip_file_name)
     print("success")
