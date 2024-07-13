@@ -33,6 +33,7 @@ import datetime
 import re
 import requests
 import time
+import PyPDF2
 
 # fetch start time
 current_datetime = datetime.datetime.now()
@@ -148,6 +149,58 @@ def create_task_id_directory(base_directory):
             # If a directory with the same name exists, generate a new UUID
             continue
 
+
+def merge_pdfs_from_folder(folder_path, output_pdf):
+    """
+    Merge all PDF files from a specified folder into a single PDF file.
+
+    Parameters:
+    folder_path (str): Path to the folder containing PDF files to merge.
+    output_pdf (str): Output file path for the merged PDF.
+
+    Returns:
+    None
+
+    Raises:
+    ValueError: If no PDF files are found in the specified folder.
+    FileNotFoundError: If the specified folder does not exist.
+    """
+    # Validate folder_path exists
+    if not os.path.exists(folder_path):
+        raise FileNotFoundError(f"The folder '{folder_path}' does not exist.")
+
+    # List all PDF files in the folder
+    pdf_files = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith('.pdf')]
+
+    # Check if there are any PDF files in the folder
+    if not pdf_files:
+        raise ValueError(f"No PDF files found in the folder '{folder_path}'.")
+
+    # Create a PdfFileWriter object to hold the combined PDF
+    output_pdf_writer = PyPDF2.PdfWriter()
+
+    # Iterate through each PDF file and add its content to output_pdf_writer
+    for pdf_file in pdf_files:
+        try:
+            with open(pdf_file, 'rb') as f:
+                input_pdf_reader = PyPDF2.PdfReader(f)
+                num_pages = len(input_pdf_reader.pages)
+                
+
+                # Add each page of the input PDF to the output PdfFileWriter
+                for page_num in range(num_pages):
+                    page = input_pdf_reader.pages[page_num]
+                    output_pdf_writer.add_page(page)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"[ERROR] Input PDF file '{pdf_file}' not found.")
+
+    # Write the merged PDF content to a file
+    with open(output_pdf, 'wb') as f:
+        output_pdf_writer.write(f)
+
+    print(f"[INFO] PDFs merged successfully into {output_pdf}")
+
+
 def create_inprocess_view_html(task_id, protein_name, email):
     """
     Create inprocess view html file
@@ -238,82 +291,291 @@ def create_inprocess_view_html(task_id, protein_name, email):
     return None
 
 
+def final_view_index_html(task_id):
+    """
+    Create output preview html file
+    This file can tell the status, id, protein name, email etc information
+    Use chart.js to preview the user's data
 
-def final_view_index_php(task_id, protein_name):
+    Parameters:
+    - task_id: user's task id
+    - protein_name: user's uniprot ID or user's pdb file prefix
+    - email: user's email
+    """
+
     # Copy Outcome Folder to task folder
     outcome_folder = '/home/wangjingran/APMA/Outcome'
-    destination_folder = f'/var/www/html/deePheMut/{task_id}'
+    destination_folder = f'/var/www/html/deePheMut/user_data/{task_id}'
     folder_name = 'Outcome'
     destination_path = os.path.join(destination_folder, folder_name)
     shutil.copytree(outcome_folder, destination_path)
+
     # Copy Outcome.zip to the task folder
-    shutil.copy('/home/wangjingran/APMA/Email/APMA_outcome.zip', destination_folder)
+    shutil.copy('/home/wangjingran/APMA/Email/Outcome.zip', destination_folder)
+
+    # define iframe code
+    iframe_code = ""
+    html_files = []
+    search_pattern = os.path.join('/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/Explain/', '*.html')
+    html_files = glob.glob(search_pattern)
+    html_file_names = [os.path.basename(file) for file in html_files]
+    for html_file in html_file_names:
+        iframe_code += f"""<p>{html_file.rstrip('html').lstrip('LightGBM_force_plot_').rstrip('.')}</p>\n
+        <iframe src='Outcome/Figure/Explain/{html_file}' title='iframe_force'></iframe>\n"""
+    
+    # define score boxplot code
+    box_plot_code = ""
+    score_files = []
+    search_pattern = os.path.join('/var/www/html/deePheMut/user_data/{task_id}/Outcome/Score', '*.txt')
+    score_files = glob.glob(search_pattern)
+    score_names = [os.path.basename(file) for file in score_files]
+    for score_name in score_names:
+        box_plot_code += f"{{ file: './Outcome/Score/{score_name}', title: '{score_name.rstrip('txt').lstrip('LightGBM_force_plot_').rstrip('.')}' }},\n"
     html_code = f"""
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>deePheMut progress</title>
-    <link rel="icon" href="figure/web_icon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="inprocess.css">
+    <link rel="icon" href="../../figure/web_icon.ico" type="image/x-icon">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Task Preview</title>
+    <link rel="stylesheet" href="../../outcome_preview.css">
 </head>
 <body>
-<img src="figure/logo-transparent-png.png" width="360" class="imageContainerr"/>
-<div id="container_a" style="height: 80%">
-    <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/echarts.min.js"></script>
-    <script type="text/javascript" src="../../echarts_cartoon.js"></script>
-</div>
-<h4 style="text-align: center;">deep and precise prediction of mutations to different phenotypes</h4>
-<br/>
+<h1>Task successfully finished</h1>
 
+<div id="pdf-container">
+    <h2>Feature Calculation</h2>
+    <div class="pdf-item">
+        <embed src="Outcome/Figure/combined_plots.pdf" type="application/pdf">
+        <p><strong>Figure 1| Mutation parameter distribution plot and PCA plot</strong>,
+            the first 15 images represent the performance of phenotypes in different parameters.
+            When the sample size is greater than 30, t test in statistical test will be adopted,
+            otherwise wilcoxon test will be used, where ** represents 0.01 < pvalue < 0.05, *** indicates pvalue < 0.001,
+            the last picture shows the results of principal component analysis of mutations of different phenotypes.
+            The distribution of principal component analysis shows the distribution of different phenotypic mutations on the first two principal components.</p>
+        <button onclick="downloadFile('./Outcome/Figure/combined_plots.pdf')">Download Figure 1</button>
+        <button onclick="downloadFile('./Outcome/paras.txt')">Download parameters txt</button>
+    </div>
 
-<div class="container_box">
-    <div class="card">
-        <div class = "image">
-            <canvas id="myChart"></canvas>
-            <script src="script.js"></script>
-        </div>
-        <div class="content">
-            <h1> Status: Running</h1>
-            <hr style="height: 3px; background-color: black; border: none;">
-            <br>
-            <h2> Your Query ID: {task_id}</h2>
-            <br>
-            <h2> Your Protein is: {protein_name}</h2>
-            <br>
-            <h2> Your Email is: email</h2>
-            <br>
-        </div>
+    <div class="pdf-item">
+        <embed src="Outcome/Figure/ROC/Feature/feature_roc.pdf" type="application/pdf">
+        <p><strong>Figure 2| Mutation parameter distribution plot and PCA plot</strong>,
+            the first 15 images represent the performance of phenotypes in different parameters.
+            When the sample size is greater than 30, t test in statistical test will be adopted,
+            otherwise wilcoxon test will be used, where ** represents 0.01 < pvalue < 0.05, *** indicates pvalue < 0.001,
+            the last picture shows the results of principal component analysis of mutations of different phenotypes.
+            The distribution of principal component analysis shows the distribution of different phenotypic mutations on the first two principal components.</p>
+        <button onclick="downloadFile('./Outcome/Figure/ROC/Feature/feature_roc.pdf')">Download Figure 2</button>
+    </div>
+
+    <h2>Model Construction</h2>
+
+    <div class="pdf-item">
+        <embed src="Outcome/Figure/rfe.pdf" type="application/pdf">
+        <p><strong>Figure 3| </strong></p>
+        <button onclick="downloadFile('./Outcome/Figure/rfe.pdf')">Download Figure 2</button>
+    </div>
+
+    <div class="pdf-item">
+        <embed src="Outcome/Figure/spearman_corr.pdf" type="application/pdf">
+        <p><strong>Figure 4| Spearman correlation heatmap</strong>, this heatmap illustrates Spearman correlation coefficients computed between protein mutations
+            and 15 selected features. Color intensity reflects the strength of correlation: bluer shades indicate positive correlations,
+            while redder shades indicate negative correlations. Numeric values adjacent to the color bar denote the magnitude of
+            correlation coefficients.</p>
+        <button onclick="downloadFile('./Outcome/Figure/spearman_corr.pdf')">Download Figure 2</button>
+    </div>
+
+    <div class="pdf-item">
+        <pre id="txtContent"></pre>
+        <p><strong>Text 1| Model construction log</strong>, this heatmap illustrates Spearman correlation coefficients computed between protein mutations
+            and 15 selected features. Color intensity reflects the strength of correlation: bluer shades indicate positive correlations,
+            while redder shades indicate negative correlations. Numeric values adjacent to the color bar denote the magnitude of
+            correlation coefficients.</p>
+        <button onclick="downloadFile('./Outcome/Feature_selection.txt')">Download TXT 1</button>
+    </div>
+
+    <h2>Model Explanation</h2>
+    <div class="pdf-item">
+        <embed src="Outcome/Figure/Explain/shap_summary_plot.pdf" type="application/pdf">
+        <p><strong>Figure 5| Machine learning model explanation force plot</strong>, This Force Plot generated using SHAP visualizes the impact of
+            features on the model's predictions.  Each feature's contribution to the prediction is represented by the length and direction(colors).
+            Positive and negative contributions are indicated by pointing upwards(red) and downwards(blue), respectively. </p>
+        <button onclick="downloadFile('./Outcome/Figure/Explain/shap_summary_plot.pdf')">Download Figure 2</button>
+    </div>
+
+    <div class="pdf-item">
+        {iframe_code}
+        <p><strong>Figure 6| Machine learning model explanation force plot</strong>, This Force Plot generated using SHAP visualizes the impact of
+            features on the model's predictions.  Each feature's contribution to the prediction is represented by the length and direction(colors).
+            Positive and negative contributions are indicated by pointing upwards(red) and downwards(blue), respectively. </p>
+    </div>
+    <h2>PhenoScores</h2>
+    <div class="pdf-item">
+        <div id="boxplots-container" class="boxplot-container"></div>
+        <script>
+            async function loadDataAndDraw(containerId, dataFile, title) {{
+                try {{
+                    const response = await fetch(dataFile);
+                    const data = await response.text();
+
+                    const rows = data.trim().split('\\n').map(row => row.split('\\t'));
+                    drawBoxPlots(containerId, rows, title); // 传入标题参数
+                }} catch (error) {{
+                    console.error('Error fetching or parsing data:', error);
+                }}
+            }}
+
+            function drawBoxPlots(containerId, data, title) {{
+                var categories = {{}};
+                var categoryData = [];
+                var colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+                    '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
+
+                data.forEach((row, index) => {{
+                    if (index === 0) return; // Skip header row
+                    var category = row[0]; // Assuming first column is category
+                    var score = parseFloat(row[2]); // Assuming third column is score
+                    var mutation = row[3]; // Assuming fourth column is mutation name
+
+                    if (!categories[category]) {{
+                        categories[category] = {{
+                            scores: [],
+                            mutations: [],
+                            color: colors[Object.keys(categories).length % colors.length]
+                        }};
+                    }}
+                    categories[category].scores.push(score);
+                    categories[category].mutations.push(mutation);
+                }});
+
+                for (var category in categories) {{
+                    if (categories.hasOwnProperty(category)) {{
+                        categoryData.push({{
+                            y: categories[category].scores,
+                            type: 'box',
+                            name: 'Category ' + category,
+                            boxpoints: 'all',
+                            jitter: 0.3,
+                            pointpos: -1.8,
+                            marker: {{
+                                color: categories[category].color
+                            }},
+                            line: {{
+                                color: categories[category].color
+                            }},
+                            text: categories[category].mutations,
+                            hoverinfo: 'text+y'
+                        }});
+                    }}
+                }}
+
+                var layout = {{
+                    title: title, // 使用传入的标题
+                    yaxis: {{
+                        title: 'Scores'
+                    }}
+                }};
+
+                Plotly.newPlot(containerId, categoryData, layout);
+            }}
+
+            window.addEventListener('DOMContentLoaded', async () => {{
+                const dataFiles = [
+                    {box_plot_code}
+                ];
+
+                const container = document.getElementById('boxplots-container');
+                dataFiles.forEach((dataInfo, index) => {{
+                    const containerId = `boxplots-${{index + 1}}`;
+                    const newDiv = document.createElement('div');
+                    newDiv.id = containerId;
+                    newDiv.classList.add('boxplot-container');
+                    container.appendChild(newDiv);
+
+                    loadDataAndDraw(containerId, dataInfo.file, dataInfo.title); // 传入标题参数
+                }});
+            }});
+        </script>
+
+        <p><strong>Figure 7| </strong></p>
+    </div>
+
+    <div class="pdf-item">
+        <embed src="./Outcome/Figure/ROC/ML/ml_roc.pdf" type="application/pdf">
+        <p><strong>Figure 8| Machine learning model explanation force plot</strong>, This Force Plot generated using SHAP visualizes the impact of
+            features on the model's predictions.  Each feature's contribution to the prediction is represented by the length and direction(colors).
+            Positive and negative contributions are indicated by pointing upwards(red) and downwards(blue), respectively. </p>
+        <button onclick="downloadFile('./APMA_outcome/Figure/ROC/ML/ml_roc.pdf')">Download Figure 2</button>
     </div>
 </div>
-<div class="menu">
-    <a href="index.php">HOME</a>
-    <a href="run.php">RUN</a>
-    <a href="guide.html">GUIDE</a>
-    <a href="feedback.php">FEEDBACK</a>
-    <button class="btn_change_theme" id="toggleBackgroundBtn">Change Theme</button>
+<button id="download-all" onclick="downloadAllFiles()">Download All Outcomes</button>
+
+<!-- 右侧导航栏 -->
+<div id="sidebar">
+    <strong>Navigation</strong>
+    <ul id="nav-links">
+        <!-- JavaScript 会动态生成导航链接 -->
+    </ul>
 </div>
+
 <script>
-    document.getElementById('toggleBackgroundBtn').addEventListener('click', function() {{
-        document.body.classList.toggle('dark-theme');
-    }});
+    function downloadFile(fileSrc) {{
+        const link = document.createElement('a');
+        link.href = fileSrc;
+        link.download = fileSrc.split('/').pop();
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }}
+
+    function downloadAllFiles() {{
+        const link = document.createElement('a');
+        link.href = 'all_files.zip'; // 预先存在的ZIP文件路径
+        link.download = 'all_files.zip';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }}
+
+    window.onload = function() {{
+        // 动态生成导航链接
+        const navLinks = document.getElementById('nav-links');
+        const headings = document.querySelectorAll('#pdf-container h2');
+        headings.forEach((heading, index) => {{
+            const id = 'heading-' + index;
+            heading.id = id;
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.innerText = heading.innerText;
+            li.appendChild(a);
+            navLinks.appendChild(li);
+        }});
+
+        // 加载文本文件内容
+        fetch('./Outcome/Feature_selection.txt')
+            .then(response => response.text())
+            .then(data => {{
+                document.getElementById('txtContent').textContent = data;
+            }})
+            .catch(error => {{
+                console.error('Error fetching the file:', error);
+            }});
+    }};
 </script>
-<div class="footer">
-    Department of Bioinformatics,
-    Medical School of Soochow University <br>
-    Contact us: <a href="mailto:spencer-jrwang@foxmail.com">spencer-jrwang@foxmail.com</a><br>
-    Source Code: <a href="https://github.com/Spencer-JRWang/APMA">Github</a>
-</div>
 </body>
 </html>
 """
-    # write to index.php file
+    
+    # write to index.html file
     with open(f'/var/www/html/deePheMut/user_data/{task_id}/index.html', 'w') as file:
         file.write(html_code)
-    print(f"[INFO] outcome php file is written")
+    print(f"[INFO] outcome HTML file is written")
     return None
+
+
 
 
 
@@ -342,6 +604,7 @@ Amino_acids_list = [
     'V'   # Valine
 ]
 
+# The main console
 if __name__ == "__main__":
     try:
         # fetch email
@@ -451,8 +714,10 @@ if __name__ == "__main__":
         # Create the task ID and task directory
         # Record User's task and send item ID
         task_id, task_folder = create_task_id_directory('/var/www/html/deePheMut/user_data')
+
         # create inprocess index.html
         create_inprocess_view_html(task_id, user_protein_name, email_list)
+
         # Send start email
         from Email.send import send_start_email
         send_start_email(task_id, email_list)
@@ -479,15 +744,28 @@ if __name__ == "__main__":
 
         from ML.figure import plot_dynamic_network
         plot_dynamic_network('/home/wangjingran/APMA/data/all_dyn_data.txt', '/home/wangjingran/APMA/data/paras.txt', '/home/wangjingran/APMA/Outcome/Figure/dynamic.pdf')
+        #####################################################
 
         from Email.zip import zip_folder
-        zip_folder('/home/wangjingran/APMA/Outcome','/home/wangjingran/APMA/Email/APMA_outcome.zip')
+        zip_folder('/home/wangjingran/APMA/Outcome','/home/wangjingran/APMA/Email/Outcome.zip')
+
         # print end time
         print("[INFO] APMA ends at: ", current_datetime)
         
+        # merge pdf files
+        merge_pdfs_from_folder(f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/Explain', 
+                               f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/Explain/shap_summary_plot.pdf')
+        merge_pdfs_from_folder(f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/ROC/Feature', 
+                               f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/Explain/feature_roc.pdf')
+        merge_pdfs_from_folder(f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/ROC/ML', 
+                               f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/Explain/ml_roc.pdf')
+        
+        # construct index.html file
+        final_view_index_html(task_id)
+
         from Email.send import send_email
         send_email(task_id, email_list)
-        #####################################################
+        
 
     except Exception as e:
         print(str(e))

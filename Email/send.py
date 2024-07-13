@@ -75,9 +75,9 @@ def send_email(task_id, toEmailAddrs):
     #message.attach(MIMEText('APMA analyzation is done.\n Please check the file attached bellow.\n--------------------------------------\nDeveloped by Spencer Wang', 'plain', 'utf-8'))
     
     # 构造附件
-    att_img2 = MIMEText(open(r'/home/wangjingran/APMA/Email/APMA_outcome.zip', 'rb').read(), 'base64', 'utf-8')
-    att_img2['Content-disposition'] = 'attachment;filename="APMA_outcome.zip"'
-    message.attach(att_img2)
+    # att_img2 = MIMEText(open(r'/home/wangjingran/APMA/Email/APMA_outcome.zip', 'rb').read(), 'base64', 'utf-8')
+    # att_img2['Content-disposition'] = 'attachment;filename="APMA_outcome.zip"'
+    # message.attach(att_img2)
     # ---------------------------------------------------------------------
     
     # 登录并发送邮件

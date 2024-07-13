@@ -44,7 +44,7 @@ def zip_folder(folder_path, zip_name):
 # 要压缩的文件夹路径和压缩文件的名称
 if __name__ == "__main__":
     folder_to_zip = '/home/wangjingran/APMA/data'
-    zip_file_name = '/home/wangjingran/APMA/Email/APMA_outcome.zip'
+    zip_file_name = '/home/wangjingran/APMA/Email/Outcome.zip'
 
     # 调用函数压缩文件夹
     zip_folder(folder_to_zip, zip_file_name)
