@@ -181,7 +181,7 @@ class ModelUtilities:
         scores_st = []
         X = X.reset_index(drop=True)
         y_encode = y_encode.reset_index(drop=True)
-        stratified_kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+        stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
         shuffle_index = np.random.permutation(X.index)
         X = X.iloc[shuffle_index]
         y_encode = y_encode.iloc[shuffle_index]
