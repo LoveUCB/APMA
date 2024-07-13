@@ -24,6 +24,7 @@
 from APMA import APMA
 # from . import __yourdownloadroute__
 # APMA_path = __yourdownloadroute__
+# sudo chown -R www-data:www-data /home/wangjingran/APMA
 import os
 import uuid
 import shutil
@@ -218,8 +219,8 @@ def create_inprocess_view_html(task_id, protein_name, email):
     file_path = "/var/www/html/deePheMut/position.txt"
     with open(file_path, 'r') as file:
         lines = file.readlines()
-    if lines and lines[-1].strip() == '':
-        lines = lines[:-1]
+    if lines and lines[-1].endswith('\n'):
+        lines[-1] = lines[-1].strip()
     with open(file_path, 'w') as file:
         file.writelines(lines)
     
@@ -264,10 +265,10 @@ def create_inprocess_view_html(task_id, protein_name, email):
     </div>
 </div>
 <div class="menu">
-    <a href="index.php">HOME</a>
-    <a href="run.php">RUN</a>
-    <a href="guide.html">GUIDE</a>
-    <a href="feedback.php">FEEDBACK</a>
+    <a href="../../index.php">HOME</a>
+    <a href="../../run.php">RUN</a>
+    <a href="../../guide.html">GUIDE</a>
+    <a href="../../feedback.php">FEEDBACK</a>
     <button class="btn_change_theme" id="toggleBackgroundBtn">Change Theme</button>
 </div>
 <script>
@@ -289,6 +290,90 @@ def create_inprocess_view_html(task_id, protein_name, email):
         file.write(html_code)
     print(f"[INFO] inprocess html file is written")
     return None
+
+
+def create_error_view_html(task_id, protein_name, email):
+    """
+    Create inprocess view html file
+    This file can tell the status, id, protein name, email etc information
+    Use chart.js to preview the user's data
+
+    Parameters:
+    - task_id: user's task id
+    - protein_name: user's uniprot ID or user's pdb file prefix
+    - email: user's email
+    """
+    
+    html_code = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>deePheMut progress</title>
+    <link rel="icon" href="../../figure/web_icon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../../inprocess.css">
+</head>
+<body>
+<img src="../../figure/logo-transparent-png.png" width="360" class="imageContainerr"/>
+<div id="container_a" style="height: 80%">
+    <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/echarts.min.js"></script>
+    <script type="text/javascript" src="../../echarts_cartoon.js"></script>
+</div>
+<h4 style="text-align: center;">deep and precise prediction of mutations to different phenotypes</h4>
+<br/>
+
+
+<div class="container_box">
+    <div class="card">
+        <div class = "image">
+            <canvas id="myChart"></canvas>
+            <script src="../../barchart.js"></script>
+        </div>
+        <div class="content">
+            <h1> Status: Error</h1>
+            <hr style="height: 3px; background-color: black; border: none;">
+            <br>
+            <h2> Your Query ID: {task_id}</h2>
+            <br>
+            <h2> Your Protein is: {protein_name}</h2>
+            <br>
+            <h2> Your Email is: {email[0]}</h2>
+            <br>
+        </div>
+    </div>
+</div>
+<div class="menu">
+    <a href="../../index.php">HOME</a>
+    <a href="../../run.php">RUN</a>
+    <a href="../../guide.html">GUIDE</a>
+    <a href="../../feedback.php">FEEDBACK</a>
+    <button class="btn_change_theme" id="toggleBackgroundBtn">Change Theme</button>
+</div>
+<script>
+    document.getElementById('toggleBackgroundBtn').addEventListener('click', function() {{
+        document.body.classList.toggle('dark-theme');
+    }});
+</script>
+<div class="footer">
+    Department of Bioinformatics,
+    Medical School of Soochow University <br>
+    Contact us: <a href="mailto:spencer-jrwang@foxmail.com">spencer-jrwang@foxmail.com</a><br>
+    Source Code: <a href="https://github.com/Spencer-JRWang/APMA">Github</a>
+</div>
+</body>
+</html>
+"""
+    # write to index.php file
+    with open(f'/var/www/html/deePheMut/user_data/{task_id}/index.html', 'w') as file:
+        file.write(html_code)
+    print(f"[INFO] inprocess html file is written")
+    return None
+
+
+
+
 
 
 def final_view_index_html(task_id):
@@ -313,24 +398,34 @@ def final_view_index_html(task_id):
     # Copy Outcome.zip to the task folder
     shutil.copy('/home/wangjingran/APMA/Email/Outcome.zip', destination_folder)
 
+    def remove_suffix(text, suffix):
+        if text.endswith(suffix):
+            return text[:-len(suffix)]
+        return text
+
+    def remove_prefix(text, prefix):
+        if text.startswith(prefix):
+            return text[len(prefix):]
+        return text
+
     # define iframe code
     iframe_code = ""
-    html_files = []
-    search_pattern = os.path.join('/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/Explain/', '*.html')
+    search_pattern = os.path.join(f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/Explain', '*.html')
     html_files = glob.glob(search_pattern)
+    print(html_files)
     html_file_names = [os.path.basename(file) for file in html_files]
+    print(html_file_names)
     for html_file in html_file_names:
-        iframe_code += f"""<p>{html_file.rstrip('html').lstrip('LightGBM_force_plot_').rstrip('.')}</p>\n
+        iframe_code += f"""<p>{remove_prefix(remove_suffix(html_file,'.html'), 'LightGBM_force_plot_')}</p>\n
         <iframe src='Outcome/Figure/Explain/{html_file}' title='iframe_force'></iframe>\n"""
     
     # define score boxplot code
     box_plot_code = ""
-    score_files = []
-    search_pattern = os.path.join('/var/www/html/deePheMut/user_data/{task_id}/Outcome/Score', '*.txt')
+    search_pattern = os.path.join(f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Score', '*.txt')
     score_files = glob.glob(search_pattern)
     score_names = [os.path.basename(file) for file in score_files]
     for score_name in score_names:
-        box_plot_code += f"{{ file: './Outcome/Score/{score_name}', title: '{score_name.rstrip('txt').lstrip('LightGBM_force_plot_').rstrip('.')}' }},\n"
+        box_plot_code += f"{{ file: './Outcome/Score/{score_name}', title: '{remove_prefix(remove_suffix(score_name,'.txt'), 'LightGBM_')}' }},\n"
     html_code = f"""
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -338,7 +433,7 @@ def final_view_index_html(task_id):
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../../figure/web_icon.ico" type="image/x-icon">
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="../../plotly-latest.js"></script>
     <title>Task Preview</title>
     <link rel="stylesheet" href="../../outcome_preview.css">
 </head>
@@ -348,7 +443,7 @@ def final_view_index_html(task_id):
 <div id="pdf-container">
     <h2>Feature Calculation</h2>
     <div class="pdf-item">
-        <embed src="Outcome/Figure/combined_plots.pdf" type="application/pdf">
+        <embed src="./Outcome/Figure/combined_plots.pdf" type="application/pdf">
         <p><strong>Figure 1| Mutation parameter distribution plot and PCA plot</strong>,
             the first 15 images represent the performance of phenotypes in different parameters.
             When the sample size is greater than 30, t test in statistical test will be adopted,
@@ -360,7 +455,18 @@ def final_view_index_html(task_id):
     </div>
 
     <div class="pdf-item">
-        <embed src="Outcome/Figure/ROC/Feature/feature_roc.pdf" type="application/pdf">
+        <embed src="./Outcome/Figure/dynamic.pdf" type="application/pdf">
+        <p><strong>Figure 1| Mutation parameter distribution plot and PCA plot</strong>,
+            the first 15 images represent the performance of phenotypes in different parameters.
+            When the sample size is greater than 30, t test in statistical test will be adopted,
+            otherwise wilcoxon test will be used, where ** represents 0.01 < pvalue < 0.05, *** indicates pvalue < 0.001,
+            the last picture shows the results of principal component analysis of mutations of different phenotypes.
+            The distribution of principal component analysis shows the distribution of different phenotypic mutations on the first two principal components.</p>
+        <button onclick="downloadFile('./Outcome/Figure/dynamic.pdf')">Download Figure 1</button>
+    </div>
+
+    <div class="pdf-item">
+        <embed src="./Outcome/Figure/ROC/Feature/feature_roc.pdf" type="application/pdf">
         <p><strong>Figure 2| Mutation parameter distribution plot and PCA plot</strong>,
             the first 15 images represent the performance of phenotypes in different parameters.
             When the sample size is greater than 30, t test in statistical test will be adopted,
@@ -373,18 +479,18 @@ def final_view_index_html(task_id):
     <h2>Model Construction</h2>
 
     <div class="pdf-item">
-        <embed src="Outcome/Figure/rfe.pdf" type="application/pdf">
+        <embed src="./Outcome/Figure/rfe.pdf" type="application/pdf">
         <p><strong>Figure 3| </strong></p>
         <button onclick="downloadFile('./Outcome/Figure/rfe.pdf')">Download Figure 2</button>
     </div>
 
     <div class="pdf-item">
-        <embed src="Outcome/Figure/spearman_corr.pdf" type="application/pdf">
+        <embed src="Outcome/Figure/spearman.pdf" type="application/pdf">
         <p><strong>Figure 4| Spearman correlation heatmap</strong>, this heatmap illustrates Spearman correlation coefficients computed between protein mutations
             and 15 selected features. Color intensity reflects the strength of correlation: bluer shades indicate positive correlations,
             while redder shades indicate negative correlations. Numeric values adjacent to the color bar denote the magnitude of
             correlation coefficients.</p>
-        <button onclick="downloadFile('./Outcome/Figure/spearman_corr.pdf')">Download Figure 2</button>
+        <button onclick="downloadFile('./Outcome/Figure/spearman.pdf')">Download Figure 2</button>
     </div>
 
     <div class="pdf-item">
@@ -507,7 +613,7 @@ def final_view_index_html(task_id):
         <p><strong>Figure 8| Machine learning model explanation force plot</strong>, This Force Plot generated using SHAP visualizes the impact of
             features on the model's predictions.  Each feature's contribution to the prediction is represented by the length and direction(colors).
             Positive and negative contributions are indicated by pointing upwards(red) and downwards(blue), respectively. </p>
-        <button onclick="downloadFile('./APMA_outcome/Figure/ROC/ML/ml_roc.pdf')">Download Figure 2</button>
+        <button onclick="downloadFile('./Outcome/Figure/ROC/ML/ml_roc.pdf')">Download Figure 2</button>
     </div>
 </div>
 <button id="download-all" onclick="downloadAllFiles()">Download All Outcomes</button>
@@ -532,8 +638,8 @@ def final_view_index_html(task_id):
 
     function downloadAllFiles() {{
         const link = document.createElement('a');
-        link.href = 'all_files.zip'; // 预先存在的ZIP文件路径
-        link.download = 'all_files.zip';
+        link.href = './Outcome.zip'; // 预先存在的ZIP文件路径
+        link.download = './Outcome.zip';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -578,8 +684,6 @@ def final_view_index_html(task_id):
 
 
 
-
-
 # Define Amino Acid list
 Amino_acids_list = [
     'A',  # Alanine
@@ -601,7 +705,8 @@ Amino_acids_list = [
     'T',  # Threonine
     'W',  # Tryptophan
     'Y',  # Tyrosine
-    'V'   # Valine
+    'V',  # Valine
+    'X'   # Unknown
 ]
 
 # The main console
@@ -748,20 +853,20 @@ if __name__ == "__main__":
 
         from Email.zip import zip_folder
         zip_folder('/home/wangjingran/APMA/Outcome','/home/wangjingran/APMA/Email/Outcome.zip')
-
-        # print end time
-        print("[INFO] APMA ends at: ", current_datetime)
         
+        # construct index.html file
+        final_view_index_html(task_id)
+
         # merge pdf files
         merge_pdfs_from_folder(f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/Explain', 
                                f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/Explain/shap_summary_plot.pdf')
         merge_pdfs_from_folder(f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/ROC/Feature', 
-                               f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/Explain/feature_roc.pdf')
+                               f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/ROC/Feature/feature_roc.pdf')
         merge_pdfs_from_folder(f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/ROC/ML', 
-                               f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/Explain/ml_roc.pdf')
+                               f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/ROC/ML/ml_roc.pdf')
         
-        # construct index.html file
-        final_view_index_html(task_id)
+        # print end time
+        print("[INFO] APMA ends at: ", current_datetime)
 
         from Email.send import send_email
         send_email(task_id, email_list)
@@ -769,11 +874,21 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(str(e))
+
         traceback_info = traceback.format_exc()
         print(traceback_info)
+
         current_datetime = datetime.datetime.now()
         print("[INFO] APMA ends at: ", current_datetime)
+
         time.sleep(3)
+
+        # create inprocess index.html
+        try:
+            create_error_view_html(task_id, user_protein_name, email_list)
+        except Exception as ee:
+            print("[INFO] " + str(ee))
+        
         from Email.send import send_error_email
         send_error_email(email_list)
 

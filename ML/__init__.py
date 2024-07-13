@@ -175,9 +175,9 @@ def ML_Build(category, file='/home/wangjingran/APMA/data/paras.txt'):
             # Save files and images
             plot_roc_curve(fpr, tpr, roc_auc, '/home/wangjingran/APMA/Outcome/Figure/ROC/ML/' + exp[j] + "_" + str(Cat_A) + " vs " + str(Cat_B) + ".pdf")
             print("...Saving files...")
+            Best_IndegratedScore.iloc[:, 0] = Best_IndegratedScore.iloc[:, 0].map({0: Cat_A, 1: Cat_B})
             Best_IndegratedScore.to_csv('/home/wangjingran/APMA/Outcome/Score/' + str(exp[j]) + "_" + str(Cat_A) + " vs " + str(Cat_B) + '.txt', sep='\t', index=False, header=True)
 
-            Best_IndegratedScore.iloc[:, 0] = Best_IndegratedScore.iloc[:, 0].map({0: Cat_A, 1: Cat_B})
     f.close()
 
     print("...Generating rfe figures...")
