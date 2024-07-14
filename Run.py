@@ -166,6 +166,7 @@ def merge_pdfs_from_folder(folder_path, output_pdf):
     ValueError: If no PDF files are found in the specified folder.
     FileNotFoundError: If the specified folder does not exist.
     """
+    
     # Validate folder_path exists
     if not os.path.exists(folder_path):
         raise FileNotFoundError(f"The folder '{folder_path}' does not exist.")
