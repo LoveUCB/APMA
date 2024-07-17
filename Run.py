@@ -166,7 +166,7 @@ def merge_pdfs_from_folder(folder_path, output_pdf):
     ValueError: If no PDF files are found in the specified folder.
     FileNotFoundError: If the specified folder does not exist.
     """
-    
+
     # Validate folder_path exists
     if not os.path.exists(folder_path):
         raise FileNotFoundError(f"The folder '{folder_path}' does not exist.")
@@ -457,12 +457,8 @@ def final_view_index_html(task_id):
 
     <div class="pdf-item">
         <embed src="./Outcome/Figure/dynamic.pdf" type="application/pdf">
-        <p><strong>Figure 1| Mutation parameter distribution plot and PCA plot</strong>,
-            the first 15 images represent the performance of phenotypes in different parameters.
-            When the sample size is greater than 30, t test in statistical test will be adopted,
-            otherwise wilcoxon test will be used, where ** represents 0.01 < pvalue < 0.05, *** indicates pvalue < 0.001,
-            the last picture shows the results of principal component analysis of mutations of different phenotypes.
-            The distribution of principal component analysis shows the distribution of different phenotypic mutations on the first two principal components.</p>
+        <p><strong>Figure 2| Destribution of dynamic network based on ANM/ENM model</strong>,
+            the plot </p>
         <button onclick="downloadFile('./Outcome/Figure/dynamic.pdf')">Download Figure 1</button>
     </div>
 

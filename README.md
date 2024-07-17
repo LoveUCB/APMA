@@ -1,4 +1,4 @@
-![APMA](Figure/LOGO.png)
+![APMA](Figure/logo_deePheMut.png)
 # deePheMut ---- ML & Graph based Tool
 ## Introduction
 ![APMA](Figure/deePheMut.png)
