@@ -1,3 +1,27 @@
+# -*- coding: utf-8 -*-
+
+"""
+
+@ author: Jingran Wang
+
+@ Email: jrwangspencer@stu.suda.edu.cn
+
+@ Address: Center for Systems Biology, Department of Bioinformatics, School of Biology and Basic Medical Sciences, Soochow University, Suzhou 215123, China.
+
+@ GitHub: https://github.com/Spencer-JRWang/deePheMut
+
+
+"""
+
+#############################################
+### Introduction of APMA Module
+#
+# @ This module is to control the main progress
+#
+#############################################
+
+
+
 # 优化后的函数
 # 调用两个线程同时计算，更加快速
 

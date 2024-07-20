@@ -96,11 +96,12 @@ def ML_Build(category, file='/home/wangjingran/APMA/data/paras.txt'):
     
     
     # Open a file to save feature selection outcome
-    f = open("/home/wangjingran/APMA/Outcome/Feature_selection.txt", "w")
+    f = open("/home/wangjingran/APMA/Outcome/Model_construction.txt", "w")
     
     # Iterate through each combination of categories
     RFE_outcome = {}
     for i in category:
+        
         if i[0] == "Control" or i[0] == "control" or i[0] == "Control":
             Cat_A = i[0]
             Cat_B = i[1]

@@ -7,7 +7,7 @@ setup(
     author_email='jrwangspencer@stu.suda.edu.cn',
     packages=find_packages(),
     include_package_data=True,
-    url='https://github.com/Spencer-JRWang/APMA',
+    url='https://github.com/Spencer-JRWang/deePheMut',
     install_requires=[
         "pandas",
         "matplotlib",

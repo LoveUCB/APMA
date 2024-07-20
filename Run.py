@@ -8,7 +8,7 @@
 
 @ Address: Center for Systems Biology, Department of Bioinformatics, School of Biology and Basic Medical Sciences, Soochow University, Suzhou 215123, China.
 
-@ GitHub: https://github.com/Spencer-JRWang/APMA
+@ GitHub: https://github.com/Spencer-JRWang/deePheMut
 
 
 """
@@ -442,6 +442,11 @@ def final_view_index_html(task_id):
 <h1>Task successfully finished</h1>
 
 <div id="pdf-container">
+    <h2>Summary</h2>
+    <div class="pdf-item">
+        The summary of deePheMut will be shown here.
+    </div>
+
     <h2>Feature Calculation</h2>
     <div class="pdf-item">
         <embed src="./Outcome/Figure/combined_plots.pdf" type="application/pdf">
@@ -450,7 +455,8 @@ def final_view_index_html(task_id):
             When the sample size is greater than 30, t test in statistical test will be adopted,
             otherwise wilcoxon test will be used, where ** represents 0.01 < pvalue < 0.05, *** indicates pvalue < 0.001,
             the last picture shows the results of principal component analysis of mutations of different phenotypes.
-            The distribution of principal component analysis shows the distribution of different phenotypic mutations on the first two principal components.</p>
+            The distribution of principal component analysis shows the distribution of different phenotypic mutations on the first 
+            two principal components. The circle and points of different color represent the different phenotypes.</p>
         <button onclick="downloadFile('./Outcome/Figure/combined_plots.pdf')">Download Figure 1</button>
         <button onclick="downloadFile('./Outcome/paras.txt')">Download parameters txt</button>
     </div>
@@ -458,65 +464,85 @@ def final_view_index_html(task_id):
     <div class="pdf-item">
         <embed src="./Outcome/Figure/dynamic.pdf" type="application/pdf">
         <p><strong>Figure 2| Destribution of dynamic network based on ANM/ENM model</strong>,
-            the plot </p>
-        <button onclick="downloadFile('./Outcome/Figure/dynamic.pdf')">Download Figure 1</button>
+            the plot shows the distribution of the dynamic features(Effectiveness, Sensitivity, Stiffness, DFI, MSF)
+            by residue, the bar plot in grey color shows the dynamic features' disctribution in all residues,
+            the scatter in different colors show the distribution of mutations of different mutations dynamic features.
+            The greater of residue's effectiveness means the mutation in this position is less effective to break the origin 
+            graph's stucture, while the greater of residue's sensitivity means the mutation in this position is more effective to
+            break the graph's origin structure.</p>
+        <button onclick="downloadFile('./Outcome/Figure/dynamic.pdf')">Download Figure 2</button>
     </div>
 
     <div class="pdf-item">
         <embed src="./Outcome/Figure/ROC/Feature/feature_roc.pdf" type="application/pdf">
-        <p><strong>Figure 2| Mutation parameter distribution plot and PCA plot</strong>,
-            the first 15 images represent the performance of phenotypes in different parameters.
-            When the sample size is greater than 30, t test in statistical test will be adopted,
-            otherwise wilcoxon test will be used, where ** represents 0.01 < pvalue < 0.05, *** indicates pvalue < 0.001,
-            the last picture shows the results of principal component analysis of mutations of different phenotypes.
-            The distribution of principal component analysis shows the distribution of different phenotypic mutations on the first two principal components.</p>
-        <button onclick="downloadFile('./Outcome/Figure/ROC/Feature/feature_roc.pdf')">Download Figure 2</button>
+        <p><strong>Figure 3| The ROC plot of the single parameter between two phenotypes</strong>,
+            The multi-phenotypes will first be divided into several binary classification,
+            then the ROC plots is generated based on the origin parameter, the area under ROC curve(AUC)
+            will be adjust to more than 0.5 by reversing the labels(0 or 1) of phenotypes. The greater AUC
+            means the parameter can classify the phenotypes better by linear state.</p>
+        <button onclick="downloadFile('./Outcome/Figure/ROC/Feature/feature_roc.pdf')">Download Figure 3</button>
     </div>
 
     <h2>Model Construction</h2>
 
     <div class="pdf-item">
         <embed src="./Outcome/Figure/rfe.pdf" type="application/pdf">
-        <p><strong>Figure 3| </strong></p>
-        <button onclick="downloadFile('./Outcome/Figure/rfe.pdf')">Download Figure 2</button>
+        <p><strong>Figure 4| Plot of rfe feature selection and average precision score</strong>
+        this plot shows the process of rfe feature selection, rfe eliminates the features one by one, 
+        and gradually removes the features to the best combination of features. At the same time, 
+        the results obtained after each elimination of rfe are cross-validated by 5 straighted folds, 
+        and the average accuracy is obtained to evaluate the results of rfe feature elimination.</p>
+        <button onclick="downloadFile('./Outcome/Figure/rfe.pdf')">Download Figure 4</button>
     </div>
 
     <div class="pdf-item">
         <embed src="Outcome/Figure/spearman.pdf" type="application/pdf">
-        <p><strong>Figure 4| Spearman correlation heatmap</strong>, this heatmap illustrates Spearman correlation coefficients computed between protein mutations
+        <p><strong>Figure 5| Spearman correlation heatmap</strong>, this heatmap illustrates Spearman correlation coefficients computed between protein mutations
             and 15 selected features. Color intensity reflects the strength of correlation: bluer shades indicate positive correlations,
             while redder shades indicate negative correlations. Numeric values adjacent to the color bar denote the magnitude of
             correlation coefficients.</p>
-        <button onclick="downloadFile('./Outcome/Figure/spearman.pdf')">Download Figure 2</button>
+        <button onclick="downloadFile('./Outcome/Figure/spearman.pdf')">Download Figure 5</button>
     </div>
 
     <div class="pdf-item">
         <pre id="txtContent"></pre>
-        <p><strong>Text 1| Model construction log</strong>, this heatmap illustrates Spearman correlation coefficients computed between protein mutations
-            and 15 selected features. Color intensity reflects the strength of correlation: bluer shades indicate positive correlations,
-            while redder shades indicate negative correlations. Numeric values adjacent to the color bar denote the magnitude of
-            correlation coefficients.</p>
+        <p><strong>Text 1| Model construction log</strong>, this log contains the process of feature selection, the accuracy of each step,
+        the accuracy of the indicator(the final paramaters combination), the structure of the stacking machine learning model
+        (each AUC for each model combination and the best model combination with the best PhenoScore of the largest AUC). The rfe model
+        is based on LightGBM(LGBM) and the PhenoScore generation model is based on the scan of the XGBoost, LightGBM, CatBoost model to detect
+        the best model combination(the PhenoScore with the best AUC).</p>
         <button onclick="downloadFile('./Outcome/Feature_selection.txt')">Download TXT 1</button>
     </div>
 
     <h2>Model Explanation</h2>
     <div class="pdf-item">
         <embed src="Outcome/Figure/Explain/shap_summary_plot.pdf" type="application/pdf">
-        <p><strong>Figure 5| Machine learning model explanation force plot</strong>, This Force Plot generated using SHAP visualizes the impact of
-            features on the model's predictions.  Each feature's contribution to the prediction is represented by the length and direction(colors).
-            Positive and negative contributions are indicated by pointing upwards(red) and downwards(blue), respectively. </p>
-        <button onclick="downloadFile('./Outcome/Figure/Explain/shap_summary_plot.pdf')">Download Figure 2</button>
+        <p><strong>Figure 6| The beeswarm plots for model explanation</strong> These plots shows the explanation of each classification using LightGBM model.
+        The horizontal coordinate represents SHAP value(the SHapley Additive exPlanations) of the model, 
+        which are used to quantify the impact of each feature on the predicted result. The larger the value on the horizontal coordinate, 
+        the greater the positive influence of the feature on the prediction result. The smaller the value, the greater the negative influence of the 
+        feature on the prediction result. The ordinate represents the name of the feature, and the feature is ordered in order of importance, 
+        with the most important feature at the top of the graph. Each dot represents a sample, the color of the dot represents the size of the feature value, 
+        and the color gradients from blue (smaller feature value) to red (larger feature value). 
+        The distribution of points reflects the influence of different values of this feature on the model prediction, 
+        and the density of points represents the distribution of samples.</p>
+        <button onclick="downloadFile('./Outcome/Figure/Explain/shap_summary_plot.pdf')">Download Figure 6</button>
     </div>
 
     <div class="pdf-item">
         {iframe_code}
-        <p><strong>Figure 6| Machine learning model explanation force plot</strong>, This Force Plot generated using SHAP visualizes the impact of
-            features on the model's predictions.  Each feature's contribution to the prediction is represented by the length and direction(colors).
+        <p><strong>Figure 7| Machine learning model explanation force plot</strong>, These force plots generated using SHAP visualizes the impact of
+            features on the model's predictions. These plots show the parameters used by LightGBM to predict each mutation and the positive and negative 
+            contributions of each parameter to the model classification. Each feature's contribution to the prediction is represented by the length and direction(colors).
             Positive and negative contributions are indicated by pointing upwards(red) and downwards(blue), respectively. </p>
     </div>
     <h2>PhenoScores</h2>
     <div class="pdf-item">
         <div id="boxplots-container" class="boxplot-container"></div>
+        <p><strong>Figure 8| Boxplot of PhenoScores</strong>, The box plot shows the distribution of phenoscores for groups A, B and C under labels 1 and 2. 
+        The horizontal axis represents the binary label, and the vertical axis represents the size of the PhenoScore. 
+        Different colors represent different groups: Group A is shown in blue and Group B is shown in orange. 
+        By comparing the boxplots of different colors, we can observe the differences in PhenoScore distribution of each group under different labels.</p>
         <script>
             async function loadDataAndDraw(containerId, dataFile, title) {{
                 try {{
@@ -615,11 +641,11 @@ def final_view_index_html(task_id):
 </div>
 <button id="download-all" onclick="downloadAllFiles()">Download All Outcomes</button>
 
-<!-- 右侧导航栏 -->
+<!-- navigation on the right -->
 <div id="sidebar">
     <strong>Navigation</strong>
     <ul id="nav-links">
-        <!-- JavaScript 会动态生成导航链接 -->
+        <!-- JavaScript will automatically generate navigation here. -->
     </ul>
 </div>
 
