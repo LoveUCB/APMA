@@ -511,7 +511,7 @@ def final_view_index_html(task_id):
         (each AUC for each model combination and the best model combination with the best PhenoScore of the largest AUC). The rfe model
         is based on LightGBM(LGBM) and the PhenoScore generation model is based on the scan of the XGBoost, LightGBM, CatBoost model to detect
         the best model combination(the PhenoScore with the best AUC).</p>
-        <button onclick="downloadFile('./Outcome/Feature_selection.txt')">Download TXT 1</button>
+        <button onclick="downloadFile('./Outcome/Model_construction.txt')">Download TXT 1</button>
     </div>
 
     <h2>Model Explanation</h2>
@@ -627,8 +627,6 @@ def final_view_index_html(task_id):
                 }});
             }});
         </script>
-
-        <p><strong>Figure 7| </strong></p>
     </div>
 
     <div class="pdf-item">
@@ -684,7 +682,7 @@ def final_view_index_html(task_id):
         }});
 
         // 加载文本文件内容
-        fetch('./Outcome/Feature_selection.txt')
+        fetch('./Outcome/Model_construction.txt')
             .then(response => response.text())
             .then(data => {{
                 document.getElementById('txtContent').textContent = data;
