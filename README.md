@@ -11,6 +11,34 @@
 - Protein structure data can be downloaded from the [AlphaFold Database](https://alphafold.ebi.ac.uk) or using your structure file
 - Mutation data can be downloaded from public databases: [gnomAD](https://gnomad.broadinstitute.org) and [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/) etc.
 
+## Links
+- ProDy: http://prody.csb.pitt.edu
+- FoldX: https://foldxsuite.crg.eu
+- NACEN: http://sysbio.suda.edu.cn/NACEN
+- Clustal Omega: http://www.clustal.org/omega
+- Rate4site: https://www.tau.ac.il/~itaymay/cp/rate4site.html
+- Blast: https://blast.ncbi.nlm.nih.gov
+- SHAP: https://shap.readthedocs.io/en/latest
+- Uniref50: https://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref50
+
+## Features
+1. Entropy: measures the mutation frequency on the position
+2. Coevolution: coevolution on the position
+3. Conservation: conservation score based on rate4site
+4. ddG: energy change based on FoldX
+5. RASA: single residue's relative exposed area
+6. Polarity: mutation's global effect on polarity sum(MT_Polarity - WT_Polarity)
+7. Hydrophobicity: mutation's global effect on hydrophobicity sum(MT_Hydrophobicity - WT_Hydrophobicity)
+8. Betweenness: mutations' combined global effect on betweenness on a residue rowmeans(matrix(MT_betweenness) - WT_betweenness)[position]
+9. Closeness: mutations' combined global effect on closeness on a residue rowmeans(matrix(MT_closeness) - WT_closeness)[position]
+10. Eigenvector: mutations' combined global effect on eigenvector on a residue rowmeans(matrix(MT_eigenvector) - WT_eigenvector)[position]
+11. Effectiveness: dynamic network features based on ProDy
+12. Sensitivity: dynamic network features based on ProDy
+13. DFI: dynamic network features based on ProDy
+14. MSF: dynamic network features based on ProDy
+15. Sensitivity: dynamic network features based on ProDy
+
+
 # Install
 - The deePheMut is linux-based tool, do not use Windows or MacOS
 ## Installation of Blast tool
