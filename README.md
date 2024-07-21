@@ -3,10 +3,13 @@
 ## Introduction
 ![APMA](Figure/deePheMut.png)
 - **FROM MUTATIONS TO PHENOTYPES**
+- The deePheMut Server is at: **[deePheMut Server](http://106.54.2.54/deePheMut)**
 - **deePheMut** is an online server tool for distinguishing and predicting inseparable single gene missense mutation multiphenotypic diseases. We will automatically calculate the phenotypic mutation characteristics and use the machine learning framework for model training and interpretation. The final results will be presented in a visual result. We will provide biological indicators that distinguish different disease phenotypes caused by single gene missense mutations and mutation score results to measure the biological significance of the current mutation in this phenotype.
-- The deePheMut Server is at: [deePheMut Server](http://106.54.2.54/deePheMut)
+- More information can be found on **[deePheMut Server](http://106.54.2.54/deePheMut)**
 
-
+## Data
+- Protein structure data can be downloaded from the [AlphaFold Database](https://alphafold.ebi.ac.uk) or using your structure file
+- Mutation data can be downloaded from public databases: [gnomAD](https://gnomad.broadinstitute.org) and [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/) etc.
 
 # Install
 - The deePheMut is linux-based tool, do not use Windows or MacOS
@@ -73,6 +76,9 @@ install.packages("/your/route/to/NACEN", repos = NULL, type = "source")
 > You can get NACEN source code at NACEN website: http://sysbio.suda.edu.cn/NACEN
 
 > Or you can get NACEN from [NACEN package](data/NACEN_0.1.0.tar.gz)
+
+# Reference
+- 
 
 # Message
 
