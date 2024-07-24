@@ -631,10 +631,12 @@ def final_view_index_html(task_id):
 
     <div class="pdf-item">
         <embed src="./Outcome/Figure/ROC/ML/ml_roc.pdf" type="application/pdf">
-        <p><strong>Figure 8| Machine learning model explanation force plot</strong>, This Force Plot generated using SHAP visualizes the impact of
-            features on the model's predictions.  Each feature's contribution to the prediction is represented by the length and direction(colors).
-            Positive and negative contributions are indicated by pointing upwards(red) and downwards(blue), respectively. </p>
-        <button onclick="downloadFile('./Outcome/Figure/ROC/ML/ml_roc.pdf')">Download Figure 2</button>
+        <p><strong>Figure 8| ROC figure of PhenoScore</strong>, this figure presents the Receiver Operating Characteristic (ROC) curve for the PhenoScore model in a binary classification task. 
+                    The x-axis represents the False Positive Rate (FPR), and the y-axis represents the True Positive Rate (TPR). 
+                    The area under the curve (AUC) is 0.XX, indicating the model's overall performance in distinguishing between positive and 
+                    negative samples. An AUC value close to 1 signifies high discriminative ability, whereas an AUC value of 0.5 indicates performance 
+                    equivalent to random guessing. </p>
+        <button onclick="downloadFile('./Outcome/Figure/ROC/ML/ml_roc.pdf')">Download Figure 8</button>
     </div>
 </div>
 <button id="download-all" onclick="downloadAllFiles()">Download All Outcomes</button>
@@ -819,7 +821,7 @@ if __name__ == "__main__":
 
         folder_path = '/home/wangjingran/APMA/data'
         user_pdb = print_pdb_files(folder_path)
-        user_protein_name = user_pdb.split("/")[-1].rstrip(".pdb")
+        user_protein_name = user_pdb.split("/")[-1].removesuffix(".pdb")
         # print(dict_res_type)
 
         # check position file

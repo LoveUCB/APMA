@@ -52,7 +52,7 @@ import matplotlib.colors as mcolors
 
 def plot_roc_curve(fpr, tpr, auc, filename):
     """
-    Plot ROC curve.
+    Plot ROC curve with improved aesthetics and transparent area under the curve.
 
     Args:
         fpr (list): List of false positive rates.
@@ -60,14 +60,17 @@ def plot_roc_curve(fpr, tpr, auc, filename):
         auc (float): Area under the ROC curve.
         filename (str): Name of the file to save the plot.
     """
-    plt.figure(figsize=(8, 8))
-    plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve')
-    plt.plot([0, 1], [0, 1], color='navy', lw=1.5, linestyle='--')
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
+    plt.figure(figsize=(5, 5))
+    plt.plot(fpr, tpr, color='#1f77b4', lw=2, label='ROC curve (AUC = {:.2f})'.format(auc))
+    plt.fill_between(fpr, tpr, color='#1f77b4', alpha=0.2)  # Transparent fill under the curve
+    plt.plot([0, 1], [0, 1], color='gray', lw=1.5, linestyle='--', label='Random chance')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate', fontsize=10)
+    plt.ylabel('True Positive Rate', fontsize=10)
     plt.title(filename.split('/')[-1])
-    plt.legend(loc="lower right")
-    plt.text(0.5, 0.3, 'AUC = {:.2f}'.format(auc), fontsize=12, ha='center')
+    plt.legend(loc="lower right", fontsize=8)
+    plt.tight_layout()
     plt.savefig(filename)
     plt.close()
 
@@ -376,7 +379,7 @@ def plot_roc_for_disease_pairs(file_path, output_dir):
     for disease_pair in disease_pairs:
         # Create a figure and axis
         data_current = data[data["Disease"].isin(list(disease_pair))]
-        fig, ax = plt.subplots(figsize=(10, 10))
+        fig, ax = plt.subplots(figsize=(6, 6))
         ax.plot([0, 1], [0, 1], color='grey', lw=1.5, linestyle='--')
         # Dictionary to store AUC values for each feature
         auc_dict = {}
@@ -421,7 +424,7 @@ def plot_roc_for_disease_pairs(file_path, output_dir):
         labels_and_aucs_sorted = sorted(labels_and_aucs, key=lambda x: x[1], reverse=True)
         labels_sorted = [x[0] for x in labels_and_aucs_sorted]
         handles_sorted = [handles[labels.index(label)] for label in labels_sorted]
-        ax.legend(handles_sorted, labels_sorted, loc='lower right',fontsize='small')
+        ax.legend(handles_sorted, labels_sorted, loc='lower right',fontsize=6)
 
         # Set title and axis labels
         plt.title(f'ROC Curves for {disease_pair[0]} vs {disease_pair[1]}')
