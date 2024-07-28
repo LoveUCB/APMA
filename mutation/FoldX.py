@@ -29,11 +29,11 @@ def run_FoldX(path_to_foldx,WT_PDB,mutant_file):
     '''
     Function to operate foldx in python
     '''
-    # 将pdb文件放在foldx的目录下面
+    # move pdb file to folder
     print("...FoldX mutation PDB generating...")
     shutil.copy(WT_PDB, path_to_foldx)
     FoldX_WT_PDB = WT_PDB.split("/")[-1]
-    # 处理mutant文件
+    # handle mutation file
     mutant_data = []
     type = []
     with open(mutant_file, 'r') as file:
@@ -46,18 +46,18 @@ def run_FoldX(path_to_foldx,WT_PDB,mutant_file):
         f.write(item + "\n")
     f.close()
     # print(type)
-    # 切换目录到指定路径
+    # change to file
     original_directory = os.getcwd()
     folder_path = path_to_foldx
     os.chdir(folder_path)
-    # 执行 FoldX 命令
+    # run FoldX
     foldx_command = f"./foldx5 --command=BuildModel --pdb={FoldX_WT_PDB} --mutant-file=individual_list.txt"
     subprocess.run(foldx_command, shell=True)
     for filename in os.listdir(folder_path):
-        # 检查文件名是否以 "WT_" 开头
+        # check file name
         if filename.startswith("WT_"):
             file_path = os.path.join(folder_path, filename)
-            # 如果是文件而不是文件夹，就删除
+            # delete WT files
             if os.path.isfile(file_path):
                 os.remove(file_path)
 
@@ -73,7 +73,7 @@ def run_FoldX(path_to_foldx,WT_PDB,mutant_file):
     #print(result_list)
     
     for i in range(len(result_list)):
-        old_name = folder_path + f'/{FoldX_WT_PDB.rstrip(".pdb")}_{i+1}.pdb'
+        old_name = folder_path + f'/{FoldX_WT_PDB.removesuffix(".pdb")}_{i+1}.pdb'
         new_name = folder_path + f'/{type[i]}_{result_list[i]}.pdb'
         os.rename(old_name, new_name)
 
@@ -84,7 +84,7 @@ def run_FoldX(path_to_foldx,WT_PDB,mutant_file):
 def get_total_energy(path_to_foldx, WT_PDB):
     print("Fetching Total Energy...", end = " ")
     total_energy = []
-    FoldX_WT_PDB = WT_PDB.split("/")[-1].rstrip(".pdb")
+    FoldX_WT_PDB = WT_PDB.split("/")[-1].removesuffix(".pdb")
     f = open(path_to_foldx + f"/Dif_{FoldX_WT_PDB}.fxout","r")
     all = f.readlines()
     for i in range(len(all)):

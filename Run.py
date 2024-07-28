@@ -346,10 +346,9 @@ def create_error_view_html(task_id, protein_name, email):
     </div>
 </div>
 <div class="menu">
-    <a href="../../index.php">HOME</a>
-    <a href="../../run.php">RUN</a>
+    <a href="../../index.html">HOME</a>
+    <a href="../../run.html">RUN</a>
     <a href="../../guide.html">GUIDE</a>
-    <a href="../../feedback.php">FEEDBACK</a>
     <button class="btn_change_theme" id="toggleBackgroundBtn">Change Theme</button>
 </div>
 <script>

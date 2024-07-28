@@ -95,7 +95,7 @@ def send_error_email(toEmailAddrs):
     fromEmailAddr = 'spencer-jrwang@foxmail.com'  # 邮件发送方邮箱地址
     password = '*****'  # (注意不是邮箱密码，而是为授权码)
     message = EmailMessage()
-    message['Subject'] = 'Auto Protein Mutation Analyzer'
+    message['Subject'] = 'deePheMut'
     message['From'] = fromEmailAddr
     message['To'] = toEmailAddrs[0]
     message.set_content("Oops! Something went wrong, please check your files")
