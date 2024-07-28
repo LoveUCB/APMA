@@ -89,7 +89,7 @@ def ML_Build(category, file='/home/wangjingran/APMA/data/paras.txt'):
     # Import necessary modules
     from itertools import combinations
     from .explain import model_explain
-    category = list(set(category))
+    category = list(dict.fromkeys(category))
     category = list(combinations(category, 2))
     from .figure import plot_roc_curve
     # from .figure import save_bar_chart_as_pdf

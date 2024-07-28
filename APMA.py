@@ -98,8 +98,8 @@ def APMA(WT_PDB, Protein_name, file_path, MSA_data = "/home/wangjingran/APMA/dat
             mutation_list.append(columns[1][:1] + columns[1][2:])
 
     category = phenotype_list
-    # groups of phenotypea
-    set_category = list(set(category))
+    # groups of phenotypes
+    set_category = list(dict.fromkeys(category))
     position = site_list
     position = [int(num) for num in position]
     # extract sequence from the pdb file
