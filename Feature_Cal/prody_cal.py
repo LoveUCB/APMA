@@ -34,11 +34,12 @@ def cal_dynamics(path,name):
     anm_ampar.buildHessian(ampar_ca)
     anm_ampar.calcModes('all')
     prs_mat, effectiveness, sensitivity = calcPerturbResponse(anm_ampar)
-    dfi=calcDynamicFlexibilityIndex(anm_ampar,ampar_ca,"all",norm="True")
+    # dfi=calcDynamicFlexibilityIndex(anm_ampar,ampar_ca,"all",norm="True")
     gnm_ampar = GNM(name)
     gnm_ampar.buildKirchhoff(ampar_ca)
     gnm_ampar.calcModes('all')
     msf=calcSqFlucts(gnm_ampar)
+    dfi=calcDynamicFlexibilityIndex(gnm_ampar,ampar_ca,"all",norm="True")
     stiff=calcMechStiff(anm_ampar,ampar_ca)
     newstiff=np.mean(stiff,1)
     dyn_data = np.vstack((effectiveness,
