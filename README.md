@@ -24,25 +24,24 @@
 1. Entropy: measures the mutation frequency on the position
 2. Coevolution: coevolution on the position
 3. Conservation: conservation score based on rate4site
-4. ddG: energy change based on FoldX
+4. ddG: mutatants folding energy change
 5. RASA: single residue's relative exposed area
-6. Polarity: mutation's global effect on polarity sum(MT_Polarity - WT_Polarity)
-7. Hydrophobicity: mutation's global effect on hydrophobicity sum(MT_Hydrophobicity - WT_Hydrophobicity)
-8. Betweenness: mutations' combined global effect on betweenness on a residue rowmeans(matrix(MT_betweenness) - WT_betweenness)[position]
-9. Closeness: mutations' combined global effect on closeness on a residue rowmeans(matrix(MT_closeness) - WT_closeness)[position]
-10. Eigenvector: mutations' combined global effect on eigenvector on a residue rowmeans(matrix(MT_eigenvector) - WT_eigenvector)[position]
-11. Effectiveness: dynamic network features based on ProDy
-12. Sensitivity: dynamic network features based on ProDy
-13. DFI: dynamic network features based on ProDy
-14. MSF: dynamic network features based on ProDy
-15. Sensitivity: dynamic network features based on ProDy
-
+6. Hydrophobicity: mutation's effect on hydrophobicity
+7. Betweenness: mutations' combined global effect on betweenness on a residue
+8. Closeness: mutations' combined global effect on closeness on a residue
+9.  Eigenvector: mutations' combined global effect on eigenvector on a residue
+10. Clustering Coefficient: mutations' combined global effect on eigenvector on a residue
+11. Effectiveness: dynamic network features based on ANM
+12. Sensitivity: dynamic network features based on ANM
+13. DFI: dynamic network features based on GNM
+14. MSF: dynamic network features based on GNM
+15. Stiffness: dynamic network features based on ANM
 ![protPheMut](Figure/image.png)
 
 # Install
 - The protPheMut is linux-based server tool, do not use Windows or MacOS
-## Installation of Blast tool
-1. In order to do blastp, please download ncbi-blast+
+## Installation and preparasion of Blast tool
+1. In order to run blastp, please download ncbi-blast+
 ```sh
 sudo apt get install ncbi-blast+
 ```
@@ -71,15 +70,6 @@ sudo apt get install rate4site
 1. The FoldX is in https://foldxsuite.crg.eu
 2. Please move all the files into protPheMut/mutation folder
 
-## Installation of protPheMut
-1. To get the tool, run the following code
-```
-git clone https://github.com/Spencer-JRWang/protPheMut
-```
-2. To install the python dependency, run the following code
-```
-pip install .
-```
 ## Installation of R dependency
 1. To install the R base, run the following code
 ```sh
@@ -105,6 +95,16 @@ install.packages("/your/route/to/NACEN", repos = NULL, type = "source")
 
 > Or you can get NACEN from [NACEN package](data/NACEN_0.1.0.tar.gz)
 
+## Installation of protPheMut
+1. To get the tool, run the following code
+```
+git clone https://github.com/Spencer-JRWang/protPheMut
+```
+2. To install the python dependency, run the following code
+```
+pip install .
+```
+> We recommand python 3.10 and independent anaconda environment
 
 # Message
 
