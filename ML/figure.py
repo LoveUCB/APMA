@@ -511,10 +511,25 @@ def plot_spearman(input_file, output_folder):
         print("Created output folder:", output_folder)
 
     # Plotting the heatmap using Seaborn
-    plt.figure(figsize=(12, 10))
-    sns.heatmap(spearman_corr, cmap="RdBu_r", annot=True, fmt=".2f", annot_kws={"size": 10}, xticklabels='auto')
-    plt.xticks(rotation=45, ha='right')
-    plt.title("Feature Correlation")
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(
+        spearman_corr,
+        cmap="RdBu_r",
+        annot=True, 
+        fmt=".2f", 
+        annot_kws={"size": 10},  # 调整数值字体大小和加粗
+        linewidths=0.5,  # 添加网格线
+        linecolor="gray",  # 设置网格线颜色
+        xticklabels='auto', 
+        yticklabels='auto', 
+        cbar_kws={"shrink": 0.8, "aspect": 30},  # 优化图例
+    )
+
+    # 设置标题
+    plt.title("Correlations of features", fontsize=16, fontweight = "bold")
+    plt.xticks(fontsize=12, rotation = 45, ha = 'right')
+    plt.yticks(fontsize=12)
+    plt.tight_layout()
 
     # Save the plot as a PDF file
     output_path = os.path.join(output_folder, "spearman.pdf")

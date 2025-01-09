@@ -97,7 +97,24 @@ def model_explain(model_name, X, y, name, type="Tree"):
         shap.save_html(f'/home/wangjingran/APMA/Outcome/Figure/Explain/{model_name}_force_plot_{name}.html', p)
 
         # Save summary plot
-        fig = shap.summary_plot(shap_values[1], X, alpha=0.75, show=False)
+        fig = shap.summary_plot(
+            shap_values, 
+            X, 
+            alpha=0.8, 
+            show=False, 
+            cmap='coolwarm'
+        )
+
+        plt.xticks(fontsize=12)
+        plt.yticks(fontsize=12,  rotation=45, ha='right')  # 标签旋转60度，右对齐
+        plt.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.5)
+        ax = plt.gca()
+        ax.tick_params(axis='y', pad=-16)
+        for spine in ax.spines.values():
+            spine.set_visible(True)
+            spine.set_color('black')
+            spine.set_linewidth(1)
+        plt.tight_layout()
         plt.title(f"{name}", fontweight='bold', fontsize=15)
         plt.xlabel("Impact on model output")
         plt.savefig(f"/home/wangjingran/APMA/Outcome/Figure/Explain/{model_name}_shap_summary_plot_{name}.pdf", bbox_inches='tight')

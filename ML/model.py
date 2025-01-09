@@ -152,11 +152,11 @@ class ModelUtilities:
         - all_combinations (list of tuples): List containing all combinations of base models.
         """
         base_model = [
-            #('RandomForest', RandomForestClassifier(n_estimators=2500)),
-            #('GradientBoost', GradientBoostingClassifier(n_estimators=1000, max_depth=5)),
+            ('RandomForest', RandomForestClassifier(n_estimators=2500)),
+            ('GradientBoost', GradientBoostingClassifier(n_estimators=1000, max_depth=5)),
             ('XGBoost', XGBClassifier(n_estimators=1000, max_depth = 5)),
             ('LGBM', LGBMClassifier(verbose=-1, n_estimators=1000, max_depth=5)),
-            ('CatBoost', CatBoostClassifier(verbose=False, iterations=1000, depth=5))
+            # ('CatBoost', CatBoostClassifier(verbose=False, iterations=1000, depth=5))
         ]
         all_combinations = []
         for r in range(1, len(base_model) + 1):
@@ -199,5 +199,3 @@ class ModelUtilities:
         dff["IntegratedScore"] = scores_st
         dff["Mutation"] = mutation.iloc[shuffle_index]
         return dff
-
-

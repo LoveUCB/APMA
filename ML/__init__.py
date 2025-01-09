@@ -61,7 +61,7 @@ def ML_Build(category, file='/home/wangjingran/APMA/data/paras.txt'):
         
     Outputs:
         - The best feature combination and model combination found by searching are printed out in the console.
-          A txt file named "best_params.csv" will be generated with this information.
+          A txt file named "Model_connstruction.txt" will be generated with this information.
     '''
     
     # Read data from the given file

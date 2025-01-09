@@ -8,7 +8,7 @@
 
 @ Address: Center for Systems Biology, Department of Bioinformatics, School of Biology and Basic Medical Sciences, Soochow University, Suzhou 215123, China.
 
-@ GitHub: https://github.com/Spencer-JRWang/deePheMut
+@ GitHub: https://github.com/Spencer-JRWang/protPheMut
 
 
 """
@@ -214,10 +214,10 @@ def create_inprocess_view_html(task_id, protein_name, email):
     - protein_name: user's uniprot ID or user's pdb file prefix
     - email: user's email
     """
-    # move position.txt to /var/www/html/deePheMut
-    shutil.copyfile('/home/wangjingran/APMA/data/position.txt', '/var/www/html/deePheMut/position.txt')
+    # move position.txt to /var/www/html/protPheMut
+    shutil.copyfile('/home/wangjingran/APMA/data/position.txt', '/var/www/html/protPheMut/position.txt')
     ## fit the mutation file to chart.js
-    file_path = "/var/www/html/deePheMut/position.txt"
+    file_path = "/var/www/html/protPheMut/position.txt"
     with open(file_path, 'r') as file:
         lines = file.readlines()
     if lines and lines[-1].endswith('\n'):
@@ -232,12 +232,12 @@ def create_inprocess_view_html(task_id, protein_name, email):
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>deePheMut progress</title>
+    <title>protPheMut progress</title>
     <link rel="icon" href="../../figure/web_icon.ico" type="image/x-icon">
     <link rel="stylesheet" href="../../inprocess.css">
 </head>
 <body>
-<img src="../../figure/logo-transparent-png.png" width="360" class="imageContainerr"/>
+<img src="../../figure/protPheMut.png" width="360" class="imageContainerr"/>
 <div id="container_a" style="height: 80%">
     <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/echarts.min.js"></script>
     <script type="text/javascript" src="../../echarts_cartoon.js"></script>
@@ -281,13 +281,13 @@ def create_inprocess_view_html(task_id, protein_name, email):
     Department of Bioinformatics,
     Medical School of Soochow University <br>
     Contact us: <a href="mailto:spencer-jrwang@foxmail.com">spencer-jrwang@foxmail.com</a><br>
-    Source Code: <a href="https://github.com/Spencer-JRWang/APMA">Github</a>
+    Source Code: <a href="https://github.com/Spencer-JRWang/protPheMut">Github</a>
 </div>
 </body>
 </html>
 """
     # write to index.php file
-    with open(f'/var/www/html/deePheMut/user_data/{task_id}/index.html', 'w') as file:
+    with open(f'/var/www/html/protPheMut/user_data/{task_id}/index.html', 'w') as file:
         file.write(html_code)
     print(f"[INFO] inprocess html file is written")
     return None
@@ -312,12 +312,12 @@ def create_error_view_html(task_id, protein_name, email):
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>deePheMut progress</title>
+    <title>protPheMut progress</title>
     <link rel="icon" href="../../figure/web_icon.ico" type="image/x-icon">
     <link rel="stylesheet" href="../../inprocess.css">
 </head>
 <body>
-<img src="../../figure/logo-transparent-png.png" width="360" class="imageContainerr"/>
+<img src="../../figure/protPheMut.png" width="360" class="imageContainerr"/>
 <div id="container_a" style="height: 80%">
     <script type="text/javascript" src="https://registry.npmmirror.com/echarts/5.5.0/files/dist/echarts.min.js"></script>
     <script type="text/javascript" src="../../echarts_cartoon.js"></script>
@@ -366,7 +366,7 @@ def create_error_view_html(task_id, protein_name, email):
 </html>
 """
     # write to index.php file
-    with open(f'/var/www/html/deePheMut/user_data/{task_id}/index.html', 'w') as file:
+    with open(f'/var/www/html/protPheMut/user_data/{task_id}/index.html', 'w') as file:
         file.write(html_code)
     print(f"[INFO] inprocess html file is written")
     return None
@@ -390,7 +390,7 @@ def final_view_index_html(task_id):
 
     # Copy Outcome Folder to task folder
     outcome_folder = '/home/wangjingran/APMA/Outcome'
-    destination_folder = f'/var/www/html/deePheMut/user_data/{task_id}'
+    destination_folder = f'/var/www/html/protPheMut/user_data/{task_id}'
     folder_name = 'Outcome'
     destination_path = os.path.join(destination_folder, folder_name)
     shutil.copytree(outcome_folder, destination_path)
@@ -410,7 +410,7 @@ def final_view_index_html(task_id):
 
     # define iframe code
     iframe_code = ""
-    search_pattern = os.path.join(f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/Explain', '*.html')
+    search_pattern = os.path.join(f'/var/www/html/protPheMut/user_data/{task_id}/Outcome/Figure/Explain', '*.html')
     html_files = glob.glob(search_pattern)
     print(html_files)
     html_file_names = [os.path.basename(file) for file in html_files]
@@ -421,7 +421,7 @@ def final_view_index_html(task_id):
     
     # define score boxplot code
     box_plot_code = ""
-    search_pattern = os.path.join(f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Score', '*.txt')
+    search_pattern = os.path.join(f'/var/www/html/protPheMut/user_data/{task_id}/Outcome/Score', '*.txt')
     score_files = glob.glob(search_pattern)
     score_names = [os.path.basename(file) for file in score_files]
     for score_name in score_names:
@@ -443,7 +443,7 @@ def final_view_index_html(task_id):
 <div id="pdf-container">
     <h2>Summary</h2>
     <div class="pdf-item">
-        The summary of deePheMut will be shown here.
+        The summary of protPheMut will be shown here.
     </div>
 
     <h2>Feature Calculation</h2>
@@ -698,7 +698,7 @@ def final_view_index_html(task_id):
 """
     
     # write to index.html file
-    with open(f'/var/www/html/deePheMut/user_data/{task_id}/index.html', 'w') as file:
+    with open(f'/var/www/html/protPheMut/user_data/{task_id}/index.html', 'w') as file:
         file.write(html_code)
     print(f"[INFO] outcome HTML file is written")
     return None
@@ -840,7 +840,7 @@ if __name__ == "__main__":
         # After passing several checks
         # Create the task ID and task directory
         # Record User's task and send item ID
-        task_id, task_folder = create_task_id_directory('/var/www/html/deePheMut/user_data')
+        task_id, task_folder = create_task_id_directory('/var/www/html/protPheMut/user_data')
 
         # create inprocess index.html
         create_inprocess_view_html(task_id, user_protein_name, email_list)
@@ -880,12 +880,12 @@ if __name__ == "__main__":
         final_view_index_html(task_id)
 
         # merge pdf files
-        merge_pdfs_from_folder(f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/Explain', 
-                               f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/Explain/shap_summary_plot.pdf')
-        merge_pdfs_from_folder(f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/ROC/Feature', 
-                               f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/ROC/Feature/feature_roc.pdf')
-        merge_pdfs_from_folder(f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/ROC/ML', 
-                               f'/var/www/html/deePheMut/user_data/{task_id}/Outcome/Figure/ROC/ML/ml_roc.pdf')
+        merge_pdfs_from_folder(f'/var/www/html/protPheMut/user_data/{task_id}/Outcome/Figure/Explain', 
+                               f'/var/www/html/protPheMut/user_data/{task_id}/Outcome/Figure/Explain/shap_summary_plot.pdf')
+        merge_pdfs_from_folder(f'/var/www/html/protPheMut/user_data/{task_id}/Outcome/Figure/ROC/Feature', 
+                               f'/var/www/html/protPheMut/user_data/{task_id}/Outcome/Figure/ROC/Feature/feature_roc.pdf')
+        merge_pdfs_from_folder(f'/var/www/html/protPheMut/user_data/{task_id}/Outcome/Figure/ROC/ML', 
+                               f'/var/www/html/protPheMut/user_data/{task_id}/Outcome/Figure/ROC/ML/ml_roc.pdf')
         
         # print end time
         print("[INFO] APMA ends at: ", current_datetime)

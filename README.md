@@ -1,11 +1,11 @@
-![APMA](Figure/logo_deePheMut.png)
-# deePheMut ---- ML & Graph based Tool
+![APMA](Figure/logo.png)
+# protPheMut ---- ML & Graph based Tool
 ## Introduction
-![APMA](Figure/deePheMut.png)
+![APMA](Figure/graph_abstract.png)
 - **FROM MUTATIONS TO PHENOTYPES**
-- The deePheMut Server is at: **[deePheMut Server](http://106.54.2.54/deePheMut)**
+- The deePheMut Server is at: **[protPheMut Server](http://106.54.2.54/protPheMut)**
 - **deePheMut** is an online server tool for distinguishing and predicting inseparable single gene missense mutation multiphenotypic diseases. We will automatically calculate the phenotypic mutation characteristics and use the machine learning framework for model training and interpretation. The final results will be presented in a visual result. We will provide biological indicators that distinguish different disease phenotypes caused by single gene missense mutations and mutation score results to measure the biological significance of the current mutation in this phenotype.
-- More information can be found on **[deePheMut Server](http://106.54.2.54/deePheMut)**
+- More information can be found on **[protPheMut Server](http://106.54.2.54/protPheMut)**
 
 ## Data
 - Protein structure data can be downloaded from the [AlphaFold Database](https://alphafold.ebi.ac.uk) or using your structure file
@@ -105,8 +105,6 @@ install.packages("/your/route/to/NACEN", repos = NULL, type = "source")
 
 > Or you can get NACEN from [NACEN package](data/NACEN_0.1.0.tar.gz)
 
-# Reference
-- 
 
 # Message
 
@@ -114,4 +112,6 @@ install.packages("/your/route/to/NACEN", repos = NULL, type = "source")
 >
 > Department of Bioinformatics, Medical School of Soochow University
 >
-> deePheMut is free for everyone to use, if you have used our tools in your research, please cite: 
+> protPheMut is free for everyone to use, if you have used our tools in your research, please cite: 
+> Jingran Wang, Miao Yang, Chang Zong, Gennady Verkhivker, Fei Xiao, Guang Hu. protPheMut: An Interpretable Machine Learning Tool for Classification of Cancer and Neurodevelopmental Disorders in Human Missense Variants. bioRxiv 2025.01.06.631365; doi: https://doi.org/10.1101/2025.01.06.631365
+

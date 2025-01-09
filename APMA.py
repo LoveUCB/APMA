@@ -8,7 +8,7 @@
 
 @ Address: Center for Systems Biology, Department of Bioinformatics, School of Biology and Basic Medical Sciences, Soochow University, Suzhou 215123, China.
 
-@ GitHub: https://github.com/Spencer-JRWang/deePheMut
+@ GitHub: https://github.com/Spencer-JRWang/protPheMut
 
 
 """
@@ -50,11 +50,11 @@ def APMA(WT_PDB, Protein_name, file_path, MSA_data = "/home/wangjingran/APMA/dat
     3. Conservation: conservation score based on rate4site
     4. ddG: energy change based on FoldX
     5. RASA: single residue's relative exposed area
-    6. Polarity: mutation's global effect on polarity sum(MT_Polarity - WT_Polarity)
-    7. Hydrophobicity: mutation's global effect on hydrophobicity sum(MT_Hydrophobicity - WT_Hydrophobicity)
-    8. Betweenness: mutations' combined global effect on betweenness on a residue rowmeans(matrix(MT_betweenness) - WT_betweenness)[position]
-    9. Closeness: mutations' combined global effect on closeness on a residue rowmeans(matrix(MT_closeness) - WT_closeness)[position]
-    10. Eigenvector: mutations' combined global effect on eigenvector on a residue rowmeans(matrix(MT_eigenvector) - WT_eigenvector)[position]
+    6. Hydrophobicity: mutation's global effect on hydrophobicity sum(MT_Hydrophobicity - WT_Hydrophobicity)
+    7. Betweenness: mutations' combined global effect on betweenness on a residue rowmeans(matrix(MT_betweenness) - WT_betweenness)[position]
+    8. Closeness: mutations' combined global effect on closeness on a residue rowmeans(matrix(MT_closeness) - WT_closeness)[position]
+    9. Eigenvector: mutations' combined global effect on eigenvector on a residue rowmeans(matrix(MT_eigenvector) - WT_eigenvector)[position]
+    10. Clustering Coefficient: mutations' combined global effect on cc on a residue rowmeans(matrix(MT_cc) - WT_cc)[position]
     11. Effectiveness: dynamic network features based on ProDy
     12. Sensitivity: dynamic network features based on ProDy
     13. DFI: dynamic network features based on ProDy
@@ -323,10 +323,11 @@ def APMA(WT_PDB, Protein_name, file_path, MSA_data = "/home/wangjingran/APMA/dat
     df_all["Closeness"] = [sublist[1] for sublist in AAWeb_data]
     # df_all["Degree"] = [sublist[2] for sublist in AAWeb_data]
     df_all["Eigenvector"] = [sublist[2] for sublist in AAWeb_data]
+    df_all["CC"] = [sublist[3] for sublist in AAWeb_data]
 
     # Polarity and Hydrophobicity
-    df_all["Polarity"] = [sublist[0] for sublist in dNW_data]
-    df_all["Hydrophobicity"] = [sublist[1] for sublist in dNW_data]
+    # df_all["Polarity"] = [sublist[0] for sublist in dNW_data]
+    df_all["Hydrophobicity"] = [sublist[0] for sublist in dNW_data]
     
     '''
     df_all["Betweenness"] = AAWeb_data[0]
@@ -350,3 +351,4 @@ def APMA(WT_PDB, Protein_name, file_path, MSA_data = "/home/wangjingran/APMA/dat
     print("[INFO] ...Machine Learning Starting...")
     from ML import ML_Build
     ML_Build(category)
+    
