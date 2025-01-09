@@ -1,4 +1,4 @@
-![protPheMut](Figure/graph_abstract.png)
+![protPheMut](Figure/graphic_abs.png)
 # protPheMut ---- ML & Graph based Tool
 ## Introduction
 - **FROM MUTATIONS TO PHENOTYPES**

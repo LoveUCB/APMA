@@ -8,7 +8,7 @@
 
 @ Address: Center for Systems Biology, Department of Bioinformatics, School of Biology and Basic Medical Sciences, Soochow University, Suzhou 215123, China.
 
-@ GitHub: https://github.com/Spencer-JRWang/deePheMut
+@ GitHub: https://github.com/Spencer-JRWang/protPheMut
 
 """
 
