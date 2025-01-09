@@ -3,8 +3,8 @@
 ## Introduction
 ![APMA](Figure/graph_abstract.png)
 - **FROM MUTATIONS TO PHENOTYPES**
-- The deePheMut Server is at: **[protPheMut Server](http://106.54.2.54/protPheMut)**
-- **deePheMut** is an online server tool for distinguishing and predicting inseparable single gene missense mutation multiphenotypic diseases. We will automatically calculate the phenotypic mutation characteristics and use the machine learning framework for model training and interpretation. The final results will be presented in a visual result. We will provide biological indicators that distinguish different disease phenotypes caused by single gene missense mutations and mutation score results to measure the biological significance of the current mutation in this phenotype.
+- The protPheMut Server is at: **[protPheMut Server](http://106.54.2.54/protPheMut)**
+- **protPheMut** is an online server tool for distinguishing and predicting inseparable single gene missense mutation multiphenotypic diseases. We will automatically calculate the phenotypic mutation characteristics and use the machine learning framework for model training and interpretation. The final results will be presented in a visual result. We will provide biological indicators that distinguish different disease phenotypes caused by single gene missense mutations and mutation score results to measure the biological significance of the current mutation in this phenotype.
 - More information can be found on **[protPheMut Server](http://106.54.2.54/protPheMut)**
 
 ## Data
@@ -40,7 +40,7 @@
 
 
 # Install
-- The deePheMut is linux-based tool, do not use Windows or MacOS
+- The protPheMut is linux-based server tool, do not use Windows or MacOS
 ## Installation of Blast tool
 1. In order to do blastp, please download ncbi-blast+
 ```sh
@@ -69,12 +69,12 @@ sudo apt get install rate4site
 ```
 ## Installation of FoldX
 1. The FoldX is in https://foldxsuite.crg.eu
-2. Please move all the files into deePheMut/mutation folder
+2. Please move all the files into protPheMut/mutation folder
 
-## Installation of deePheMut
+## Installation of protPheMut
 1. To get the tool, run the following code
 ```
-git clone https://github.com/Spencer-JRWang/deePheMut
+git clone https://github.com/Spencer-JRWang/protPheMut
 ```
 2. To install the python dependency, run the following code
 ```
