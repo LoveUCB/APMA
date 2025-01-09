@@ -1,7 +1,6 @@
-![APMA](Figure/LOGO.png)
+![protPheMut](Figure/graph_abstract.png)
 # protPheMut ---- ML & Graph based Tool
 ## Introduction
-![APMA](Figure/graph_abstract.png)
 - **FROM MUTATIONS TO PHENOTYPES**
 - The protPheMut Server is at: **[protPheMut Server](http://106.54.2.54/protPheMut)**
 - **protPheMut** is an online server tool for distinguishing and predicting inseparable single gene missense mutation multiphenotypic diseases. We will automatically calculate the phenotypic mutation characteristics and use the machine learning framework for model training and interpretation. The final results will be presented in a visual result. We will provide biological indicators that distinguish different disease phenotypes caused by single gene missense mutations and mutation score results to measure the biological significance of the current mutation in this phenotype.
@@ -38,6 +37,7 @@
 14. MSF: dynamic network features based on ProDy
 15. Sensitivity: dynamic network features based on ProDy
 
+![protPheMut](Figure/image.png)
 
 # Install
 - The protPheMut is linux-based server tool, do not use Windows or MacOS
