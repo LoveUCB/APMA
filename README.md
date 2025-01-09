@@ -1,4 +1,4 @@
-![APMA](Figure/logo.png)
+![APMA](Figure/LOGO.png)
 # protPheMut ---- ML & Graph based Tool
 ## Introduction
 ![APMA](Figure/graph_abstract.png)
